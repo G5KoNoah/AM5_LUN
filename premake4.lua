@@ -94,7 +94,8 @@ end
  -- description des projets		 
 projects = {
     "base",
-    "tp"
+    "tp",
+    "test"
 }
 
 for i, name in ipairs(projects) do
