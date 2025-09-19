@@ -45,7 +45,7 @@ int draw( )
         openGL utilise un repere droit, x vers la droite, y vers le haut et z devant (vers l'observateur)
         donc une rotation autour de l'axe Z permet de faire tourner le triangle dans l'image.
      */
-    Transform T= RotationZ(45);
+    Transform T= RotationY(180);
     draw(triangle, T, Identity(), Identity());
 
     return 1;   // on continue, renvoyer 0 pour sortir de l'application

@@ -21,7 +21,7 @@ public:
     
     int init( )
     {
-        m_objet= read_mesh("data/robot.obj");
+        m_objet= read_mesh("../data/IronMan.obj");
         if(m_objet.materials().count() == 0)
             // pas de matieres, pas d'affichage
             return -1;
@@ -39,7 +39,7 @@ public:
         camera().lookat(pmin, pmax);
         
         // creer le shader program, uniquement necessaire pour l'option 2, cf render()
-        m_program= read_program("tutos/tuto9_groups.glsl");
+        m_program= read_program("../tutos/tuto9_groups.glsl");
         program_print_errors(m_program);
         
         // etat openGL par defaut

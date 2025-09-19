@@ -18,11 +18,11 @@ GLuint vao;
 int init( )
 {
     // charge 12 triangles, soit un cube...
-    Mesh cube= read_mesh("data/flat_bbox.obj");
+    Mesh cube= read_mesh("../data/flat_bbox.obj");
     printf("  %d positions\n", cube.vertex_count());
 
     // compile le shader program, le program est selectionne
-    program= read_program("tutos/tuto3GL.glsl");
+    program= read_program("../tutos/tuto3GL.glsl");
     
     /* affiche les erreurs de compilation des shaders
     program_print_errors(program);

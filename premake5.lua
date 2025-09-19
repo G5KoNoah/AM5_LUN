@@ -85,7 +85,8 @@ project "libgkit"
  -- description des projets		 
 projects = {
     "base",
-    "tp"
+    "tp",
+	"premierProjet"r
 }
 
 for i, name in ipairs(projects) do

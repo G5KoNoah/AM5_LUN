@@ -22,7 +22,7 @@ public:
     
     int init( )
     {
-        m_objet= read_mesh("../data/cube.obj");
+        m_objet= read_mesh("../data/man.obj");
         
         Point pmin, pmax;
         m_objet.bounds(pmin, pmax);
