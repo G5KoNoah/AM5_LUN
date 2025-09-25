@@ -95,7 +95,8 @@ end
 projects = {
     "base",
     "tp",
-    "test"
+    "test",
+    "premierProjet"
 }
 
 for i, name in ipairs(projects) do

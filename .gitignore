@@ -4,6 +4,8 @@ bin/*.pdb
 build
 *.make
 *.cbp
+*.o
+*.d
 
 *.workspace
 
