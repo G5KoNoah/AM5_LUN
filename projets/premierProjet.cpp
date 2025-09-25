@@ -72,10 +72,11 @@ public:
 			//v_mesh[i].vertex(1 + i, 0, -1);
 			//v_mesh[i].triangle(0, 1, 2);
    //     }
-        v_mesh = makePlane(10, 10);
+        mesh_eau = makePlane(10, 10); //Eau
+        v_mesh = makePlane(50, 50); //Test
         m_objet = read_mesh("../data/cube.obj");
         Point pmin, pmax;
-        v_mesh.bounds(pmin, pmax);
+        mesh_eau.bounds(pmin, pmax);
         m_camera.lookat(pmin, pmax);
 
         // Ajour d'un arbre
@@ -108,7 +109,7 @@ public:
 
         //TOUT RELEASE APRES
         
-        v_mesh.release();
+        mesh_eau.release();
         glDeleteTextures(1, &m_texture);
         return 0;
     }
@@ -139,6 +140,8 @@ public:
         // . composer les transformations : model, view et projection
         Transform mvp = projection * view * model;
 
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Pour le maillage seulement
+
         list<GLuint>::iterator text = textures.begin();
         for(list<Mesh>::iterator i = objets.begin(); i != objets.end(); i++){
 
@@ -150,17 +153,22 @@ public:
             text++;
 
         }
+		
+        program_uniform(m_program_test, "mvpMatrix", mvp);
+		program_uniform(m_program_test, "time", global_time()/1000);
+        v_mesh.draw(m_program_test, /* use position */ true, /* use texcoord */ true, /* use normal */ false, /* use color */ false, /* use material index*/ false);
 
         program_uniform(m_program, "mvpMatrix", mvp);
 		program_uniform(m_program, "time", global_time()/1000);
-        v_mesh.draw(m_program, /* use position */ true, /* use texcoord */ true, /* use normal */ false, /* use color */ false, /* use material index*/ false);
-		
+        mesh_eau.draw(m_program, /* use position */ true, /* use texcoord */ true, /* use normal */ false, /* use color */ false, /* use material index*/ false);
+
         draw(m_objet, Identity(), m_camera);
 
         return 1;
     }
 
 protected:
+    Mesh mesh_eau;
     Mesh v_mesh;
 	Mesh m_objet;
     Orbiter m_camera;
