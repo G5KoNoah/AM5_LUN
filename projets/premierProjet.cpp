@@ -13,7 +13,8 @@
 #include <vector>
 
 #include "app.h"        // classe Application a deriver
-
+#include <list>
+using namespace std;
 
 class TP : public App
 {
@@ -71,15 +72,22 @@ public:
 			//v_mesh[i].vertex(1 + i, 0, -1);
 			//v_mesh[i].triangle(0, 1, 2);
    //     }
-        v_mesh = makePlane(1000, 1000);
+        v_mesh = makePlane(10, 10);
         m_objet = read_mesh("../data/cube.obj");
         Point pmin, pmax;
         v_mesh.bounds(pmin, pmax);
         m_camera.lookat(pmin, pmax);
 
+        // Ajour d'un arbre
+        m_objet= read_mesh("../data/Tree.obj");
+        objets.emplace_front(m_objet);
+
+
         // etape 1 : creer le shader program
         m_program = read_program("../tutos/eau.glsl");
+        m_program_test = read_program("../projets/test.glsl");
         program_print_errors(m_program);
+        program_print_errors(m_program_test);
 
         // etat openGL par defaut
         glClearColor(0.2f, 0.2f, 0.2f, 1.f);        // couleur par defaut de la fenetre
@@ -96,6 +104,9 @@ public:
     {
         // etape 3 : detruire le shader program
         release_program(m_program);
+        release_program(m_program_test);
+
+        //TOUT RELEASE APRES
         
         v_mesh.release();
         glDeleteTextures(1, &m_texture);
@@ -127,11 +138,25 @@ public:
 
         // . composer les transformations : model, view et projection
         Transform mvp = projection * view * model;
+
+        list<GLuint>::iterator text = textures.begin();
+        for(list<Mesh>::iterator i = objets.begin(); i != objets.end(); i++){
+
+            mvp = projection * view * model;
+            program_uniform(m_program_test, "mvpMatrix", mvp);
+            program_uniform(m_program_test, "time", global_time()/1000);
+            program_use_texture(m_program_test, "texture0", 0, (*text));
+            (*i).draw(m_program_test, /* use position */ true, /* use texcoord */ true, /* use normal */ false, /* use color */ false, /* use material index*/ false);
+            text++;
+
+        }
+
         program_uniform(m_program, "mvpMatrix", mvp);
 		program_uniform(m_program, "time", global_time()/1000);
         v_mesh.draw(m_program, /* use position */ true, /* use texcoord */ true, /* use normal */ false, /* use color */ false, /* use material index*/ false);
 		
         draw(m_objet, Identity(), m_camera);
+
         return 1;
     }
 
@@ -141,6 +166,9 @@ protected:
     Orbiter m_camera;
     GLuint m_texture;
     GLuint m_program;
+    GLuint m_program_test;
+    list<Mesh> objets; // Liste de tous les meshs a lire de la scene
+    list<GLuint> textures; // Liste de toutes les textures de la scene
 };
 
 

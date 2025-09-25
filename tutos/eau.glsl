@@ -35,7 +35,7 @@ void main( )
     S[1] = 6.;
     S[2] = 4.;
     S[3] = 2.;
-    S[4] = 2.;
+    S[4] = 3.;
     
     float phi[5];
     for(int i = 0; i < 5; i++){
@@ -92,7 +92,7 @@ void main( )
     float r = 0.;
     float g =  0.;
     float b = 1;
-    float a = 0.5 + 0.5 * fragPos.y;
+    float a = 0. + 0.5 * fragPos.y;
 
     // tu peux aussi multiplier par material_color si tu veux
 
