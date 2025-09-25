@@ -34,12 +34,13 @@ public:
                 float x = float(i);
                 float z = float(j);
 
-                // position
-                p_mesh.vertex(Point(x, 0.0f, z));
                 // normale (vers le haut)
-                p_mesh.normal(Vector(0, 1, 0));
+                p_mesh.normal(vec3(0, 1, 0));
                 // uv
                 p_mesh.texcoord(vec2(float(i) / width, float(j) / height));
+                // position
+                p_mesh.vertex(Point(x, 0.0f, z));
+
             }
         }
 
@@ -71,14 +72,14 @@ public:
 			//v_mesh[i].vertex(1 + i, 0, -1);
 			//v_mesh[i].triangle(0, 1, 2);
    //     }
-        v_mesh = makePlane(10, 10);
-        m_objet = read_mesh("../data/cube.obj");
+        v_meshPlane = makePlane(10, 10);
+        v_mesh = read_mesh("../data/cube.obj");
         Point pmin, pmax;
-        v_mesh.bounds(pmin, pmax);
+        v_meshPlane.bounds(pmin, pmax);
         m_camera.lookat(pmin, pmax);
 
         // etape 1 : creer le shader program
-        m_program = read_program("../tutos/eau.glsl");
+        m_program = read_program("../tutos/light.glsl");
         program_print_errors(m_program);
 
         // etat openGL par defaut
@@ -128,16 +129,29 @@ public:
         // . composer les transformations : model, view et projection
         Transform mvp = projection * view * model;
         program_uniform(m_program, "mvpMatrix", mvp);
-		program_uniform(m_program, "time", global_time()/1000);
-        v_mesh.draw(m_program, /* use position */ true, /* use texcoord */ true, /* use normal */ false, /* use color */ false, /* use material index*/ false);
-		
-        draw(m_objet, Identity(), m_camera);
+		//program_uniform(m_program, "time", global_time()/1000);
+		vec3 lightPos = vec3(5, 10, 5);
+		program_uniform(m_program, "lightPos", lightPos);
+        program_uniform(m_program, "viewPos", m_camera.position());
+
+        program_uniform(m_program, "model", model);
+        program_uniform(m_program, "color", vec3(0.5, 0.5, 0.0));
+		v_meshPlane.draw(m_program, /* use position */ true, /* use texcoord */ true, /* use normal */ true, /* use color */ false, /* use material index*/ false);
+
+		model = Identity() * Translation(2.0,1.0,2.0) ;
+		mvp = projection * view * model;
+		program_uniform(m_program, "model", model);
+        program_uniform(m_program, "mvpMatrix", mvp);
+		program_uniform(m_program, "color", vec3(1.0, 0.5, 0.31));
+        v_mesh.draw(m_program, /* use position */ true, /* use texcoord */ true, /* use normal */ true, /* use color */ false, /* use material index*/ false);
+
         return 1;
     }
 
 protected:
     Mesh v_mesh;
 	Mesh m_objet;
+	Mesh v_meshPlane;
     Orbiter m_camera;
     GLuint m_texture;
     GLuint m_program;
