@@ -71,7 +71,7 @@ public:
 			//v_mesh[i].vertex(1 + i, 0, -1);
 			//v_mesh[i].triangle(0, 1, 2);
    //     }
-        v_mesh = makePlane(100, 100);
+        v_mesh = makePlane(1000, 1000);
         m_objet = read_mesh("../data/cube.obj");
         Point pmin, pmax;
         v_mesh.bounds(pmin, pmax);

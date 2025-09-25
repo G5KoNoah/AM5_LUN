@@ -15,8 +15,8 @@ void main( )
     A[0] = 1.;
     A[1] = 0.5;
     A[2] = 0.2;
-    A[3] = 0.;
-    A[4] = 0.;
+    A[3] = 0.4;
+    A[4] = 0.7;
 
     float L[5]; //Longueur de la vague
     L[0] = 5.;
@@ -31,10 +31,10 @@ void main( )
     }
 
     float S[5]; //Vitesse de la vague
-    S[0] = 4.;
-    S[1] = 4.;
-    S[2] = 3.;
-    S[3] = 3.;
+    S[0] = 8.;
+    S[1] = 6.;
+    S[2] = 4.;
+    S[3] = 2.;
     S[4] = 2.;
     
     float phi[5];
@@ -92,12 +92,12 @@ void main( )
     float r = 0.;
     float g =  0.;
     float b = 1;
-    float a = 0.7 + 0.5 * fragPos.y;
+    float a = 0.5 + 0.5 * fragPos.y;
 
     // tu peux aussi multiplier par material_color si tu veux
 
-    fragment_color = vec4(r, g, a, 1); //N'utilise pas la transparance entre guillemets
-    //fragment_color = vec4(r, g, b, a); //Utilise la transparence entre guillemets
+    //fragment_color = vec4(r, g, a, 1); //N'utilise pas la transparance entre guillemets
+    fragment_color = vec4(r, g, b, a); //Utilise la transparence entre guillemets
 
 }
 
