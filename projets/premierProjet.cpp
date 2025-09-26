@@ -72,17 +72,18 @@ public:
 			//v_mesh[i].vertex(1 + i, 0, -1);
 			//v_mesh[i].triangle(0, 1, 2);
    //     }
-        mesh_eau = makePlane(10, 10); //Eau
-        v_mesh = makePlane(50, 50); //Test
-        m_objet = read_mesh("../data/cube.obj");
+        mesh_eau = makePlane(100, 100); //Eau
         Point pmin, pmax;
         mesh_eau.bounds(pmin, pmax);
         m_camera.lookat(pmin, pmax);
 
-        // Ajour d'un arbre
-        m_objet= read_mesh("../data/Tree.obj");
+        // Ajout d'un arbre
+        m_objet= read_mesh("../data/cube.obj");
         objets.emplace_front(m_objet);
 
+        // Ajout d'une texture d'arbre
+        m_texture= read_texture(0, "../data/debug2x2red.png");
+        textures.emplace_front(m_texture);
 
         // etape 1 : creer le shader program
         m_program = read_program("../tutos/eau.glsl");
@@ -133,7 +134,7 @@ public:
 
         // configurer le shader program
         // . recuperer les transformations
-        Transform model =Identity();
+        Transform model = Identity();
         Transform view = m_camera.view();
         Transform projection = m_camera.projection(window_width(), window_height(), 45);
 
@@ -142,6 +143,7 @@ public:
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Pour le maillage seulement
 
+        // Affichage des objets
         list<GLuint>::iterator text = textures.begin();
         for(list<Mesh>::iterator i = objets.begin(); i != objets.end(); i++){
 
@@ -154,23 +156,17 @@ public:
 
         }
 		
-        program_uniform(m_program_test, "mvpMatrix", mvp);
-		program_uniform(m_program_test, "time", global_time()/1000);
-        v_mesh.draw(m_program_test, /* use position */ true, /* use texcoord */ true, /* use normal */ false, /* use color */ false, /* use material index*/ false);
-
+        // Affichage de l'eau
         program_uniform(m_program, "mvpMatrix", mvp);
 		program_uniform(m_program, "time", global_time()/1000);
         mesh_eau.draw(m_program, /* use position */ true, /* use texcoord */ true, /* use normal */ false, /* use color */ false, /* use material index*/ false);
-
-        draw(m_objet, Identity(), m_camera);
 
         return 1;
     }
 
 protected:
     Mesh mesh_eau;
-    Mesh v_mesh;
-	Mesh m_objet;
+    Mesh m_objet;
     Orbiter m_camera;
     GLuint m_texture;
     GLuint m_program;

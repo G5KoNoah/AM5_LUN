@@ -25,7 +25,7 @@ public:
         if(m_objet.materials().count() == 0)
             // pas de matieres, pas d'affichage
             return -1;
-        
+            
         printf("%d materials.\n", m_objet.materials().count());
         
         // trie les triangles par matiere et recupere les groupes de triangles utilisant la meme matiere.

@@ -22,16 +22,16 @@ public:
     
     int init( )
     {
-        m_objet= read_mesh("data/cube.obj");
+        m_objet= read_mesh("data/Tree.obj");
         
         Point pmin, pmax;
         m_objet.bounds(pmin, pmax);
         m_camera.lookat(pmin, pmax);
         
         // lire une texture sur l'unite 0
-        m_texture0= read_texture(0, "data/debug2x2red.png");
+        m_texture0= read_texture(0, "data/bark_0021.jpg");
         // lire une texture sur l'unite 1
-        m_texture1= read_texture(1, "data/pacman.png");
+        m_texture1= read_texture(1, "data/DB2X2_L01.png");
         
         // creer le shader program
         m_program= read_program("tutos/tuto9_textures.glsl");
@@ -80,7 +80,7 @@ public:
         
         // configurer le shader program
         // . recuperer les transformations
-        Transform model= RotationX(global_time() / 20);
+        Transform model; //= RotationX(global_time() / 20);
         Transform view= m_camera.view();
         Transform projection= m_camera.projection(window_width(), window_height(), 45);
         
