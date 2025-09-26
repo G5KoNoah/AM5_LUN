@@ -79,8 +79,11 @@ public:
         m_camera.lookat(pmin, pmax);
 
         // etape 1 : creer le shader program
-        m_program = read_program("../tutos/light.glsl");
+        m_program = read_program("../tutos/pointLight.glsl");
         program_print_errors(m_program);
+
+        m_texture = read_texture(0, "../data/container2.png");
+		m_texture_specular = read_texture(1, "../data/container2_specular.png");
 
         // etat openGL par defaut
         glClearColor(0.2f, 0.2f, 0.2f, 1.f);        // couleur par defaut de la fenetre
@@ -100,6 +103,7 @@ public:
         
         v_mesh.release();
         glDeleteTextures(1, &m_texture);
+		glDeleteTextures(1, &m_texture_specular);
         return 0;
     }
 
@@ -126,23 +130,42 @@ public:
         Transform view = m_camera.view();
         Transform projection = m_camera.projection(window_width(), window_height(), 45);
 
+
         // . composer les transformations : model, view et projection
         Transform mvp = projection * view * model;
-        program_uniform(m_program, "mvpMatrix", mvp);
+
 		//program_uniform(m_program, "time", global_time()/1000);
-		vec3 lightPos = vec3(5, 10, 5);
-		program_uniform(m_program, "lightPos", lightPos);
+		vec3 lightPos = vec3(5.2f, 2.0f, 5.0f);
+		vec3 lightDirection = vec3(-0.2f, -1.0f, -0.3f);
+
+        program_use_texture(m_program, "texture0", 0, m_texture);
+		program_use_texture(m_program, "texture1", 1, m_texture_specular);
+
+        program_uniform(m_program, "mvpMatrix", mvp);
         program_uniform(m_program, "viewPos", m_camera.position());
 
+        program_uniform(m_program, "material.diffuse",0);
+        program_uniform(m_program, "material.specular", 1);
+		program_uniform(m_program, "material.shininess", 10.0f);
+
+        program_uniform(m_program, "light.position", lightPos);
+        program_uniform(m_program, "light.ambient", vec3(0.2f, 0.2f, 0.2f));
+        program_uniform(m_program, "light.diffuse", vec3(0.5f, 0.5f, 0.5f));
+        program_uniform(m_program, "light.specular", vec3(1.0f, 1.0f, 1.0f));
+
+        program_uniform(m_program, "light.constant", 1.0f);
+        program_uniform(m_program, "light.linear", 0.09f);
+        program_uniform(m_program, "light.quadratic", 0.032f);
+
         program_uniform(m_program, "model", model);
-        program_uniform(m_program, "color", vec3(0.5, 0.5, 0.0));
 		v_meshPlane.draw(m_program, /* use position */ true, /* use texcoord */ true, /* use normal */ true, /* use color */ false, /* use material index*/ false);
 
 		model = Identity() * Translation(2.0,1.0,2.0) ;
 		mvp = projection * view * model;
 		program_uniform(m_program, "model", model);
         program_uniform(m_program, "mvpMatrix", mvp);
-		program_uniform(m_program, "color", vec3(1.0, 0.5, 0.31));
+
+        program_uniform(m_program, "material.shininess", 100.0f);
         v_mesh.draw(m_program, /* use position */ true, /* use texcoord */ true, /* use normal */ true, /* use color */ false, /* use material index*/ false);
 
         return 1;
@@ -154,6 +177,7 @@ protected:
 	Mesh v_meshPlane;
     Orbiter m_camera;
     GLuint m_texture;
+	GLuint m_texture_specular;
     GLuint m_program;
 };
 
