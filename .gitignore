@@ -1,6 +1,8 @@
 bin/*.dll
 bin/*.exe
 bin/*.pdb
+bin/*.idb
+bin/*.lib
 build
 *.make
 *.cbp

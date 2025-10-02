@@ -86,7 +86,8 @@ project "libgkit"
 projects = {
     "base",
     "tp",
-	"premierProjet"r
+	"premierProjet",
+	"testTerrain"
 }
 
 for i, name in ipairs(projects) do
