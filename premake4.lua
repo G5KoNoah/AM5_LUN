@@ -265,3 +265,12 @@ project("simple_gltf")
 	files ( gkit_files )
 	files { gkit_dir .. "/tutos/gltf/simple.cpp" }
 
+project("Scene3D")              
+    language "C++"
+    kind "ConsoleApp"       
+    targetdir "bin"        
+    files ( gkit_files )    
+    files { "scene/*.cpp" }  
+    files { "scene/*.h" } 
+    files { "scene/lights/*.cpp" }  
+    files { "scene/lights/*.h" }
