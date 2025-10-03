@@ -13,12 +13,14 @@
 #include "program.h"
 #include "uniforms.h"
 #include "draw.h"
+
+#include "app.h"        // classe Application a deriver
 /*
     @class Scene
     Classe representant une scene
 */
 
-class Scene{
+class Scene : public App{
 
     private:
 		Entity * base; ///Racine de la scene
@@ -27,10 +29,9 @@ class Scene{
         Orbiter m_camera;
 
     public:
-        Scene(); ///Constructeur
-        ~Scene(); ///Destructeur
-		int Init(); ///Initialise la scene
-		void Render(); ///Dessine la scene
+        int quit(); ///Destructeur
+		int init(); ///Initialise la scene
+		int render(); ///Dessine la scene
 
 };
 

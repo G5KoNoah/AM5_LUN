@@ -1,8 +1,7 @@
 #include "Scene.h"
 
-Scene::Scene(){
-}
-Scene::~Scene(){
+
+int Scene::quit(){
     for(int i=0; i<objects.size(); i++){
         delete objects.front();
         objects.pop_front();
@@ -12,7 +11,7 @@ Scene::~Scene(){
         lights.pop_front();
 	}
 }
-int Scene::Init(){
+int Scene::init(){
 
 	base = new Entity();
 	// Creation d'une lumiere
@@ -29,7 +28,7 @@ int Scene::Init(){
     return 0;   // ras, pas d'erreur
 }
 
-void Scene::Render(){
+int Scene::render(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // deplace la camera
@@ -42,4 +41,6 @@ void Scene::Render(){
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	return 1;
 }

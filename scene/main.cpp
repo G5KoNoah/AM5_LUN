@@ -3,7 +3,6 @@
 
 int main() {
 	Scene scene;
-	scene.Init();
-	scene.Render();
+	scene.run();
 	return 0;
 }
