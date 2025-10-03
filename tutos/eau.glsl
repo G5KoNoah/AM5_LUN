@@ -75,8 +75,8 @@ void main( )
         deriveePartiellez += k * D[i].z * w[i] * A[i] * pow(sin(dot(D[i],vec3(pos.x,pos.y,pos.z)*w[i] + time*phi[i]))/2,k-1) * cos(dot(D[i],vec3(pos.x,pos.y,pos.z)) * w[i] + time*phi[i]); 
     }
 
-    vec3 B = vec3(1, deriveePartiellex, 0);
-    vec3 T = vec3(0, deriveePartiellez, 1);
+    //vec3 B = vec3(1, deriveePartiellex, 0);
+    //vec3 T = vec3(0, deriveePartiellez, 1);
 
     vec3 N = vec3(-1. * deriveePartiellex, 1., -1. * deriveePartiellez); //Normale au plan
 
