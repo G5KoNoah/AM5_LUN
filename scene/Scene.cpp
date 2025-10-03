@@ -12,8 +12,9 @@ Scene::~Scene(){
         lights.pop_front();
 	}
 }
-int Scene::init(){
+int Scene::Init(){
 
+	base = new Entity();
 	// Creation d'une lumiere
 
 	// Creation d'un objet 3D (un cube)
@@ -28,6 +29,17 @@ int Scene::init(){
     return 0;   // ras, pas d'erreur
 }
 
-void Scene::Draw(){
+void Scene::Render(){
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // deplace la camera
+    int mx, my;
+    unsigned int mb = SDL_GetRelativeMouseState(&mx, &my);
+    if (mb & SDL_BUTTON(1))              // le bouton gauche est enfonce
+        m_camera.rotation(mx, my);
+    else if (mb & SDL_BUTTON(3))         // le bouton droit est enfonce
+        m_camera.move(mx);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }

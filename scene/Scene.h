@@ -21,6 +21,7 @@
 class Scene{
 
     private:
+		Entity * base; ///Racine de la scene
         list<Object3D*> objects; ///Liste des objets de la scene
         list<Light*> lights; ///Liste des lumieres de la scene
         Orbiter m_camera;
@@ -28,8 +29,8 @@ class Scene{
     public:
         Scene(); ///Constructeur
         ~Scene(); ///Destructeur
-		int init(); ///Initialise la scene
-		void Draw(); ///Dessine la scene
+		int Init(); ///Initialise la scene
+		void Render(); ///Dessine la scene
 
 };
 
