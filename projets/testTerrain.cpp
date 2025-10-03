@@ -1,4 +1,4 @@
-
+﻿
 //! \file tuto7_camera.cpp reprise de tuto7.cpp mais en derivant AppCamera, avec gestion automatique d'une camera.
 
 
@@ -61,7 +61,7 @@ Mesh make_plane(float width, int subdivisions)
     float half_width = width / 2.0f;
     float step = width / subdivisions;
 
-    // G�n�ration des sommets
+    // Génération des sommets
     for (int z = 0; z < vertex_count; ++z)
     {
         for (int x = 0; x < vertex_count; ++x)
@@ -76,7 +76,7 @@ Mesh make_plane(float width, int subdivisions)
         }
     }
 
-    // G�n�ration des triangles
+    // Génération des triangles
     for (int z = 0; z < subdivisions; ++z)
     {
         for (int x = 0; x < subdivisions; ++x)
@@ -116,11 +116,15 @@ float hash(vec2 p) {
     return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
+
 float interpolation(float x, float y, float a) {
 	return x * (1 - a) + y * a;
 }
 
-float noise(vec2 p) {
+
+
+float noise(vec2 p)         // Gradient Noise
+{
 	vec2 i = floor(p);
 	vec2 f = fract(p);
 
@@ -134,20 +138,94 @@ float noise(vec2 p) {
 	return interpolation(a, b , u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
 }
 
+// Hash pseudo-aléatoire déterministe  float [0,1]
+float hash(float x, float y) {
+    return std::fmod(std::sin(x * 127.1f + y * 311.7f) * 43758.5453f, 1.0f);
+}
+
+// Génère un gradient unitaire aléatoire pour une position discrète (coin)
+void randomGradient(int ix, int iy, float& gx, float& gy) {
+    float h = hash((float)ix, (float)iy);
+    float angle = h * 2.0f * 3.14159265f; // 2π
+    gx = std::cos(angle);
+    gy = std::sin(angle);
+}
+
+// Fonction fade (courbe de Perlin)
+float fade(float t) {
+    return t * t * t * (t * (t * 6.0f - 15.0f) + 10.0f);
+}
+
+// Produit scalaire gradient · distance
+float gradDot(int ix, int iy, float x, float y) {
+    float gx, gy;
+    randomGradient(ix, iy, gx, gy);
+    float dx = x - (float)ix;
+    float dy = y - (float)iy;
+    return gx * dx + gy * dy;
+}
+
+// Bruit de Perlin 2D
+float perlinNoise(float x, float y) {
+    // Coins de la cellule
+    int x0 = (int)std::floor(x);
+    int x1 = x0 + 1;
+    int y0 = (int)std::floor(y);
+    int y1 = y0 + 1;
+
+    // Contributions des 4 coins
+    float n00 = gradDot(x0, y0, x, y);
+    float n10 = gradDot(x1, y0, x, y);
+    float n01 = gradDot(x0, y1, x, y);
+    float n11 = gradDot(x1, y1, x, y);
+
+    // Coordonnées locales dans la cellule
+    float fx = x - (float)x0;
+    float fy = y - (float)y0;
+
+    // Poids lissés
+    float u = fade(fx);
+    float v = fade(fy);
+
+    // Interpolation bilinéaire lissée
+    float nx0 = n00 + u * (n10 - n00);
+    float nx1 = n01 + u * (n11 - n01);
+    float nxy = nx0 + v * (nx1 - nx0);
+
+    return nxy; // Valeur typiquement dans [-1,1]
+}
+
+float fbm(float x, float y) {
+	float value = 0.0f;
+	//modifier amplitude et frequency pour ajuster le résultat
+    float amplitude = 0.4f;
+	float frequency = 0.0f;
+
+	// Remplacer 6 par le nombre d'octaves souhaité
+    for (int i = 0; i < 6; i++) {
+        value += amplitude * perlinNoise(x, y);
+        x *= 0.5f;
+        y *= 0.5f;
+        amplitude *= 0.5f;
+    }
+	return value;
+}
+
+
 Mesh make_terrain(float width, int subdivisions, float height_max)
 {
     Mesh mesh = Mesh(GL_TRIANGLES);
     int vertex_count = subdivisions + 1;
     float half_width = width / 2.0f;
     float step = width / subdivisions;
-    // G�n�ration des sommets
+    // Génération des sommets
     for (int z = 0; z < vertex_count; ++z)
     {
         for (int x = 0; x < vertex_count; ++x)
         {
             float px = -half_width + x * step;
             float pz = -half_width + z * step;
-            float y = interpolation(0., height_max, noise(vec2(px, pz)));
+            float y = interpolation(0., height_max, fbm(px, pz));
             
             if (y >= height_max-1)
                 mesh.color(1., 1., 1.);
@@ -159,7 +237,7 @@ Mesh make_terrain(float width, int subdivisions, float height_max)
             
         }
     }
-    // G�n�ration des triangles
+    // Génération des triangles
     for (int z = 0; z < subdivisions; ++z)
     {
         for (int x = 0; x < subdivisions; ++x)
@@ -195,7 +273,7 @@ public:
 
 		// creation d'un terrain
 
-		terrain = make_terrain(10.0f, 100, 3.0f);
+		terrain = make_terrain(10.0f, 500, 3.0f);
 
         Point pmin, pmax;
         terrain.bounds(pmin, pmax);
@@ -283,6 +361,26 @@ protected:
 
 int main(int argc, char** argv)
 {
+    Image image(1024, 1024);
+    Image image2(1024, 1024);
+
+    // parcours tous les pixels de l'image
+   // for (int py = 0; py < image.height(); py++)
+   //     for (int px = 0; px < image.width(); px++)
+   //     {
+   //         //float n = perlinNoise(px * 0.1f, py * 0.1f);
+   //         //image(px, py) = Color(n,n,n);
+			//
+
+   //         float n = (fbm(px * 0.1f, py * 0.1f)+1)/2;
+   //         image(px, py) = Color(n, n, n);
+			////std::cout<<n<<std::endl;
+   //     }
+
+   // // enregistre l'image en png
+   // //write_image(image, "image2.png");
+   // write_image(image2, "image3.png");
+    
     // il ne reste plus qu'a creer un objet application et la lancer 
     TP tp;
     tp.run();
