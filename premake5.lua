@@ -224,3 +224,13 @@ for i, name in ipairs(tutosM2) do
         includedirs { ".", "src/gKit" }
         files { "tutos/M2/" .. name .. ".cpp" }	
 end
+
+project("Scene3D")              
+    language "C++"
+    kind "ConsoleApp"       
+    targetdir "bin"        
+    files ( gkit_files )    
+    files { "scene/*.cpp" }  
+    files { "scene/*.h" } 
+    files { "scene/lights/*.cpp" }  
+    files { "scene/lights/*.h" } 
