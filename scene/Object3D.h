@@ -2,10 +2,17 @@
 #define _3DOBJECT
 
 #include "Entity.h"
+#include "mat.h"
 #include "mesh.h"
-#include "texture.h"
 #include "wavefront.h"
+#include "texture.h"
+
 #include "program.h"
+#include "uniforms.h"
+#include "draw.h"
+
+#include "lights/PointLight.h"
+#include "lights/DirLight.h"
 #include <string>
 
 /*
@@ -28,7 +35,7 @@ class Object3D : public Entity {
 		Object3D(std::string strShader, vec3 c, Transform tr, Entity* p); ///Constructeur couleur
 		~Object3D(); ///Destructeur
 
-		void Draw(Transform view, Transform projection); ///Dessine l'objet
+		void Draw(Transform view, Transform projection, Dirlight * dirLight, vector<PointLight*> pointLights); ///Dessine l'objet
 
 };
 

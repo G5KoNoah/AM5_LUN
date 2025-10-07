@@ -3,13 +3,16 @@
 
 int Scene::quit(){
     for(int i=0; i<objects.size(); i++){
-        delete objects.front();
-        objects.pop_front();
+		delete objects[i];
+		objects.pop_back();
 	}
-    for(int i=0; i<lights.size(); i++){
-        delete lights.front();
-        lights.pop_front();
+    for(int i=0; i<pointLights.size(); i++){
+		delete pointLights[i];
+		pointLights.pop_back();
 	}
+    delete dirLight;
+    delete base;
+	return 0;   // ras, pas d'erreur
 }
 int Scene::init(){
 
@@ -17,7 +20,7 @@ int Scene::init(){
 	// Creation d'une lumiere
 
 	// Creation d'un objet 3D (un cube)
-
+	objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity(), base));
     // etat openGL par defaut
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);        // couleur par defaut de la fenetre
 
@@ -41,6 +44,9 @@ int Scene::render(){
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    for(int i=0; i<objects.size(); i++){
+        objects[i]->Draw(m_camera.view(), m_camera.projection(), dirLight, pointLights);
+    }
 
 	return 1;
 }

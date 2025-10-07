@@ -10,6 +10,8 @@ Object3D::Object3D(std::string strShader, std::string strTexture1, std::string s
 	texture = read_texture(0, strTexture1.c_str());
 	texture_specular = read_texture(1, strTexture2.c_str());
 	shader = read_program(strShader.c_str());
+	program_use_texture(shader, "texture0", 0, texture);
+	program_use_texture(shader, "texture1", 1, texture_specular);
 }
 
 Object3D::Object3D(std::string strShader, vec3 c, Transform tr, Entity* p) : Entity(tr, p){
@@ -29,7 +31,20 @@ Object3D::~Object3D(){
 	}
 }
 
-void Object3D::Draw(Transform view, Transform projection) {
+void Object3D::Draw(Transform view, Transform projection, Dirlight * dirLight, vector<PointLight*> pointLights) {
+	Transform mvp = projection * view * transform;
+	program_uniform(shader, "mvpMatrix", mvp);
+	if(texture != 0){
+		program_use_texture(shader, "texture0", 0, texture);
+		if (texture_specular != 0) {
+			program_use_texture(shader, "texture1", 1, texture_specular);
+		}
+	}
+	else {
+		program_uniform(shader, "color", Color(color.x, color.y, color.z, 1.0f));
+	}
 
+
+	mesh.draw(shader, /* use position */ true, /* use texcoord */ (texture != 0), /* use normal */ (dirLight != nullptr || pointLights.size() > 0), /* use color */ (texture == 0), /* use material index*/ true);
 }
 
