@@ -33,7 +33,7 @@ Object3D::~Object3D(){
 }
 
 void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> pointLights) {
-	Transform mvp = camera->projection() * camera->view() * transform;
+	Transform mvp = Perspective(45.0f, float(1920) / 1080, 0.1f, 1000.0f) * camera->view() * transform;
 	glUseProgram(shader);
 	program_uniform(shader, "mvpMatrix", mvp);
 	if(texture != 0){

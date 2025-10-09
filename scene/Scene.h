@@ -32,7 +32,7 @@ class Scene : public App{
         Orbiter m_camera;
 
     public:
-		Scene() : App(1024, 640) {} ///Constructeur
+		Scene() : App(1920, 1080) {} ///Constructeur
         int quit(); ///Destructeur
 		int init(); ///Initialise la scene
 		int render(); ///Dessine la scene
