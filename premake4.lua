@@ -269,7 +269,8 @@ project("Scene3D")
     language "C++"
     kind "ConsoleApp"       
     targetdir "bin"        
-    files ( gkit_files )    
+    files ( gkit_files )  
+    includedirs { ".", "src/gKit" } 
     files { "scene/*.cpp" }  
     files { "scene/*.h" } 
     files { "scene/lights/*.cpp" }  
