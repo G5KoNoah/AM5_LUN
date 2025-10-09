@@ -129,8 +129,8 @@ struct Light{
 void main( )
 {
     Material material;
-    material.ambient = vec3(0.,0.,0.5);
-    material.diffuse = vec3(0.,0.,0.2);
+    material.ambient = vec3(0.,0.,1.0);
+    material.diffuse = vec3(0.,0.,0.5);
     material.specular = vec3(0.,0.,0.2);
     material.shininess = 0.2;
 
@@ -140,8 +140,7 @@ void main( )
     light.diffuse = vec3(0.3,0.3,0.3);
     light.specular = vec3(0.02,0.02,0.02);
 
-    vec3 viewPos = vec3(2.,2.,2.);
-
+    vec3 viewPos = vec3(1.,1.,1.);
 
     //Ambient
     vec3 ambient = material.ambient * light.ambient;
