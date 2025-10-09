@@ -28,7 +28,7 @@ class Scene : public App{
 		Entity * base; ///Racine de la scene
         vector<Object3D*> objects; ///Liste des objets de la scene
 		vector<PointLight*> pointLights; ///Liste des lumieres ponctuelles de la scene
-		Dirlight* dirLight; ///Lumiere directionnelle de la scene
+		Dirlight* dirLight = nullptr; ///Lumiere directionnelle de la scene
         Orbiter m_camera;
 
     public:

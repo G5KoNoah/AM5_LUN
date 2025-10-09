@@ -4,14 +4,20 @@
 int Scene::quit(){
     for(int i=0; i<objects.size(); i++){
 		delete objects[i];
-		objects.pop_back();
 	}
+	objects.clear();
+    std::cout << "Destruction Scene" << std::endl;
     for(int i=0; i<pointLights.size(); i++){
 		delete pointLights[i];
 		pointLights.pop_back();
 	}
-    delete dirLight;
+	pointLights.clear();
+	std::cout << "Destruction Lights" << std::endl;
+	if (dirLight != nullptr)
+        delete dirLight;
+	std::cout << "Destruction DirLight" << std::endl;
     delete base;
+	cout << "Destruction App" << endl;
 	return 0;   // ras, pas d'erreur
 }
 int Scene::init(){
@@ -21,6 +27,7 @@ int Scene::init(){
 
 	// Creation d'un objet 3D (un cube)
 	objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity(), base));
+	objects.push_back(new Cube("../tutos/tuto9_texture1.glsl", "../data/debug2x2red.png", Identity() * Translation(vec3(2.0, 2.0, 0.0)), base));
     // etat openGL par defaut
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);        // couleur par defaut de la fenetre
 

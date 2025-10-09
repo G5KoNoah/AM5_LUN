@@ -22,8 +22,8 @@ void Entity::addChild(Entity* e){
 
 // Applique la transformation t a l'entite et a tous ses enfants
 void Entity::ChangeTransform(Transform t){
-	transform = t;
+	transform = transform * t;
 	for(auto it = child.begin(); it != child.end(); ++it){
-		(*it)->ChangeTransform(t * (*it)->transform);
+		(*it)->ChangeTransform(t);
 	}
 }
