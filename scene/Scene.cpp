@@ -24,10 +24,12 @@ int Scene::init(){
 
 	base = new Entity();
 	// Creation d'une lumiere
+	dirLight = new Dirlight(vec3(0.2, 0.2, 0.2), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(5.0,5.0,5.0)), base, vec3(-0.2f, -1.0f, -0.3f));
+	//pointLights.push_back(new PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0f, 0.09f, 0.032f, Translation(vec3(2.0f, 1.0f, 0.0f)), base));
 
 	// Creation d'un objet 3D (un cube)
-	objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity(), base));
-	objects.push_back(new Cube("../tutos/tuto9_texture1.glsl", "../data/debug2x2red.png", Identity() * Translation(vec3(2.0, 2.0, 0.0)), base));
+	//objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity(), base));
+	objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/texures/Material_Metallic.png", Identity(), base));
     // etat openGL par defaut
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);        // couleur par defaut de la fenetre
 
@@ -52,7 +54,7 @@ int Scene::render(){
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     for(int i=0; i<objects.size(); i++){
-        objects[i]->Draw(m_camera.view(), m_camera.projection(), dirLight, pointLights);
+        objects[i]->Draw(&m_camera, dirLight, pointLights);
     }
 
 	return 1;

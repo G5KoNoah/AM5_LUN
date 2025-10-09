@@ -13,10 +13,10 @@ using namespace std;
 class Entity{
 
     protected:
-        Transform transform; ///Position de l'entite
         Entity* parent; ///Parent de l'entite
         list<Entity*> child; ///Enfants de l'entite
     public:
+        Transform transform; ///Position de l'entite
 		Entity(); ///Constructeur par defaut
         Entity(Transform t, Entity * p); ///Constructeur
         ~Entity(); ///Destructeur
