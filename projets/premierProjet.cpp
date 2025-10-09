@@ -86,7 +86,7 @@ public:
         textures.emplace_front(m_texture);
 
         // etape 1 : creer le shader program
-        m_program = read_program("../tutos/eau.glsl");
+        m_program = read_program("../tutos/eau2.glsl");
         m_program_test = read_program("../projets/test.glsl");
         program_print_errors(m_program);
         program_print_errors(m_program_test);
