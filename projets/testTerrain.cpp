@@ -198,17 +198,39 @@ float perlinNoise(float x, float y) {
 float fbm(float x, float y) {
 	float value = 0.0f;
 	//modifier amplitude et frequency pour ajuster le résultat
-    float amplitude = 0.4f;
-	float frequency = 0.0f;
+    float amplitude = 0.75f;
+	float frequency = 1.0f;
 
-	// Remplacer 6 par le nombre d'octaves souhaité
-    for (int i = 0; i < 6; i++) {
-        value += amplitude * perlinNoise(x, y);
-        x *= 0.5f;
-        y *= 0.5f;
-        amplitude *= 0.5f;
+	// Remplacer le nombre d'octaves souhaité
+    for(int i = 0; i < 6; i++) {
+        value += amplitude * perlinNoise(x * frequency, y * frequency);
+
+		amplitude *= 0.5f; //valeur à modifier pour ajuster le résultat
+		frequency *= 2.0f; //valeur à modifier pour ajuster le résultat
     }
 	return value;
+}
+
+float ridgedfbm(float x, float y) {
+    float value = 0.0f;
+    //modifier amplitude et frequency pour ajuster le résultat
+    float amplitude = 0.5f;
+    float frequency = 0.25f;
+	float maxSum = 0.0f;
+
+    // Remplacer le nombre d'octaves souhaité
+    for (int i = 0; i < 8; i++) {
+        float n = perlinNoise(x * frequency, y * frequency);
+		n = 1.0f - fabs(n);
+		n = pow(n, 3.5f);
+
+		value += amplitude * n;
+		maxSum += amplitude;
+
+        amplitude *= 0.4f; //valeur à modifier pour ajuster le résultat
+        frequency *= 2.0f; //valeur à modifier pour ajuster le résultat
+    }
+    return value/maxSum;
 }
 
 
@@ -225,7 +247,9 @@ Mesh make_terrain(float width, int subdivisions, float height_max)
         {
             float px = -half_width + x * step;
             float pz = -half_width + z * step;
-            float y = interpolation(0., height_max, fbm(px, pz));
+            //float y = interpolation(0., height_max, ridgedfbm(px, pz));
+            float y = fbm(px, pz);
+			//std::cout << ridgedfbm(px, pz) << std::endl;
             
             if (y >= height_max-1)
                 mesh.color(1., 1., 1.);
@@ -273,7 +297,7 @@ public:
 
 		// creation d'un terrain
 
-		terrain = make_terrain(10.0f, 500, 3.0f);
+		terrain = make_terrain(25.0f, 1024, 2.5f);
 
         Point pmin, pmax;
         terrain.bounds(pmin, pmax);
@@ -361,25 +385,34 @@ protected:
 
 int main(int argc, char** argv)
 {
-    Image image(1024, 1024);
+    /*Image image(1024, 1024);
     Image image2(1024, 1024);
+    Image image3(1024, 1024);
 
     // parcours tous les pixels de l'image
-   // for (int py = 0; py < image.height(); py++)
-   //     for (int px = 0; px < image.width(); px++)
-   //     {
-   //         //float n = perlinNoise(px * 0.1f, py * 0.1f);
-   //         //image(px, py) = Color(n,n,n);
-			//
+    for (int py = 0; py < image.height(); py++)
+        for (int px = 0; px < image.width(); px++)
+        {
+            //float n = perlinNoise(px * 0.01f, py * 0.01f);
+			//n = 0.5f * (n + 1.0f); 
 
-   //         float n = (fbm(px * 0.1f, py * 0.1f)+1)/2;
-   //         image(px, py) = Color(n, n, n);
+            //image(px, py) = Color(n,n,n);
+
+            float n = fbm(px * 0.01f, py * 0.01f);
+            n = 0.5f * (n + 1.0f);
+
+            image3(px, py) = Color(n, n, n);
+			
+
+            //float n = ridgedfbm(px * 0.1f, py * 0.1f);
+            //image2(px, py) = Color(n, n, n);
 			////std::cout<<n<<std::endl;
-   //     }
+        }
 
-   // // enregistre l'image en png
-   // //write_image(image, "image2.png");
-   // write_image(image2, "image3.png");
+    // enregistre l'image en png
+    write_image(image3, "image1.png");
+    //write_image(image, "image2.png");
+    //write_image(image2, "image3.png");*/
     
     // il ne reste plus qu'a creer un objet application et la lancer 
     TP tp;
