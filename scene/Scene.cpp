@@ -29,9 +29,7 @@ int Scene::init(){
 
 	// Creation d'un objet 3D (un cube)
 
-	objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base));
-    objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base));
-    objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), objects[1]));
+	objects.push_back(new Terrain("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity(), base));
     // etat openGL par defaut
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);        // couleur par defaut de la fenetre
@@ -58,7 +56,7 @@ int Scene::render(){
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//base->ChangeTransform(   RotationZ(1));
-    objects[1]->ChangeTransform(Translation(vec3(1.0, 0.0, 0.0)));
+    //objects[1]->ChangeTransform(Translation(vec3(1.0, 0.0, 0.0)));
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights);
     }

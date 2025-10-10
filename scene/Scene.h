@@ -5,6 +5,7 @@
 #include "lights/DirLight.h"
 #include "lights/PointLight.h"
 #include "Cube.h"
+#include "terrain.h"
 
 #include "mat.h"
 #include "mesh.h"
