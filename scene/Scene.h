@@ -2,6 +2,8 @@
 #define _SCENE
 
 #include "Object3D.h"
+#include "ObjectLoad.h"
+#include "Plane.h"
 #include "lights/DirLight.h"
 #include "lights/PointLight.h"
 #include "Cube.h"
@@ -32,7 +34,7 @@ class Scene : public App{
         Orbiter m_camera;
 
     public:
-		Scene() : App(1920, 1080) {} ///Constructeur
+		Scene() : App(1024, 640) {} ///Constructeur
         int quit(); ///Destructeur
 		int init(); ///Initialise la scene
 		int render(); ///Dessine la scene

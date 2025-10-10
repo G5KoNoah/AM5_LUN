@@ -37,6 +37,10 @@ void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> p
 	glUseProgram(shader);
 	program_uniform(shader, "mvpMatrix", mvp);
 	if(texture != 0){
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture); // Texture diffuse
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture_specular);
 
 
 		program_uniform(shader, "material.diffuse", 0);
@@ -50,6 +54,12 @@ void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> p
 			program_uniform(shader, "dirLight.ambient", dirLight->ambient);
 			program_uniform(shader, "dirLight.diffuse", dirLight->diffuse);
 			program_uniform(shader, "dirLight.specular", dirLight->specular);
+		}
+		else {
+			program_uniform(shader, "dirLight.direction", vec3(0.0f, 0.0f, 0.0f));
+			program_uniform(shader, "dirLight.ambient", vec3(0.0f, 0.0f, 0.0f));
+			program_uniform(shader, "dirLight.diffuse", vec3(0.0f, 0.0f, 0.0f));
+			program_uniform(shader, "dirLight.specular", vec3(0.0f, 0.0f, 0.0f));
 		}
 		program_uniform(shader, "nbPointLights", (int)pointLights.size());
 		for (int i = 0; i < pointLights.size(); i++) {
