@@ -1,4 +1,4 @@
-#include "plane.h"
+#include "Plane.h"
 
 // Classe representant un plane
 

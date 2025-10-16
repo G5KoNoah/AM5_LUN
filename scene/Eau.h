@@ -16,7 +16,7 @@ public:
     Eau(std::string strShader, std::string strTexture1, std::string strTexture2, Transform tr, Entity* p); ///Constructeur deux textures
     Eau(std::string strShader, vec3 c, Transform tr, Entity* p); ///Constructeur couleur
 
-	void Eau::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLights) override;
+	void Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLights) override;
 };
 
 #endif
