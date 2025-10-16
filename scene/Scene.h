@@ -4,6 +4,7 @@
 #include "Object3D.h"
 #include "ObjectLoad.h"
 #include "Plane.h"
+#include "Billboard.h"
 #include "lights/DirLight.h"
 #include "lights/PointLight.h"
 #include "Cube.h"
