@@ -1,42 +1,16 @@
-#include "Object3D.h"
+#include "Eau.h"
 
-Object3D::Object3D(std::string strShader, std::string strTexture1, Transform tr, Entity* p) : Entity(tr, p){
-	texture = read_texture(0, strTexture1.c_str());
-	texture_specular = 0;
-	shader = read_program(strShader.c_str());
+// Classe representant de l'eau
+
+Eau::Eau(std::string strShader, vec3 c, Transform tr, Entity* p) : Plane(strShader, c, tr, p) {
 }
 
-Object3D::Object3D(std::string strShader, std::string strTexture1, std::string strTexture2, Transform tr, Entity* p) : Entity(tr, p){
-	texture = read_texture(0, strTexture1.c_str());
-	texture_specular = read_texture(1, strTexture2.c_str());
-	shader = read_program(strShader.c_str());
-	std::cout << "Deux textures" << std::endl;
-}
-
-Object3D::Object3D(std::string strShader, vec3 c, Transform tr, Entity* p) : Entity(tr, p){
-	color = c;
-	texture = 0;
-	texture_specular = 0;
-	shader = read_program(strShader.c_str());
-}
-
-Object3D::~Object3D(){
-	release_program(shader);
-	mesh.release();
-	if(texture != 0){
-		glDeleteTextures(1, &texture);
-	}
-	if(texture_specular != 0){
-		glDeleteTextures(1, &texture_specular);
-	}
-	std::cout << "Destruction Object3D" << std::endl;
-}
-
-	void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> pointLights) {
+void Eau::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLights) {
 	Transform mvp = Perspective(45.0f, float(1920) / 1080, 0.1f, 1000.0f) * camera->view() * transform;
 	glUseProgram(shader);
 	program_uniform(shader, "mvpMatrix", mvp);
-	if(texture != 0){
+	program_uniform(shader, "time", global_time() / 1000);
+	if (texture != 0) {
 
 
 		program_uniform(shader, "material.diffuse", 0);
@@ -68,14 +42,5 @@ Object3D::~Object3D(){
 		program_uniform(shader, "color", Color(color.x, color.y, color.z, 1.0f));
 		mesh.draw(shader, /* use position */ true, /* use texcoord */ (texture != 0), /* use normal */ (dirLight != nullptr || pointLights.size() > 0), /* use color */ false, /* use material index*/ true);
 	}
-
 }
 
-
-void Object3D::shadowDraw(GLuint shaderAutre, Transform mvp){
-
-	glUseProgram(shaderAutre);
-	program_uniform(shaderAutre, "mvp", mvp);
-	mesh.draw(shaderAutre,true,false,true,false,false);
-		
-}
