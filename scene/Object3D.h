@@ -36,6 +36,7 @@ class Object3D : public Entity {
 		~Object3D(); ///Destructeur
 
 		void Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> pointLights); ///Dessine l'objet
+		void shadowDraw(GLuint shaderAutre, Transform mvp); ///Dessine l'objet avec un certain shader
 
 };
 

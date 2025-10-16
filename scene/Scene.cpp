@@ -32,7 +32,7 @@ int Scene::init(){
 
 	objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base));
     objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base));
-    objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), objects[1]));
+    objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
     // etat openGL par defaut
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);        // couleur par defaut de la fenetre
@@ -41,7 +41,7 @@ int Scene::init(){
     glDepthFunc(GL_LESS);                       // ztest, conserver l'intersection la plus proche de la camera
     glEnable(GL_DEPTH_TEST);                    // activer le ztest
 
-    
+    depthMapShader = read_program("../scene/shaders/depthShader.glsl"); // Shader de la depthMap
 
 
 
@@ -88,8 +88,25 @@ int Scene::render(){
 
     float near_plane = 1.0f, far_plane = 7.5f;
     glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane); // Creation d'une projection orthogonale
-    glm::mat4 lightView = glm::lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), glm::vec3( 0.0f, 0.0f,  0.0f), glm::vec3( 0.0f, 1.0f,  0.0f)); // Creation d'une matrice
-    glm::mat4 lightSpaceMatrix = lightProjection * lightView; 
+    glm::mat4 lightView = glm::lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), glm::vec3( 0.0f, 0.0f,  0.0f), glm::vec3( 0.0f, 1.0f,  0.0f)); // Creation d'une matrice de lumiere arbitraire : Position de la lumiere puis direction vers quoi regarde puis vecteur
+    glm::mat4 depthModelMatrix = glm::mat4(1.0); // Arbitraire
+    glm::mat4 MVP = depthModelMatrix * lightProjection * lightView; // Matrice a donner au shader
+    Transform mvp = Transform(MVP[0][0],MVP[0][1],MVP[0][2],MVP[0][3],MVP[1][0],MVP[1][1],MVP[1][2],MVP[1][3],MVP[2][0],MVP[2][1],MVP[2][2],MVP[2][3],MVP[3][0],MVP[3][1],MVP[3][2],MVP[3][3]);
+    
+    glUseProgram(depthMapShader);
+
+    GLint lightSpaceMatrixID = 123;
+    glUniformMatrix4fv(lightSpaceMatrixID,1,false,glm::value_ptr(MVP));
+
+    glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    
+    //FAIRE LE RENDU DE LA SCENE AVEC LE SHADER;
+    for(int i=0; i<objects.size(); i++){
+        objects[i]->shadowDraw(depthMapShader, mvp);
+    }    
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);  
 
     // deplace la camera
     int mx, my;
@@ -107,6 +124,7 @@ int Scene::render(){
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights);
     }
+
 
 	return 1;
 }

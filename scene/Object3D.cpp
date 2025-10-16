@@ -68,8 +68,14 @@ void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> p
 		program_uniform(shader, "color", Color(color.x, color.y, color.z, 1.0f));
 		mesh.draw(shader, /* use position */ true, /* use texcoord */ (texture != 0), /* use normal */ (dirLight != nullptr || pointLights.size() > 0), /* use color */ false, /* use material index*/ true);
 	}
-	}
+
+}
 
 
-	
+void Object3D::shadowDraw(GLuint shaderAutre, Transform mvp){
 
+	glUseProgram(shaderAutre);
+	program_uniform(shaderAutre, "mvp", mvp);
+	mesh.draw(shaderAutre,true,false,true,false,false);
+		
+}

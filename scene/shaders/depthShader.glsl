@@ -4,12 +4,11 @@
 
 layout (location = 0) in vec3 aPos;
 
-uniform mat4 lightSpaceMatrix;
-uniform mat4 model;
+uniform mat4 mvp;
 
 void main()
 {
-    gl_Position = lightSpaceMatrix * model * vec4(aPos, 1.0);
+    gl_Position = mvp * vec4(aPos, 1.0);
 }  
 
 #endif
@@ -18,9 +17,11 @@ void main()
 
 #ifdef FRAGMENT_SHADER
 
-void main()
-{             
-    // gl_FragDepth = gl_FragCoord.z;
-}  
+
+layout(location = 0) out float fragmentdepth;
+
+void main(){
+    fragmentdepth = gl_FragCoord.z;
+}
 
 #endif
