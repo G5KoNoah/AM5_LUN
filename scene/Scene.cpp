@@ -60,7 +60,7 @@ int Scene::render(){
     // Texture de la shadowmap
     unsigned int depthMap;
     glGenTextures(1, &depthMap);
-    glBindTexture(GL_TEXTURE_2D, depthMap);
+    glBindTexture(GL_TEXTURE_2D, depthMap); // Attacher la texture 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -69,14 +69,15 @@ int Scene::render(){
 
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
+    glDrawBuffer(GL_NONE); // Pour na pas mettre de buffer de draw
+    glReadBuffer(GL_NONE); // car on a besoin seulement de la profondeur
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
         cout << "ERROR : Frambuffer for DepthMap not initialized"; // Test pour verifier si le buffer est initialise
     }
+
+    /// Framebuffer complet
 
 
     // deplace la camera
