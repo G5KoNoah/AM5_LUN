@@ -6,6 +6,8 @@
 #include "lights/PointLight.h"
 #include "Cube.h"
 #include "terrain.h"
+#include "Plane.h"
+#include "Eau.h"
 
 #include "mat.h"
 #include "mesh.h"
