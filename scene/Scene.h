@@ -36,6 +36,8 @@ class Scene : public App{
         int quit(); ///Destructeur
 		int init(); ///Initialise la scene
 		int render(); ///Dessine la scene
+        const unsigned int SHADOW_WIDTH = 1024;
+        const unsigned int SHADOW_HEIGHT = 1024;
 
 };
 

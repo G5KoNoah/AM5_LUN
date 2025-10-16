@@ -55,12 +55,7 @@ int Scene::render(){
     //=====================================
     unsigned int depthMapFBO;
     glGenFramebuffers(1, &depthMapFBO); //Framebuffer
-
-    const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-
-    if(glCheckFramebufferStatus(depthMapFBO) != GL_FRAMEBUFFER_COMPLETE){
-        cout << "ERROR : Frambuffer for DepthMap not initialized"; // Test pour verifier si le buffer est initialise
-    }
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 
     // Texture de la shadowmap
     unsigned int depthMap;
@@ -77,6 +72,12 @@ int Scene::render(){
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
+        cout << "ERROR : Frambuffer for DepthMap not initialized"; // Test pour verifier si le buffer est initialise
+    }
+
 
     // deplace la camera
     int mx, my;
