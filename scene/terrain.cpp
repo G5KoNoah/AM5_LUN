@@ -20,7 +20,7 @@ Terrain::Terrain(std::string strShader, vec3 c, Transform tr, Entity* p) : Objec
         {
             float px = -half_width + x * step;
             float pz = -half_width + z * step;
-            float y = BruitPerlin::fbm(px, pz);
+            float y = BruitPerlin::fbm(px, pz)*5;
 
             if (y >= height_max - 1)
                 mesh.color(1., 1., 1.);
