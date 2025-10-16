@@ -16,6 +16,10 @@
 #include "uniforms.h"
 #include "draw.h"
 
+#include <../extern/glm/glm/glm.hpp>
+#include <../extern/glm/glm/gtc/matrix_transform.hpp>
+#include <../extern/glm/glm/gtc/type_ptr.hpp>
+
 #include "app.h"        // classe Application a deriver
 /*
     @class Scene

@@ -79,6 +79,15 @@ int Scene::render(){
 
     /// Framebuffer complet
 
+    // Faire le rendu de la shadowmap
+    // Idee est de faire le rendu de la scene du point de vue de la lumiere et de la stocker dans une texture
+    glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+
+    float near_plane = 1.0f, far_plane = 7.5f;
+    glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
 
     // deplace la camera
     int mx, my;
