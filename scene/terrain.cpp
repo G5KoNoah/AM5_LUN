@@ -1,15 +1,23 @@
 #include "terrain.h"
 
-// Classe representant un cube
+// Classe representant un terrain
+
+Terrain::Terrain(std::string strShader, std::string strTexture1, Transform tr, Entity* p) : Object3D(strShader, strTexture1, tr, p) {
+    mesh = make_terrain(20.0f, 100, 5.0f);
+
+}
+
+Terrain::Terrain(std::string strShader, std::string strTexture1, std::string strTexture2, Transform tr, Entity* p) : Object3D(strShader, strTexture1, strTexture2, tr, p) {
+    mesh = make_terrain(20.0f, 100, 5.0f);
+}
 
 Terrain::Terrain(std::string strShader, vec3 c, Transform tr, Entity* p) : Object3D(strShader, c, tr, p) {
-    mesh = Mesh(GL_TRIANGLES);
+	mesh = make_terrain(20.0f, 100, 5.0f);
+}
 
-	// Valeurs à modifié pour ajuster le terrain
-	float width = 20.0f;
-	int subdivisions = 100;
-	float height_max = 5.0f;
-
+Mesh Terrain::make_terrain(float width, int subdivisions, float height_max)
+{
+    Mesh mesh = Mesh(GL_TRIANGLES);
     int vertex_count = subdivisions + 1;
     float half_width = width / 2.0f;
     float step = width / subdivisions;
@@ -20,7 +28,9 @@ Terrain::Terrain(std::string strShader, vec3 c, Transform tr, Entity* p) : Objec
         {
             float px = -half_width + x * step;
             float pz = -half_width + z * step;
-            float y = BruitPerlin::fbm(px, pz)*5;
+            //float y = interpolation(0., height_max, ridgedfbm(px, pz));
+            float y = BruitPerlin::fbm(px, pz);
+            //std::cout << ridgedfbm(px, pz) << std::endl;
 
             if (y >= height_max - 1)
                 mesh.color(1., 1., 1.);
@@ -46,5 +56,5 @@ Terrain::Terrain(std::string strShader, vec3 c, Transform tr, Entity* p) : Objec
             mesh.triangle(i1, i2, i3); // triangle haut-droit
         }
     }
+    return mesh;
 }
-

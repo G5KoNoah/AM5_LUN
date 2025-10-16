@@ -1,14 +1,24 @@
 #include "plane.h"
 
-// Classe representant un cube
+// Classe representant un plane
+
+Plane::Plane(std::string strShader, std::string strTexture1, Transform tr, Entity* p) : Object3D(strShader, strTexture1, tr, p) {
+    mesh = make_plane(20.0f, 100);
+
+}
+
+Plane::Plane(std::string strShader, std::string strTexture1, std::string strTexture2, Transform tr, Entity* p) : Object3D(strShader, strTexture1, strTexture2, tr, p) {
+    mesh = make_plane(20.0f, 100);
+}
 
 Plane::Plane(std::string strShader, vec3 c, Transform tr, Entity* p) : Object3D(strShader, c, tr, p) {
-    mesh = Mesh(GL_TRIANGLES);
+    mesh = make_plane(20.0f, 100);
+}
 
-    // Valeurs à modifié pour ajuster le plane
-    float width = 20.0f;
-    int subdivisions = 100;
-    
+Mesh Plane::make_plane(float width, int subdivisions)
+{
+    Mesh mesh = Mesh(GL_TRIANGLES);
+
     int vertex_count = subdivisions + 1;
     float half_width = width / 2.0f;
     float step = width / subdivisions;
@@ -43,5 +53,7 @@ Plane::Plane(std::string strShader, vec3 c, Transform tr, Entity* p) : Object3D(
             mesh.triangle(i1, i2, i3); // triangle haut-droit
         }
     }
+
+    return mesh;
 }
 

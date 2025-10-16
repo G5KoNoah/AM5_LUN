@@ -2,6 +2,12 @@
 
 // Classe representant de l'eau
 
+Eau::Eau(std::string strShader, std::string strTexture1, Transform tr, Entity* p) : Plane(strShader, strTexture1, tr, p) {
+}
+
+Eau::Eau(std::string strShader, std::string strTexture1, std::string strTexture2, Transform tr, Entity* p) : Plane(strShader, strTexture1, strTexture2, tr, p) {
+}
+
 Eau::Eau(std::string strShader, vec3 c, Transform tr, Entity* p) : Plane(strShader, c, tr, p) {
 }
 
