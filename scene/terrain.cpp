@@ -29,7 +29,7 @@ Mesh Terrain::make_terrain(float width, int subdivisions, float height_max)
             float px = -half_width + x * step;
             float pz = -half_width + z * step;
             //float y = interpolation(0., height_max, ridgedfbm(px, pz));
-            float y = BruitPerlin::fbm(px, pz);
+			float y = 3.0f * BruitPerlin::fbm(px, pz) + 2.0f; // Le 3 et le 2 permettent de régler la hauteur 
             //std::cout << ridgedfbm(px, pz) << std::endl;
 
             if (y >= height_max - 1)

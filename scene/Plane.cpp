@@ -3,16 +3,16 @@
 // Classe representant un plane
 
 Plane::Plane(std::string strShader, std::string strTexture1, Transform tr, Entity* p) : Object3D(strShader, strTexture1, tr, p) {
-    mesh = make_plane(20.0f, 100);
+    mesh = make_plane(10.0f, 100);
 
 }
 
 Plane::Plane(std::string strShader, std::string strTexture1, std::string strTexture2, Transform tr, Entity* p) : Object3D(strShader, strTexture1, strTexture2, tr, p) {
-    mesh = make_plane(20.0f, 100);
+    mesh = make_plane(10.0f, 100);
 }
 
 Plane::Plane(std::string strShader, vec3 c, Transform tr, Entity* p) : Object3D(strShader, c, tr, p) {
-    mesh = make_plane(20.0f, 100);
+    mesh = make_plane(10.0f, 100);
 }
 
 Mesh Plane::make_plane(float width, int subdivisions)
