@@ -46,7 +46,7 @@ class Scene : public App{
 		int init(); ///Initialise la scene
 		int render(); ///Dessine la scene
         void shadowMapPass();
-        void LightingPass();
+        void lightingPass();
         ShadowMapFBO shadow;
 
         const unsigned int SHADOW_WIDTH = 1024;

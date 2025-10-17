@@ -35,7 +35,7 @@ int Scene::init(){
     //objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
 	//objects.push_back(new Terrain("../tutos/tuto9_color.glsl", vec3(0.0f,1.0f,0.0f), Identity(), base));
 	//objects.push_back(new Eau("../tutos/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity(), base));
-    objects.push_back(new Plane("../tutos/tuto9_color.glsl", vec3(0.0f, 0.0f, 1.0f), Identity() * Translation(vec3(0.0, -3.0, 0.0)), base));
+    objects.push_back(new Plane("../tutos/tuto9_color.glsl", vec3(0.0f, 0.0f, 1.0f), Identity() * Translation(vec3(0.0, -1.0, 0.0)), base));
     // etat openGL par defaut
 
     glClearColor(1.0f, 1.0f, 1.0f, 1.f);        // couleur par defaut de la fenetre
@@ -46,9 +46,21 @@ int Scene::init(){
 
     depthMapShader = read_program("../scene/shaders/depthShader.glsl"); // Shader de la depthMap
 
+    shadow.init(SHADOW_WIDTH,SHADOW_HEIGHT); // Initialisation du Framebuffer de la depthMap
+
 
 
     return 0;   // ras, pas d'erreur
+}
+
+void Scene::shadowMapPass(){
+
+    shadow.bindForWriting();
+
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    glUseProgram(depthMapShader);
+
 }
 
 int Scene::render(){
@@ -57,6 +69,9 @@ int Scene::render(){
     //=====================================
     //     TEST POUR SHADOW MAPPING
     //=====================================
+
+    //shadowMapPass();
+
     unsigned int depthMapFBO;
     glGenFramebuffers(1, &depthMapFBO); //Framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);

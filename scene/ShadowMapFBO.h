@@ -1,7 +1,7 @@
 #ifndef _SHADOWMAPFBO
 #define _SHADOWMAPFBO
 
-#include <glew.h>
+#include "GL/glew.h"
 #include <iostream>
 
 /*
