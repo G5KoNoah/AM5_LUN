@@ -1,4 +1,6 @@
 #include "Arbres.h"
+#include <chrono>
+#include <cmath>
 
 // Classe representant un plane
 
@@ -12,7 +14,7 @@ Arbres::Arbres(std::string strShader, std::string strTexture1, std::string strTe
 }*/
 
 Arbres::Arbres(std::string strShader, vec3 c, Transform tr, Entity* p){
-    arbres = make_trees(strShader, c, tr, p, 0.0f, 0.0f, 2.0f, 5, 0.2f);
+    arbres = make_trees(strShader, c, tr, p, 0.0f, 0.0f, 2.0f, 15, 0.2f);
 }
 
 vector<Object3D*> Arbres::make_trees(std::string strShader, vec3 c, Transform tr, Entity* p, float px, float pz, float r, int nb_arbre, float ra)
@@ -21,7 +23,8 @@ vector<Object3D*> Arbres::make_trees(std::string strShader, vec3 c, Transform tr
     int i = 0;
 	float pxa, pza;
     bool hit;
-	default_random_engine generator;
+	default_random_engine generator(static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count()));
+
     uniform_real_distribution<float> dist_angle(0, 2 * M_PI);
     uniform_real_distribution<float> dist_radius(0, 1.0f);
 
