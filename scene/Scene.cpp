@@ -64,7 +64,12 @@ void Scene::shadowMapPass(){
     glm::mat4 lightView = glm::lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), glm::vec3( 0.0f, 0.0f,  0.0f), glm::vec3( 0.0f, 1.0f,  0.0f)); // Creation d'une matrice de lumiere arbitraire : Position de la lumiere puis direction vers quoi regarde puis vecteur
     glm::mat4 depthModelMatrix = glm::mat4(1.0); // Arbitraire
     glm::mat4 MVP = depthModelMatrix * lightProjection * lightView; // Matrice a donner au shader
-    Transform mvp = Transform(MVP[0][0],MVP[0][1],MVP[0][2],MVP[0][3],MVP[1][0],MVP[1][1],MVP[1][2],MVP[1][3],MVP[2][0],MVP[2][1],MVP[2][2],MVP[2][3],MVP[3][0],MVP[3][1],MVP[3][2],MVP[3][3]);
+    Transform mvp2 = Transform(MVP[0][0],MVP[0][1],MVP[0][2],MVP[0][3],MVP[1][0],MVP[1][1],MVP[1][2],MVP[1][3],MVP[2][0],MVP[2][1],MVP[2][2],MVP[2][3],MVP[3][0],MVP[3][1],MVP[3][2],MVP[3][3]);
+    
+    Transform t1 = Ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+    Transform t2 = Lookat(vec3(2.f,4.f,0.f),vec3(0.f,0.f,0.f),vec3(0.f,1.f,0.f));
+    Transform t3 = Transform(1.);
+    Transform mvp = t1 * t2 * t3;
     //cout << MVP[0][0] << endl;
     //cout << MVP[1][1] << endl;
     //cout << MVP[2][2] << endl;
