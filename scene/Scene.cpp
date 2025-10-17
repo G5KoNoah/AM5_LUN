@@ -28,8 +28,7 @@ int Scene::init(){
 	dirLight = new Dirlight(vec3(0.2, 0.2, 0.2), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(5.0,5.0,5.0)), base, vec3(-0.2f, -1.0f, -0.3f));
 	//pointLights.push_back(new PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0f, 0.09f, 0.032f, Translation(vec3(2.0f, 1.0f, 0.0f)), base));
 
-	// Creation d'un objet 3D (un terrain et un plane)
-
+	// LISTE DES OBJETS
 	objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base));
     objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base));
     //objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
@@ -77,7 +76,9 @@ void Scene::shadowMapPass(){
 
     program_uniform(depthMapShader,"mvp",mvp);
 
-    objects[0]->shadowDraw(depthMapShader,mvp);
+    for(int i=0; i<objects.size(); i++){
+        objects[i]->shadowDraw(depthMapShader, mvp);
+    }
 
 }
 
