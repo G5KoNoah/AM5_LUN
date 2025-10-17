@@ -22,6 +22,7 @@ int Scene::quit(){
 }
 int Scene::init(){
 
+
 	base = new Entity();
 	// Creation d'une lumiere
 	dirLight = new Dirlight(vec3(0.2, 0.2, 0.2), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(5.0,5.0,5.0)), base, vec3(-0.2f, -1.0f, -0.3f));
@@ -56,11 +57,38 @@ int Scene::render(){
     else if (mb & SDL_BUTTON(3))         // le bouton droit est enfonce
         m_camera.move(mx);
 
+
+    Transform view = m_camera.view();
+    Transform camWorld = view.inverse(); // pour repasser dans l’espace monde
+
+    // vecteurs caméra en espace monde
+    Vector forward = normalize(camWorld(Vector(0.0f, 0.0f, -1.0f)));
+    Vector right = normalize(camWorld(Vector(1.0f, 0.0f, 0.0f)));
+
+    const float moveSpeed = 0.1f;
+    const float scaleSpeed = 0.02f;
+
+    // --- ÉCHELLE ---
+    // Z = agrandir, S = rétrécir
+    if (key_state(SDLK_z))
+        base->ChangeTransform(Scale(1.0f + scaleSpeed));
+    else if (key_state(SDLK_s))
+        base->ChangeTransform(Scale(1.0f - scaleSpeed));
+
+    // --- TRANSLATION (selon la caméra) ---
+    // Q = gauche, D = droite
+    if (key_state(SDLK_q))
+        base->ChangeTransform(Translation(right * moveSpeed));
+    else if (key_state(SDLK_d))
+        base->ChangeTransform(Translation(-right * moveSpeed));
+
+
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//base->ChangeTransform(   RotationZ(1));
-    //objects[1]->ChangeTransform(Translation(vec3(1.0, 0.0, 0.0)));
+    //objects[0]->ChangeTransform(RotationY(10));
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights);
     }
