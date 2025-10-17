@@ -1,5 +1,11 @@
 #include "ShadowMapFBO.h"
 
+ShadowMapFBO::ShadowMapFBO()
+{
+    m_fbo = 0;
+    m_shadowMap = 0;
+}
+
 bool ShadowMapFBO::init(unsigned int width, unsigned int height){
 
     m_width = width;
@@ -29,4 +35,16 @@ bool ShadowMapFBO::init(unsigned int width, unsigned int height){
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     return true;
+}
+
+void ShadowMapFBO::bindForWriting()
+{
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
+}
+
+
+void ShadowMapFBO::bindForReading(GLenum TextureUnit)
+{
+    glActiveTexture(TextureUnit);
+    glBindTexture(GL_TEXTURE_2D, m_shadowMap);
 }

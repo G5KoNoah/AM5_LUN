@@ -15,7 +15,7 @@ class ShadowMapFBO{
         ShadowMapFBO();
         bool init(unsigned int width, unsigned int height);
         void bindForWriting();
-        void bondForReading(GLenum textureUnit);
+        void bindForReading(GLenum textureUnit);
 
         uint m_width = 0;
         uint m_height = 0;
