@@ -48,18 +48,27 @@ int Scene::init(){
 
     shadow.init(SHADOW_WIDTH,SHADOW_HEIGHT); // Initialisation du Framebuffer de la depthMap
 
-
-
     return 0;   // ras, pas d'erreur
 }
 
 void Scene::shadowMapPass(){
 
-    shadow.bindForWriting();
+    shadow.bindForWriting(); // Activation du Framebuffer de la shadowMap
 
-    glClear(GL_DEPTH_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT); // Clear du buffer
 
-    glUseProgram(depthMapShader);
+    glUseProgram(depthMapShader); // Utilisation du shader de la shadowMap
+
+    float near_plane = 1.0f, far_plane = 7.5f; // Plans
+    glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane); // Creation d'une projection orthogonale
+    glm::mat4 lightView = glm::lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), glm::vec3( 0.0f, 0.0f,  0.0f), glm::vec3( 0.0f, 1.0f,  0.0f)); // Creation d'une matrice de lumiere arbitraire : Position de la lumiere puis direction vers quoi regarde puis vecteur
+    glm::mat4 depthModelMatrix = glm::mat4(1.0); // Arbitraire
+    glm::mat4 MVP = depthModelMatrix * lightProjection * lightView; // Matrice a donner au shader
+    Transform mvp = Transform(MVP[0][0],MVP[0][1],MVP[0][2],MVP[0][3],MVP[1][0],MVP[1][1],MVP[1][2],MVP[1][3],MVP[2][0],MVP[2][1],MVP[2][2],MVP[2][3],MVP[3][0],MVP[3][1],MVP[3][2],MVP[3][3]);
+    
+    program_uniform(depthMapShader,"mvp",mvp);
+
+    objects[0]->shadowDraw(depthMapShader,mvp);
 
 }
 

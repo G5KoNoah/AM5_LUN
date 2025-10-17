@@ -32,7 +32,7 @@ Object3D::~Object3D(){
 	std::cout << "Destruction Object3D" << std::endl;
 }
 
-	void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> pointLights) {
+void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> pointLights) {
 	Transform mvp = Perspective(45.0f, float(1920) / 1080, 0.1f, 1000.0f) * camera->view() * transform;
 	glUseProgram(shader);
 	program_uniform(shader, "mvpMatrix", mvp);
