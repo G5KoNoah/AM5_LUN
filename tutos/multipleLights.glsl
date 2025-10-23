@@ -8,12 +8,12 @@ layout(location=2) in vec3 aNormal;
 
 uniform mat4 mvpMatrix;
 uniform mat4 model;
-uniform mat4 lightSpaceMatrix; //Nouveau
+//uniform mat4 lightSpaceMatrix; //Nouveau
 
 out vec3 Normal;
 out vec3 FragPos;
 out vec2 vertex_texcoord;
-out vec4 FragPosLightSpace; //Nouveau
+//out vec4 FragPosLightSpace; //Nouveau
 
 void main()
 {
@@ -21,7 +21,7 @@ void main()
     FragPos = vec3(model * vec4(position, 1.0));
     Normal = mat3(transpose(inverse(model))) * aNormal;
     vertex_texcoord = texcoord;
-    FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
+    //FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
 }
 #endif
 
@@ -31,7 +31,7 @@ void main()
 in vec3 Normal;
 in vec3 FragPos;
 in vec2 vertex_texcoord;
-in vec4 FragPosLightSpace; //Nouveau
+//in vec4 FragPosLightSpace; //Nouveau
 out vec4 FragColor;
 
 uniform vec3 viewPos;
@@ -85,8 +85,8 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     vec3 ambient  = light.ambient  * vec3(texture(material.diffuse, vertex_texcoord));
     vec3 diffuse  = light.diffuse  * diff * vec3(texture(material.diffuse, vertex_texcoord));
     vec3 specular = light.specular * spec * vec3(texture(material.specular, vertex_texcoord));
-    float shadow = ShadowCalculation(FragPosLightSpace); //Nouveau
-    return (ambient + (1.0 - shadow) * (diffuse + specular)); //Modif
+//    float shadow = ShadowCalculation(FragPosLightSpace); //Nouveau
+    return (ambient + diffuse + specular /* (1.0 - shadow) * (diffuse + specular) */); //Modif
 }
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
@@ -107,8 +107,8 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     diffuse  *= attenuation;
     specular *= attenuation;
 
-    float shadow = ShadowCalculation(FragPosLightSpace); //Nouveau
-    return (ambient + (1.0 - shadow) * (diffuse + specular)); //Modif
+//    float shadow = ShadowCalculation(FragPosLightSpace); //Nouveau
+    return (ambient + diffuse + specular /* (1.0 - shadow) * (diffuse + specular) */); //Modif
 }
 
 void main()
