@@ -8,12 +8,10 @@ layout(location=2) in vec3 aNormal;
 
 uniform mat4 mvpMatrix;
 uniform mat4 model;
-//uniform mat4 lightSpaceMatrix; //Nouveau
 
 out vec3 Normal;
 out vec3 FragPos;
 out vec2 vertex_texcoord;
-//out vec4 FragPosLightSpace; //Nouveau
 
 void main()
 {
@@ -21,7 +19,6 @@ void main()
     FragPos = vec3(model * vec4(position, 1.0));
     Normal = mat3(transpose(inverse(model))) * aNormal;
     vertex_texcoord = texcoord;
-    //FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
 }
 #endif
 
@@ -31,7 +28,6 @@ void main()
 in vec3 Normal;
 in vec3 FragPos;
 in vec2 vertex_texcoord;
-//in vec4 FragPosLightSpace; //Nouveau
 out vec4 FragColor;
 
 uniform vec3 viewPos;
@@ -63,18 +59,6 @@ struct PointLight {
 uniform int nbPointLights;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 
-
-float ShadowCalculation(vec4 fragPosLightSpace) //Nouveau
-{
-    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-    projCoords = projCoords * 0.5 + 0.5;
-    float closestDepth = texture(shadowMap, projCoords.xy).r;
-    float currentDepth = projCoords.z;
-    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
-
-    return shadow;
-}
-
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 {
     vec3 lightDir = normalize(-light.direction);
@@ -85,8 +69,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     vec3 ambient  = light.ambient  * vec3(texture(material.diffuse, vertex_texcoord));
     vec3 diffuse  = light.diffuse  * diff * vec3(texture(material.diffuse, vertex_texcoord));
     vec3 specular = light.specular * spec * vec3(texture(material.specular, vertex_texcoord));
-//    float shadow = ShadowCalculation(FragPosLightSpace); //Nouveau
-    return (ambient + diffuse + specular /* (1.0 - shadow) * (diffuse + specular) */); //Modif
+    return (ambient + diffuse + specular);
 }
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
@@ -107,8 +90,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     diffuse  *= attenuation;
     specular *= attenuation;
 
-//    float shadow = ShadowCalculation(FragPosLightSpace); //Nouveau
-    return (ambient + diffuse + specular /* (1.0 - shadow) * (diffuse + specular) */); //Modif
+    return (ambient + diffuse + specular);
 }
 
 void main()
