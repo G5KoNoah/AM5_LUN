@@ -58,3 +58,9 @@ Mesh Terrain::make_terrain(float width, int subdivisions, float height_max)
     }
     return mesh;
 }
+
+float Terrain::getHeight(float x, float z)
+{
+    float height = 3.0f * BruitPerlin::fbm(x, z) + 2.0f; // Le 3 et le 2 permettent de régler la hauteur 
+    return height;
+}
