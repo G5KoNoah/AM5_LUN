@@ -13,15 +13,15 @@ Arbres::Arbres(std::string strShader, std::string strTexture1, std::string strTe
     mesh = make_plane(10.0f, 100);
 }*/
 
-Arbres::Arbres(std::string strShader, vec3 c, Transform tr, Entity* p){
-    arbres = make_trees(strShader, c, tr, p, 0.0f, 0.0f, 2.0f, 15, 0.2f);
+Arbres::Arbres(std::string strShader, vec3 c, Transform tr, Entity* p, Terrain* terrain){
+    arbres = make_trees(strShader, c, tr, p, 0.0f, 0.0f, 2.0f, 15, 0.2f, terrain);
 }
 
-vector<Object3D*> Arbres::make_trees(std::string strShader, vec3 c, Transform tr, Entity* p, float px, float pz, float r, int nb_arbre, float ra)
+vector<Object3D*> Arbres::make_trees(std::string strShader, vec3 c, Transform tr, Entity* p, float px, float pz, float r, int nb_arbre, float ra, Terrain * terrain)
 {
     vector<Object3D*> a;
     int i = 0;
-	float pxa, pza;
+	float pxa, py, pza;
     bool hit;
 	default_random_engine generator(static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count()));
 
@@ -37,6 +37,7 @@ vector<Object3D*> Arbres::make_trees(std::string strShader, vec3 c, Transform tr
         
 		pxa = px + radius * cos(angle);
 		pza = pz + radius * sin(angle);
+		py = terrain->getHeight(pxa, pza);
 
         hit = false;
 
@@ -50,7 +51,7 @@ vector<Object3D*> Arbres::make_trees(std::string strShader, vec3 c, Transform tr
         }
 
         if (!hit) {
-            a.push_back(new Cube(strShader, c, tr * Translation(vec3(pxa, 0.0f, pza))* Scale(0.2f), p));
+            a.push_back(new Cube(strShader, c, tr * Translation(vec3(pxa, py, pza))* Scale(0.2f), p));
             i++;
         }
 
