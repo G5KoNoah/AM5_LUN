@@ -23,6 +23,8 @@ int Scene::quit(){
 
 int Scene::init(){
 
+    
+
 	base = new Entity();
 	// Creation d'une lumiere
 	dirLight = new Dirlight(vec3(0.2, 0.2, 0.2), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(5.0,5.0,5.0)), base, vec3(-0.2f, -1.0f, -0.3f));
@@ -102,7 +104,7 @@ void Scene::shadowMapPass(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for(int i=0; i<objects.size(); i++){
-        //objects[i]->shadowDraw(depthMapShader, mvpLight);
+        objects[i]->shadowDraw(depthMapShader, mvpLight);
     }
 
 }
