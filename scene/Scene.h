@@ -8,6 +8,7 @@
 #include "lights/DirLight.h"
 #include "lights/PointLight.h"
 #include "Cube.h"
+#include "Sky.h"
 
 #include "mat.h"
 #include "mesh.h"
