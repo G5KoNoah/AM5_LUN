@@ -45,15 +45,37 @@ int Scene::init(){
 
     depthMapShader = read_program("../scene/shaders/depthShader.glsl"); // Shader de la depthMap
 
-    shadow.init(SHADOW_WIDTH,SHADOW_HEIGHT); // Initialisation du Framebuffer de la depthMap
+    glGenFramebuffers(1, &m_fbo); // Creation du framebuffer
+
+    glGenTextures(1, &m_shadowMap); // Creation du depthBuffer
+    glBindTexture(GL_TEXTURE_2D, m_shadowMap); // Attacher la texture 
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_shadowMap, 0);
+
+    glDrawBuffer(GL_NONE); // Pour na pas mettre de buffer de draw
+    glReadBuffer(GL_NONE); // car on a besoin seulement de la profondeur
+    
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
+        std::cout << "ERROR : Frambuffer for DepthMap not initialized"; // Test pour verifier si le buffer est initialise
+        return -1;
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 
     return 0;   // ras, pas d'erreur
 }
 
 void Scene::shadowMapPass(){
 
-    shadow.bindForWriting(); // Activation du Framebuffer de la shadowMap
-
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
+    
     glClear(GL_DEPTH_BUFFER_BIT); // Clear du buffer
 
     glUseProgram(depthMapShader); // Utilisation du shader de la shadowMap
@@ -92,11 +114,11 @@ void Scene::lightingPass(){
 
     glViewport(0, 0, 1080, 720); // Dimensions de la fenetre
 
-    shadow.bindForReading(GL_TEXTURE1);
+    //shadow.bindForReading(GL_TEXTURE1);
 
 
     for(int i=0; i<objects.size(); i++){
-        objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight);
+        //objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight);
     }
 
 
@@ -178,7 +200,7 @@ int Scene::render(){
 	//base->ChangeTransform(   RotationZ(1));
     //objects[1]->ChangeTransform(Translation(vec3(1.0, 0.0, 0.0)));
     for(int i=0; i<objects.size(); i++){
-        //objects[i]->Draw(&m_camera, dirLight, pointLights);
+        objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight);
     }
 
 

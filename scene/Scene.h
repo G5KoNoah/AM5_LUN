@@ -48,12 +48,14 @@ class Scene : public App{
 		int render(); ///Dessine la scene
         void shadowMapPass();
         void lightingPass();
-        ShadowMapFBO shadow;
+
+        GLuint m_fbo;
+        GLuint m_shadowMap;
+        GLuint depthMapShader; // Shader de la depthMap
 
         const unsigned int SHADOW_WIDTH = 1024;
         const unsigned int SHADOW_HEIGHT = 1024;
-        GLuint depthMapShader; // Shader de la depthMap
-
+        
 };
 
 #endif
