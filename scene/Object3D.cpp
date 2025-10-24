@@ -74,6 +74,7 @@ void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> p
 
 void Object3D::shadowDraw(GLuint shaderAutre, Transform mvp){
 
+	mvp = mvp * transform;
 	glUseProgram(shaderAutre);
 	program_uniform(shaderAutre, "mvp", mvp);
 	mesh.draw(shaderAutre,true,false,true,false,false);
