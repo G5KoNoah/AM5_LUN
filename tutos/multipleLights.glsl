@@ -93,8 +93,24 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     return (ambient + diffuse + specular);
 }
 
+/*  TESTS DE DEPTH TEST
+float near = 0.1; 
+float far  = 10.0; 
+  
+float LinearizeDepth(float depth) 
+{
+    float z = depth * 2.0 - 1.0; // back to NDC 
+    return (2.0 * near * far) / (far + near - z * (far - near));
+}
+*/
+
 void main()
 {
+    /*
+    float depth = LinearizeDepth(gl_FragCoord.z) / far;
+    FragColor = vec4(vec3(depth), 1.0);
+    */
+
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
 
@@ -103,5 +119,7 @@ void main()
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
 
     FragColor = vec4(result, 1.0);
+
 }
+
 #endif

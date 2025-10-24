@@ -104,7 +104,7 @@ void Scene::shadowMapPass(){
     glBindTexture(GL_TEXTURE_2D, m_shadowMap);
 
     for(int i=0; i<objects.size(); i++){
-        objects[i]->shadowDraw(depthMapShader, mvpLight);
+        //objects[i]->shadowDraw(depthMapShader, mvpLight);
     }
 
 }
