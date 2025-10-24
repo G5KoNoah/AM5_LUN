@@ -80,13 +80,7 @@ void Scene::shadowMapPass(){
 
     glUseProgram(depthMapShader); // Utilisation du shader de la shadowMap
 
-    float near_plane = 1.0f, far_plane = 50.0f; // Plans
-    //glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane); // Creation d'une projection orthogonale
-    //glm::mat4 lightView = glm::lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), glm::vec3( 0.0f, 0.0f,  0.0f), glm::vec3( 0.0f, 1.0f,  0.0f)); // Creation d'une matrice de lumiere arbitraire : Position de la lumiere puis direction vers quoi regarde puis vecteur
-    //glm::mat4 depthModelMatrix = glm::mat4(1.0); // Arbitraire
-    //glm::mat4 MVP = depthModelMatrix * lightProjection * lightView; // Matrice a donner au shader
-    //Transform mvp2 = Transform(MVP[0][0],MVP[0][1],MVP[0][2],MVP[0][3],MVP[1][0],MVP[1][1],MVP[1][2],MVP[1][3],MVP[2][0],MVP[2][1],MVP[2][2],MVP[2][3],MVP[3][0],MVP[3][1],MVP[3][2],MVP[3][3]);
-    
+    float near_plane = 1.0f, far_plane = 50.0f; // Plans    
     Transform proj = Ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane); // Creation d'une projection orthogonale
     Transform lightView = Lookat(vec3(2.f,5.f,4.f),vec3(0.f,0.f,0.f),vec3(0.f,1.f,0.f)); // Creation d'une matrice de lumiere arbitraire : Position de la lumiere puis direction vers quoi regarde puis vecteur
     Transform model = Identity(); // Arbitraire
@@ -104,7 +98,7 @@ void Scene::shadowMapPass(){
     glBindTexture(GL_TEXTURE_2D, m_shadowMap);
 
     for(int i=0; i<objects.size(); i++){
-        //objects[i]->shadowDraw(depthMapShader, mvpLight);
+        objects[i]->shadowDraw(depthMapShader, mvpLight);
     }
 
 }
@@ -115,11 +109,8 @@ void Scene::lightingPass(){
 
     glViewport(0, 0, 1080, 720); // Dimensions de la fenetre
 
-    //shadow.bindForReading(GL_TEXTURE1);
-
-
     for(int i=0; i<objects.size(); i++){
-        objects[i]->Draw(&m_camera, dirLight, pointLights);
+        //objects[i]->Draw(&m_camera, dirLight, pointLights);
     }
 
 
