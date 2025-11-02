@@ -37,6 +37,7 @@ void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> p
 	glUseProgram(shader);
 	program_uniform(shader, "mvpMatrix", mvp);
 	//program_uniform(shader, "lightSpaceMatrix", mvpLight);
+	
 	if(texture != 0){
 
 		program_uniform(shader, "material.diffuse", 0);
@@ -68,6 +69,7 @@ void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> p
 		program_uniform(shader, "color", Color(color.x, color.y, color.z, 1.0f));
 		mesh.draw(shader, /* use position */ true, /* use texcoord */ (texture != 0), /* use normal */ (dirLight != nullptr || pointLights.size() > 0), /* use color */ false, /* use material index*/ true);
 	}
+	
 
 }
 

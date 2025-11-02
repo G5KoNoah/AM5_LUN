@@ -82,7 +82,7 @@ void Scene::shadowMapPass(){
 
     float near_plane = 1.0f, far_plane = 50.0f; // Plans    
     Transform proj = Ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane); // Creation d'une projection orthogonale
-    Transform lightView = Lookat(vec3(2.f,5.f,4.f),vec3(0.f,0.f,0.f),vec3(0.f,1.f,0.f)); // Creation d'une matrice de lumiere arbitraire : Position de la lumiere puis direction vers quoi regarde puis vecteur
+    Transform lightView = Lookat(vec3(0.f,10.f,10.f),vec3(0.f,0.f,0.f),vec3(0.f,1.f,0.f)); // Creation d'une matrice de lumiere arbitraire : Position de la lumiere puis direction vers quoi regarde puis vecteur
     Transform model = Identity(); // Arbitraire
     mvpLight = proj * lightView * model;
     //cout << MVP[0][0] << endl;

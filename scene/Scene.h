@@ -19,8 +19,6 @@
 #include "uniforms.h"
 #include "draw.h"
 
-#include "ShadowMapFBO.h"
-
 #include "app.h"        // classe Application a deriver
 /*
     @class Scene
