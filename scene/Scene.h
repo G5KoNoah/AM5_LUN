@@ -34,6 +34,7 @@ class Scene : public App{
 		vector<PointLight*> pointLights; ///Liste des lumieres ponctuelles de la scene
 		Dirlight* dirLight = nullptr; ///Lumiere directionnelle de la scene
         Orbiter m_camera;
+        Uint32 lastTime = SDL_GetTicks();
 
     public:
 		Scene() : App(1024, 640) {} ///Constructeur

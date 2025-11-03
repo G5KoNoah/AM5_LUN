@@ -25,7 +25,7 @@ int Scene::init(){
 
 	base = new Entity();
 	// Creation d'une lumiere
-	dirLight = new Dirlight(vec3(0.2, 0.2, 0.2), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(5.0,5.0,5.0)), base, vec3(-0.2f, -1.0f, -0.3f));
+	dirLight = new Dirlight(vec3(0.2, 0.2, 0.2), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(5.0,5.0,5.0)), base, vec3(0.2f, 1.0f, 0.5f));
 	pointLights.push_back(new PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0f, 0.09f, 0.032f, Translation(vec3(2.0f, 1.0f, 0.0f)), base));
 
 	// Creation d'un objet 3D (un cube)
@@ -35,7 +35,7 @@ int Scene::init(){
     //objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
 	//objects.push_back(new Plane("../tutos/multipleLights.glsl","../data/container2.png","../data/container2_specular.png", Identity(), base));
 	//objects.push_back(new Billboard("../shader/billboard.glsl", "../data/cloud.png", Identity(), base));
-	objects.push_back(new Sky("../shader/sky.glsl", vec3(1.0,1.0,1.0), Identity() * Scale(20.0), base));
+	objects.push_back(new Sky("../shader/sky.glsl", vec3(1.0,1.0,1.0), Identity() * Scale(100.0), base));
     // etat openGL par defaut
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);        // couleur par defaut de la fenetre
@@ -93,6 +93,11 @@ int Scene::render(){
 
 	//base->ChangeTransform(   RotationZ(1));
     //objects[0]->ChangeTransform(RotationY(10));
+    Uint32 currentTime = SDL_GetTicks();
+    float deltaTime = (currentTime - lastTime) / 1000.0f; // en secondes
+    lastTime = currentTime;
+
+	dirLight->Rotation(deltaTime * 0.1);
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights);
     }
