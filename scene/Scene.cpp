@@ -97,7 +97,7 @@ int Scene::render(){
     float deltaTime = (currentTime - lastTime) / 1000.0f; // en secondes
     lastTime = currentTime;
 
-	dirLight->Rotation(deltaTime * 0.1);
+	dirLight->Rotation(deltaTime *10);
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights);
     }

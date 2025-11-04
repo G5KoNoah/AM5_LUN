@@ -16,26 +16,43 @@ void main() {
 #ifdef FRAGMENT_SHADER
 in vec3 vPos;
 
-uniform vec3 sun_pos; // direction du soleil (normalisée)
+uniform vec3 sun_dir; // direction normalisée du soleil
 out vec4 fragment_color;
 
 void main() {
     // Direction du fragment depuis le centre du cube
     vec3 dir = normalize(vPos);
-    vec3 sunDir = normalize(sun_pos);
+    vec3 sunDir = normalize(sun_dir);
+    vec3 moonDir = -sunDir; // direction opposée = lune
 
-    // Produit scalaire = cos(angle) entre les deux directions
-    float cosTheta = dot(dir, sunDir);
+    // cos(angle) = alignement entre la direction du fragment et du soleil/lune
+    float cosSun = dot(dir, sunDir);
+    float cosMoon = dot(dir, moonDir);
 
-    // Plus cosTheta est proche de 1, plus on est aligné avec le soleil
-    // Ajuste la "taille" du soleil avec ce seuil :
-    float sunSize = 0.9995; // proche de 1 = petit soleil, plus bas = plus gros
+    // Taille apparente des disques
+    float sunSize = 0.9995;
+    float moonSize = 0.9995;
 
-    if (cosTheta > sunSize) {
-        fragment_color = vec4(1.0, 1.0, 0.0, 1.0); // Soleil jaune
-    } else {
-        fragment_color = vec4(0.0, 0.0, 1.0, 1.0); // Ciel bleu
+    // Couleur de base du ciel
+    vec3 skyColor = vec3(0.0, 0.0, 1.0); // bleu
+    vec3 nightColor = vec3(0.0, 0.0, 0.5); // bleu fonce
+
+    // Soleil : disque jaune
+    if (cosSun > sunSize) {
+        fragment_color = vec4(1.0, 1.0, 0.0, 1.0);
     }
+    // Lune : disque blanc (ou gris clair)
+    else if (cosMoon > moonSize) {
+        fragment_color = vec4(0.9, 0.9, 1.0, 1.0);
+    }
+    // Ciel par défaut
+    else if(sunDir.y > 0) {
+        fragment_color = vec4(skyColor, 1.0);
+    }else  {
+        fragment_color = vec4(nightColor, 1.0);
+    }
+
 }
 #endif
+
 

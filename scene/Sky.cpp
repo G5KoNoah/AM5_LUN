@@ -30,7 +30,7 @@ void Sky::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLig
 
 	
 	program_uniform(shader, "mvpMatrix", mvp);
-	program_uniform(shader, "sun_pos", dirLight->direction);
+	program_uniform(shader, "sun_dir", dirLight->direction);
 
 	program_uniform(shader, "sun", 2);
 
