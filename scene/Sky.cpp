@@ -31,8 +31,9 @@ void Sky::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLig
 	
 	program_uniform(shader, "mvpMatrix", mvp);
 	program_uniform(shader, "sun_dir", dirLight->direction);
+	float time = SDL_GetTicks() / 1000.0f;
+	program_uniform(shader, "time", time);
 
-	program_uniform(shader, "sun", 2);
 
 
 	

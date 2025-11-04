@@ -17,7 +17,14 @@ void main() {
 in vec3 vPos;
 
 uniform vec3 sun_dir; // direction normalisée du soleil
+uniform float time;
 out vec4 fragment_color;
+
+float hash(vec3 p) {
+    p = fract(p * 0.3183099 + vec3(0.1, 0.2, 0.3));
+    p *= 17.0;
+    return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+}
 
 void main() {
     // Direction du fragment depuis le centre du cube
@@ -44,13 +51,21 @@ void main() {
     // Lune : disque blanc (ou gris clair)
     else if (cosMoon > moonSize) {
         fragment_color = vec4(0.9, 0.9, 1.0, 1.0);
-    }
-    // Ciel par défaut
-    else if(sunDir.y > 0) {
-        fragment_color = vec4(skyColor, 1.0);
-    }else  {
-        fragment_color = vec4(nightColor, 1.0);
-    }
+    }else{
+    // --- Jour / nuit ---
+    float brightness = clamp(-sunDir.y , 0.0, 1.0); 
+    // 0 = jour, 1 = nuit
+
+    // --- Étoiles ---
+    float star = hash(floor(dir * 100.0)); // densité (100.0 = espacé);
+	float phase = hash(floor(dir * 100.0) + vec3(1.0,0.0,0.0)); // génère un décalage unique pour chaque étoile
+	float blink = 0.5 + 0.5 * cos(time * 5.0 + phase * 6.28); // 6.28 = 2π
+    float starsVisible = smoothstep(0.995, 1.0, star) * brightness * blink;
+
+    vec3 skyColor = mix(vec3(0.0, 0.0, 1.0), vec3(0.0, 0.0, 0.5), brightness);
+    skyColor += vec3(1.0, 1.0, 0.8) * starsVisible ;
+    fragment_color = vec4(skyColor, 1.0);
+	}
 
 }
 #endif
