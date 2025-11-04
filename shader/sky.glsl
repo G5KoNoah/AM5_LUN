@@ -60,7 +60,7 @@ void main() {
     float star = hash(floor(dir * 100.0)); // densité (100.0 = espacé);
 	float phase = hash(floor(dir * 100.0) + vec3(1.0,0.0,0.0)); // génère un décalage unique pour chaque étoile
 	float blink = 0.5 + 0.5 * cos(time * 5.0 + phase * 6.28); // 6.28 = 2π
-    float starsVisible = smoothstep(0.995, 1.0, star) * brightness * blink;
+    float starsVisible = smoothstep(0.998, 1.0, star) * brightness * blink;
 
     vec3 skyColor = mix(vec3(0.0, 0.0, 1.0), vec3(0.0, 0.0, 0.5), brightness);
     skyColor += vec3(1.0, 1.0, 0.8) * starsVisible ;
