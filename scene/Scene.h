@@ -40,7 +40,7 @@ class Scene : public App{
         int quit(); ///Destructeur
 		int init(); ///Initialise la scene
 		int render() override; ///Dessine la scene
-        void shadowMapPass();
+        Transform shadowMapPass();
         void lightingPass();
 
         GLuint m_fbo;

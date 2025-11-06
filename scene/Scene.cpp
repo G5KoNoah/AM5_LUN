@@ -72,7 +72,7 @@ int Scene::init(){
     return 0;   // ras, pas d'erreur
 }
 
-void Scene::shadowMapPass(){
+Transform Scene::shadowMapPass(){
 
     //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT); // Clear du buffer
 
@@ -98,8 +98,10 @@ void Scene::shadowMapPass(){
     glBindTexture(GL_TEXTURE_2D, m_shadowMap);
 
     for(int i=0; i<objects.size(); i++){
-        objects[i]->shadowDraw(depthMapShader, mvpLight);
+        //objects[i]->shadowDraw(depthMapShader, mvpLight);
     }
+
+    return mvpLight;
 
 }
 
@@ -119,10 +121,8 @@ void Scene::lightingPass(){
 int Scene::render(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    shadowMapPass();
+    Transform mvpLight = shadowMapPass();
     lightingPass();
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);  
 
     // deplace la camera
     int mx, my;
@@ -138,7 +138,7 @@ int Scene::render(){
 	//base->ChangeTransform(   RotationZ(1));
     //objects[1]->ChangeTransform(Translation(vec3(1.0, 0.0, 0.0)));
     for(int i=0; i<objects.size(); i++){
-        objects[i]->Draw(&m_camera, dirLight, pointLights);
+        objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
     }
 
 
