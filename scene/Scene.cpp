@@ -47,8 +47,6 @@ int Scene::init(){
 
     depthMapShader = read_program("../scene/shaders/depthShader.glsl"); // Shader de la depthMap
 
-    GLuint shaderLights = read_program("../tutos/multipleLights.glsl");
-
     //GLuint texSampler = glGetUniformLocation(shaderLights, "shadowMap");
     //glUniform1i(texSampler, 0);
 
@@ -85,6 +83,8 @@ Transform Scene::shadowMapPass(){
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
 
+    //GLuint shaderLights = read_program("../tutos/multipleLights.glsl");
+
     glUseProgram(depthMapShader); // Utilisation du shader de la shadowMap
 
     float near_plane = 1.0f, far_plane = 50.0f; // Plans    
@@ -103,6 +103,9 @@ Transform Scene::shadowMapPass(){
     glViewport(0, 0, 1080, 720); // Dimensions de la fenetre
 
     glBindTexture(GL_TEXTURE_2D, m_shadowMap);
+
+    //glBindTextureUnit(GL_TEXTURE0, m_shadowMap);
+    //glUniform1i(glGetUniformLocation(shaderLights, "shadowMap"), 2);
 
     for(int i=0; i<objects.size(); i++){
         objects[i]->shadowDraw(depthMapShader, mvpLight);
