@@ -3,7 +3,7 @@
 
 #include "Object3D.h"
 #include "Plane.h"
-#include "Cube.h"
+#include "Arbre.h"
 #include "BruitPerlin.h"
 #include "Terrain.h"
 #include <random>

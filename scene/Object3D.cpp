@@ -40,7 +40,12 @@ Object3D::~Object3D(){
 
 
 		program_uniform(shader, "material.diffuse", 0);
-		program_uniform(shader, "material.specular", 1);
+		if(texture_specular != 0){
+			program_uniform(shader, "material.specular", 1);
+		}
+		else {
+			program_uniform(shader, "material.specular", 0);
+		}
 		program_uniform(shader, "material.shininess", 10.0f);
 
 		program_uniform(shader, "model", transform);

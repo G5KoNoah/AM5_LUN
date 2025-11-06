@@ -24,13 +24,17 @@ int Scene::init(){
 
 	base = new Entity();
 	// Creation d'une lumiere
-	dirLight = new Dirlight(vec3(0.2, 0.2, 0.2), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(5.0,5.0,5.0)), base, vec3(-0.2f, -1.0f, -0.3f));
+	dirLight = new Dirlight(vec3(0.5, 0.5, 0.5), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(5.0,5.0,5.0)), base, vec3(-0.2f, -1.0f, -0.3f));
 	//pointLights.push_back(new PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0f, 0.09f, 0.032f, Translation(vec3(2.0f, 1.0f, 0.0f)), base));
 
 	// Creation d'un objet 3D (un terrain et de l'eau)
 
-	objects.push_back(new Terrain("../tutos/tuto9_color.glsl", vec3(0.0f,1.0f,0.0f), Identity(), base));
-	objects.push_back(new Eau("../tutos/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity(), base));
+	objects.push_back(new Terrain("../tutos/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity(), base));
+	//objects.push_back(new Eau("../tutos/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity(), base));
+	Arbres * a = new Arbres("../scene/shaders/arbre.glsl", vec3(0.55f, 0.27f, 0.07f), Identity(), base, (Terrain *)objects[0]);
+	for (int i = 0; i < 3; i++)
+		objects.push_back(a->get_tree(i));
+
     // etat openGL par defaut
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);        // couleur par defaut de la fenetre
@@ -59,6 +63,7 @@ int Scene::render(){
 	//base->ChangeTransform(   RotationZ(1));
     //objects[1]->ChangeTransform(Translation(vec3(1.0, 0.0, 0.0)));
     for(int i=0; i<objects.size(); i++){
+	std:cout << "Drawing object " << i << std::endl;
         objects[i]->Draw(&m_camera, dirLight, pointLights);
     }
 

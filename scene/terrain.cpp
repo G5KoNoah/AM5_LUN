@@ -21,6 +21,7 @@ Mesh Terrain::make_terrain(float width, int subdivisions, float height_max)
     int vertex_count = subdivisions + 1;
     float half_width = width / 2.0f;
     float step = width / subdivisions;
+	float frequency = 0.1f;
     // Génération des sommets
     for (int z = 0; z < vertex_count; ++z)
     {
@@ -29,16 +30,25 @@ Mesh Terrain::make_terrain(float width, int subdivisions, float height_max)
             float px = -half_width + x * step;
             float pz = -half_width + z * step;
             //float y = interpolation(0., height_max, ridgedfbm(px, pz));
-			float y = 3.0f * BruitPerlin::fbm(px, pz) + 2.0f; // Le 3 et le 2 permettent de régler la hauteur 
+			float y = 3.0f * BruitPerlin::fbm(px * frequency, pz * frequency) + 2.0f; // Le 3 et le 2 permettent de régler la hauteur 
             //std::cout << ridgedfbm(px, pz) << std::endl;
+
+            float eps = step;
+			float Hl = 3.0f * BruitPerlin::fbm((px - eps) * frequency, pz * frequency) + 2.0f;
+			float Hr = 3.0f * BruitPerlin::fbm((px + eps) * frequency, pz * frequency) + 2.0f;
+			float Hd = 3.0f * BruitPerlin::fbm(px * frequency, (pz - eps) * frequency) + 2.0f;
+			float Hu = 3.0f * BruitPerlin::fbm(px * frequency, (pz + eps) * frequency) + 2.0f;
+
+            vec3 normal = normalize(vec3(Hl - Hr, 2.0f * step, Hd - Hu));
 
             if (y >= height_max - 1)
                 mesh.color(1., 1., 1.);
             else {
                 mesh.color(0., 1., 0.);           // Couleur
             }
+            mesh.texcoord(float(x) / subdivisions, float(z) / subdivisions);
             mesh.vertex(px, y, pz);           // Position
-            mesh.normal(0, 1, 0);             // Normale vers le haut
+            mesh.normal(normal);             // Normale vers le haut
 
         }
     }
@@ -61,6 +71,7 @@ Mesh Terrain::make_terrain(float width, int subdivisions, float height_max)
 
 float Terrain::getHeight(float x, float z)
 {
-    float height = 3.0f * BruitPerlin::fbm(x, z) + 2.0f; // Le 3 et le 2 permettent de régler la hauteur 
+	float frequency = 0.1f;
+    float height = 3.0f * BruitPerlin::fbm(x * frequency, z * frequency) + 2.0f; // Le 3 et le 2 permettent de régler la hauteur 
     return height;
 }

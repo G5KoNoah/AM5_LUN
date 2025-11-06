@@ -8,6 +8,7 @@
 #include "terrain.h"
 #include "Plane.h"
 #include "Eau.h"
+#include "Arbres.h"
 
 #include "mat.h"
 #include "mesh.h"
