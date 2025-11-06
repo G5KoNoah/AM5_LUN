@@ -34,8 +34,9 @@ int Scene::init(){
     //objects.push_back(new ObjectLoad("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base, "../data/source/van.obj"));
     //objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
 	//objects.push_back(new Plane("../tutos/multipleLights.glsl","../data/container2.png","../data/container2_specular.png", Identity(), base));
-	objects.push_back(new Billboard("../shader/billboard.glsl", "../data/cloud.png", Identity() * Translation(vec3(0.0,10.0,0.0)), base));
-	objects.push_back(new Sky("../shader/sky.glsl", vec3(1.0,1.0,1.0), Identity() * Scale(100.0), base));
+    objects.push_back(new Sky("../shader/sky.glsl", vec3(1.0, 1.0, 1.0), Identity() * Scale(100.0), base));
+    objects.push_back(new Billboard("../shader/billboard.glsl", "../data/cloud.png", Identity() * Translation(vec3(0.0,10.0,0.0)), base));
+	
     // etat openGL par defaut
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);        // couleur par defaut de la fenetre
@@ -97,7 +98,7 @@ int Scene::render(){
 
 	dirLight->Rotation(deltaTime *30);
 
-	objects[1]->ChangeTransform(Translation(vec3(1.0 * deltaTime , 0.0 , 0.0)));
+	objects[2]->ChangeTransform(Translation(vec3(1.0 * deltaTime , 0.0 , 0.0)));
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights);
     }

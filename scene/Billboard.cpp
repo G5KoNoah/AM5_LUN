@@ -34,6 +34,7 @@ void Billboard::makePlane(int width, int height, vec3 normal, Mesh * mesh) {
 void Billboard::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLights)  {
 	//std::cout << "Drawing Billboard" << std::endl;
 	Transform mvp = Perspective(45.0f, float(1024) / 640, 0.1f, 1000.0f) * camera->view() * transform;
+
 	glUseProgram(shader);
 	program_uniform(shader, "mvpMatrix", mvp);
 	program_uniform(shader, "ViewMatrix", camera->view());
