@@ -25,7 +25,7 @@ int Scene::init(){
 
 	base = new Entity();
 	// Creation d'une lumiere
-	dirLight = new Dirlight(vec3(0.2, 0.2, 0.2), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(5.0,5.0,5.0)), base, vec3(-0.2f, -1.0f, -0.3f));
+	dirLight = new Dirlight(vec3(0.2, 0.2, 0.2), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(0.0,10.0,10.0)), base, vec3(-0.2f, -1.0f, -0.3f));
 	//pointLights.push_back(new PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0f, 0.09f, 0.032f, Translation(vec3(2.0f, 1.0f, 0.0f)), base));
 
 	// LISTE DES OBJETS
@@ -90,6 +90,8 @@ Transform Scene::shadowMapPass(){
     //cout << MVP[2][2] << endl;
     //cout << MVP[3][3] << endl;
 
+    glCullFace(GL_FRONT);
+
     program_uniform(depthMapShader,"mvp",mvpLight);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0); // Utilisation du framebuffer
@@ -98,7 +100,7 @@ Transform Scene::shadowMapPass(){
     glBindTexture(GL_TEXTURE_2D, m_shadowMap);
 
     for(int i=0; i<objects.size(); i++){
-        //objects[i]->shadowDraw(depthMapShader, mvpLight);
+        objects[i]->shadowDraw(depthMapShader, mvpLight);
     }
 
     return mvpLight;

@@ -81,8 +81,6 @@ void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> p
 	
 	if(texture != 0){
 
-		glBindTexture(GL_TEXTURE_2D, shadowMap);
-
 		program_uniform(shader, "material.diffuse", 0);
 		program_uniform(shader, "material.specular", 1);
 		program_uniform(shader, "material.shininess", 10.0f);
