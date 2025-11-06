@@ -31,7 +31,6 @@ in vec2 vertex_texcoord;
 
 uniform sampler2D texture0;
 
-uniform vec4 color;
 
 void main( )
 {
