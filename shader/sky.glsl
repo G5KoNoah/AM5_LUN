@@ -31,8 +31,8 @@ float hash(vec3 p) {
 void main() {
     // --- Directions ---
     vec3 dir = normalize(vPos);
-    vec3 sunDir = normalize(sun_dir);
-    vec3 moonDir = vec3(-sunDir.x, -sunDir.y, sunDir.z); // direction opposée = lune
+    vec3 moonDir = normalize(sun_dir);
+    vec3 sunDir = vec3(-moonDir.x, -moonDir.y, moonDir.z);
 
     // --- Alignement Soleil / Lune ---
     float cosSun = dot(dir, sunDir);

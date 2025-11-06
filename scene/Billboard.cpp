@@ -41,7 +41,7 @@ void Billboard::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> po
 
 	program_uniform(shader, "center_worldspace", transform[3]);
 	program_uniform(shader, "BillboardSize", vec2(1.0,1.0));
-	program_uniform(shader, "color", Color(color.x, color.y, color.z, 1.0f));
+	//program_uniform(shader, "color", Color(color.x, color.y, color.z, 1.0f));
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture); // Texture diffuse
 	program_use_texture(shader, "texture0", 0, texture);
