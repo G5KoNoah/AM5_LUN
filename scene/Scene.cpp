@@ -32,6 +32,7 @@ int Scene::init(){
 	objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base));
     objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base));
     objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,2.0,0.0)), base));
+    objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,4.0,0.0)), base));
     //objects.push_back(new Cube("../tutos/multipleLights.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
 	//objects.push_back(new Terrain("../tutos/tuto9_color.glsl", vec3(0.0f,1.0f,0.0f), Identity(), base));
 	//objects.push_back(new Eau("../tutos/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity(), base));
@@ -46,10 +47,16 @@ int Scene::init(){
 
     depthMapShader = read_program("../scene/shaders/depthShader.glsl"); // Shader de la depthMap
 
+    GLuint shaderLights = read_program("../tutos/multipleLights.glsl");
+
+    //GLuint texSampler = glGetUniformLocation(shaderLights, "shadowMap");
+    //glUniform1i(texSampler, 0);
+
     glGenFramebuffers(1, &m_fbo); // Creation du framebuffer
 
     glGenTextures(1, &m_shadowMap); // Creation du depthBuffer
-    glBindTexture(GL_TEXTURE_2D, m_shadowMap); // Attacher la texture 
+    glBindTexture(GL_TEXTURE_2D, m_shadowMap); // Attacher la texture
+    //glBindSampler(3, texSampler);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -90,13 +97,11 @@ Transform Scene::shadowMapPass(){
     //cout << MVP[2][2] << endl;
     //cout << MVP[3][3] << endl;
 
-    glCullFace(GL_FRONT);
-
     program_uniform(depthMapShader,"mvp",mvpLight);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Utilisation du framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo); // Utilisation du framebuffer
     glViewport(0, 0, 1080, 720); // Dimensions de la fenetre
-    //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
     glBindTexture(GL_TEXTURE_2D, m_shadowMap);
 
     for(int i=0; i<objects.size(); i++){
@@ -114,7 +119,7 @@ void Scene::lightingPass(){
     glViewport(0, 0, 1080, 720); // Dimensions de la fenetre
 
     for(int i=0; i<objects.size(); i++){
-        //objects[i]->Draw(&m_camera, dirLight, pointLights);
+        //objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
     }
 
 
