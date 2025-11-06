@@ -8,10 +8,12 @@ layout(location=2) in vec3 aNormal;
 
 uniform mat4 mvpMatrix;
 uniform mat4 model;
+uniform mat4 lightSpaceMatrix;
 
 out vec3 Normal;
 out vec3 FragPos;
 out vec2 vertex_texcoord;
+out vec4 fragPosLightSpace;
 
 void main()
 {
@@ -19,6 +21,7 @@ void main()
     FragPos = vec3(model * vec4(position, 1.0));
     Normal = mat3(transpose(inverse(model))) * aNormal;
     vertex_texcoord = texcoord;
+    fragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
 }
 #endif
 
@@ -28,6 +31,7 @@ void main()
 in vec3 Normal;
 in vec3 FragPos;
 in vec2 vertex_texcoord;
+in vec4 fragPosLightSpace;
 out vec4 FragColor;
 
 uniform vec3 viewPos;
@@ -93,7 +97,8 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     return (ambient + diffuse + specular);
 }
 
-/*  TESTS DE DEPTH TEST
+//  TESTS DE DEPTH TEST
+/*
 float near = 0.1; 
 float far  = 10.0; 
   
