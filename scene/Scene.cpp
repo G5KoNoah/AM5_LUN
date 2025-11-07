@@ -81,6 +81,9 @@ Transform Scene::shadowMapPass(){
 
     //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT); // Clear du buffer
 
+    //int tps = SDL_GetTicks()/1000;
+    //cout << tps << endl;
+
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
 
     //GLuint shaderLights = read_program("../tutos/multipleLights.glsl");
@@ -146,7 +149,7 @@ int Scene::render(){
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//base->ChangeTransform(   RotationZ(1));
-    //objects[1]->ChangeTransform(Translation(vec3(1.0, 0.0, 0.0)));
+    //objects[1]->ChangeTransform(Translation(vec3(0.0, 0.01, 0.0)));
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
     }
