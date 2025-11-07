@@ -25,7 +25,7 @@ int Scene::init(){
 
 	base = new Entity();
 	// Creation d'une lumiere
-	dirLight = new Dirlight(vec3(0.2, 0.2, 0.2), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(0.0,10.0,10.0)), base, vec3(-0.2f, -1.0f, -0.3f));
+	dirLight = new Dirlight(vec3(0.2, 0.5, 0.0), vec3(0.2, 0.5, 0.0), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(0.0,10.0,10.0)), base, vec3(-0.2f, -1.0f, -0.3f));
 	//pointLights.push_back(new PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0f, 0.09f, 0.032f, Translation(vec3(2.0f, 1.0f, 0.0f)), base));
 
 	// LISTE DES OBJETS
@@ -66,6 +66,9 @@ int Scene::init(){
 
     glDrawBuffer(GL_NONE); // Pour na pas mettre de buffer de draw
     glReadBuffer(GL_NONE); // car on a besoin seulement de la profondeur
+
+    GLuint shaderLights = read_program("../tutos/multipleLights.glsl");
+    program_uniform(shaderLights,"shadowMap",0);
     
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
         std::cout << "ERROR : Frambuffer for DepthMap not initialized"; // Test pour verifier si le buffer est initialise
@@ -77,16 +80,43 @@ int Scene::init(){
     return 0;   // ras, pas d'erreur
 }
 
+unsigned int quadVAO = 0;
+unsigned int quadVBO;
+void renderQuad()
+{
+    if (quadVAO == 0)
+    {
+        float quadVertices[] = {
+            // positions        // texture Coords
+            -10.0f,  10.0f, 0.0f, 0.0f, 1.0f,
+            -10.0f, -10.0f, 0.0f, 0.0f, 0.0f,
+             10.0f,  10.0f, 0.0f, 1.0f, 1.0f,
+             10.0f, -10.0f, 0.0f, 1.0f, 0.0f,
+        };
+        // setup plane VAO
+        glGenVertexArrays(1, &quadVAO);
+        glGenBuffers(1, &quadVBO);
+        glBindVertexArray(quadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    }
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glBindVertexArray(0);
+}
+
 Transform Scene::shadowMapPass(){
 
     //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT); // Clear du buffer
 
-    //int tps = SDL_GetTicks()/1000;
+    int tps = SDL_GetTicks()/1000;
     //cout << tps << endl;
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
-
-    //GLuint shaderLights = read_program("../tutos/multipleLights.glsl");
 
     glUseProgram(depthMapShader); // Utilisation du shader de la shadowMap
 
@@ -102,10 +132,10 @@ Transform Scene::shadowMapPass(){
 
     program_uniform(depthMapShader,"mvp",mvpLight);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo); // Utilisation du framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Utilisation du framebuffer
+    glClear(GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, 1080, 720); // Dimensions de la fenetre
-
-    glBindTexture(GL_TEXTURE_2D, m_shadowMap);
+    glActiveTexture(GL_TEXTURE0);
 
     //glBindTextureUnit(GL_TEXTURE0, m_shadowMap);
     //glUniform1i(glGetUniformLocation(shaderLights, "shadowMap"), 2);
@@ -113,6 +143,13 @@ Transform Scene::shadowMapPass(){
     for(int i=0; i<objects.size(); i++){
         objects[i]->shadowDraw(depthMapShader, mvpLight);
     }
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_shadowMap);   
+
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    //renderQuad();
 
     return mvpLight;
 
@@ -148,12 +185,13 @@ int Scene::render(){
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Utilisation du framebuffer
+
 	//base->ChangeTransform(   RotationZ(1));
     //objects[1]->ChangeTransform(Translation(vec3(0.0, 0.01, 0.0)));
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
     }
-
 
 	return 1;
 }

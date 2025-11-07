@@ -86,7 +86,7 @@ void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> p
 		program_uniform(shader, "material.shininess", 10.0f);
 
 		program_uniform(shader, "lightSpaceMatrix", light);
-		program_uniform(shader, "shadowMap", shadowMap);
+		//program_uniform(shader, "shadowMap", shadowMap);
 
 		program_uniform(shader, "model", transform);
 		program_uniform(shader, "viewPos", camera->position());
