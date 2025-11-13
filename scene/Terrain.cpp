@@ -47,8 +47,8 @@ Mesh Terrain::make_terrain(float width, int subdivisions, float height_max)
                 mesh.color(0., 1., 0.);           // Couleur
             }
             mesh.texcoord(float(x) / subdivisions, float(z) / subdivisions);
-            mesh.vertex(px, y, pz);           // Position
             mesh.normal(normal);             // Normale vers le haut
+            mesh.vertex(px, y, pz);           // Position
 
         }
     }
