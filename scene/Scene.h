@@ -8,6 +8,10 @@
 #include "lights/DirLight.h"
 #include "lights/PointLight.h"
 #include "Cube.h"
+#include "Terrain.h"
+#include "Plane.h"
+#include "Eau.h"
+#include "Arbres.h"
 #include "Sky.h"
 
 #include "mat.h"
