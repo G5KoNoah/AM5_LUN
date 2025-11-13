@@ -1,4 +1,4 @@
-#include "terrain.h"
+#include "Terrain.h"
 
 // Classe representant un terrain
 
@@ -22,7 +22,7 @@ Mesh Terrain::make_terrain(float width, int subdivisions, float height_max)
     float half_width = width / 2.0f;
     float step = width / subdivisions;
 	float frequency = 0.1f;
-    // Génération des sommets
+    // Gï¿½nï¿½ration des sommets
     for (int z = 0; z < vertex_count; ++z)
     {
         for (int x = 0; x < vertex_count; ++x)
@@ -30,7 +30,7 @@ Mesh Terrain::make_terrain(float width, int subdivisions, float height_max)
             float px = -half_width + x * step;
             float pz = -half_width + z * step;
             //float y = interpolation(0., height_max, ridgedfbm(px, pz));
-			float y = 3.0f * BruitPerlin::fbm(px * frequency, pz * frequency) + 2.0f; // Le 3 et le 2 permettent de régler la hauteur 
+			float y = 3.0f * BruitPerlin::fbm(px * frequency, pz * frequency) + 2.0f; // Le 3 et le 2 permettent de rï¿½gler la hauteur 
             //std::cout << ridgedfbm(px, pz) << std::endl;
 
             float eps = step;
@@ -52,7 +52,7 @@ Mesh Terrain::make_terrain(float width, int subdivisions, float height_max)
 
         }
     }
-    // Génération des triangles
+    // Gï¿½nï¿½ration des triangles
     for (int z = 0; z < subdivisions; ++z)
     {
         for (int x = 0; x < subdivisions; ++x)
@@ -72,6 +72,6 @@ Mesh Terrain::make_terrain(float width, int subdivisions, float height_max)
 float Terrain::getHeight(float x, float z)
 {
 	float frequency = 0.1f;
-    float height = 3.0f * BruitPerlin::fbm(x * frequency, z * frequency) + 2.0f; // Le 3 et le 2 permettent de régler la hauteur 
+    float height = 3.0f * BruitPerlin::fbm(x * frequency, z * frequency) + 2.0f; // Le 3 et le 2 permettent de rï¿½gler la hauteur 
     return height;
 }

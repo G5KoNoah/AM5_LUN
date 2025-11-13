@@ -5,7 +5,7 @@
 #include "lights/DirLight.h"
 #include "lights/PointLight.h"
 #include "Cube.h"
-#include "terrain.h"
+#include "Terrain.h"
 #include "Plane.h"
 #include "Eau.h"
 #include "Arbres.h"
