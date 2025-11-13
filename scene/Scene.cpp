@@ -63,8 +63,8 @@ int Scene::init(){
     //GLuint texSampler = glGetUniformLocation(shaderLights, "shadowMap");
     //glUniform1i(texSampler, 0);
 
-    /*    
-
+     
+    
     glGenFramebuffers(1, &m_fbo); // Creation du framebuffer
 
     glGenTextures(1, &m_shadowMap); // Creation du depthBuffer
@@ -92,23 +92,23 @@ int Scene::init(){
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    */
+    
 
     return 0;   // ras, pas d'erreur
 }
 
 unsigned int quadVAO = 0;
 unsigned int quadVBO;
-void renderQuad()
+void Scene::renderQuad()
 {
     if (quadVAO == 0)
     {
         float quadVertices[] = {
             // positions        // texture Coords
-            -10.0f,  10.0f, 0.0f, 0.0f, 1.0f,
-            -10.0f, -10.0f, 0.0f, 0.0f, 0.0f,
-             10.0f,  10.0f, 0.0f, 1.0f, 1.0f,
-             10.0f, -10.0f, 0.0f, 1.0f, 0.0f,
+            -5.0f,  5.0f, 0.0f, 0.0f, 1.0f,
+            -5.0f, -5.0f, 0.0f, 0.0f, 0.0f,
+             5.0f, 5.0f, 0.0f, 1.0f, 1.0f,
+             5.0f, -5.0f, 0.0f, 1.0f, 0.0f,
         };
         // setup plane VAO
         glGenVertexArrays(1, &quadVAO);
@@ -121,6 +121,7 @@ void renderQuad()
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     }
+    glBindTexture(GL_TEXTURE_2D, m_shadowMap);
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glBindVertexArray(0);
@@ -133,7 +134,7 @@ Transform Scene::shadowMapPass(){
     int tps = SDL_GetTicks()/1000;
     //cout << tps << endl;
 
-    /*
+    
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
 
@@ -151,26 +152,27 @@ Transform Scene::shadowMapPass(){
 
     program_uniform(depthMapShader,"mvp",mvpLight);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Utilisation du framebuffer
+    //glBindFramebuffer(GL_FRAMEBUFFER, 0); // Utilisation du framebuffer
     glClear(GL_DEPTH_BUFFER_BIT);
-    glViewport(0, 0, 1080, 720); // Dimensions de la fenetre
+    glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT); // Dimensions de la fenetre
     glActiveTexture(GL_TEXTURE0);
 
     //glBindTextureUnit(GL_TEXTURE0, m_shadowMap);
     //glUniform1i(glGetUniformLocation(shaderLights, "shadowMap"), 2);
 
+    glBindTexture(GL_TEXTURE_2D, m_shadowMap);
+
     for(int i=0; i<objects.size(); i++){
         objects[i]->shadowDraw(depthMapShader, mvpLight);
     }
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_shadowMap);   
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    */
+
 
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    //renderQuad();
+    FBO_2_PPM_file();
 
     return mvpLight;
 
@@ -188,6 +190,43 @@ void Scene::lightingPass(){
 
 
 }
+
+void Scene::FBO_2_PPM_file()
+{
+    FILE    *output_image;
+    int     output_width, output_height;
+
+    output_width = SHADOW_WIDTH;
+    output_height = SHADOW_HEIGHT;
+
+    /// READ THE PIXELS VALUES from FBO AND SAVE TO A .PPM FILE
+    int             i, j, k;
+    unsigned char   *pixels = (unsigned char*)malloc(output_width*output_height*3);
+
+    /// READ THE CONTENT FROM THE FBO
+    glReadBuffer(GL_COLOR_ATTACHMENT0);
+    glReadPixels(0, 0, output_width, output_height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+
+    output_image = fopen("C:\\Dataset\\output.ppm", "wt");
+    fprintf(output_image,"P3\n");
+    fprintf(output_image,"# Created by Ricao\n");
+    fprintf(output_image,"%d %d\n",output_width,output_height);
+    fprintf(output_image,"255\n");
+
+    k = 0;
+    for(i=0; i<output_width; i++)
+    {
+        for(j=0; j<output_height; j++)
+        {
+            fprintf(output_image,"%u %u %u ",(unsigned int)pixels[k],(unsigned int)pixels[k+1],
+                                             (unsigned int)pixels[k+2]);
+            k = k+3;
+        }
+        fprintf(output_image,"\n");
+    }
+    free(pixels);
+}
+
 
 int Scene::render(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -234,7 +273,7 @@ int Scene::render(){
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    //glBindFramebuffer(GL_FRAMEBUFFER, 0); // Utilisation du framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Utilisation du framebuffer
 
 	//base->ChangeTransform(   RotationZ(1));
     //objects[0]->ChangeTransform(RotationY(10));
@@ -250,6 +289,9 @@ int Scene::render(){
         //objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
         objects[i]->Draw(&m_camera, dirLight, pointLights);
     }
+
+    glBindTexture(GL_TEXTURE_2D, m_shadowMap);
+    renderQuad();
 
 	return 1;
 }

@@ -24,6 +24,14 @@
 #include "uniforms.h"
 #include "draw.h"
 
+#include <GL/glew.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <cstdio>
+#include <string>
+
+
 #include "app.h"        // classe Application a deriver
 /*
     @class Scene
@@ -48,13 +56,15 @@ class Scene : public App{
 		int render() override; ///Dessine la scene
         Transform shadowMapPass();
         void lightingPass();
+        void renderQuad();
+        void FBO_2_PPM_file();
 
         GLuint m_fbo;
         GLuint m_shadowMap;
         GLuint depthMapShader; // Shader de la depthMap
 
         const unsigned int SHADOW_WIDTH = 1024;
-        const unsigned int SHADOW_HEIGHT = 1024;
+        const unsigned int SHADOW_HEIGHT = 720;
         
 };
 
