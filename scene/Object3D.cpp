@@ -32,13 +32,8 @@ Object3D::~Object3D(){
 	std::cout << "Destruction Object3D" << std::endl;
 }
 
-<<<<<<< HEAD
 void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> pointLights) {
 	Transform mvp = Perspective(45.0f, float(1024) / 640, 0.1f, 1000.0f) * camera->view() * transform;
-=======
-	void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> pointLights) {
-	Transform mvp = Perspective(45.0f, float(1920) / 1080, 0.1f, 1000.0f) * camera->view() * transform;
->>>>>>> origin/scène
 	glUseProgram(shader);
 	program_uniform(shader, "mvpMatrix", mvp);
 	if(texture != 0){
@@ -49,12 +44,7 @@ void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> p
 
 
 		program_uniform(shader, "material.diffuse", 0);
-		if(texture_specular != 0){
-			program_uniform(shader, "material.specular", 1);
-		}
-		else {
-			program_uniform(shader, "material.specular", 0);
-		}
+		program_uniform(shader, "material.specular", 1);
 		program_uniform(shader, "material.shininess", 10.0f);
 
 		program_uniform(shader, "model", transform);

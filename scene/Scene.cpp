@@ -25,7 +25,6 @@ int Scene::init(){
 
 	base = new Entity();
 	// Creation d'une lumiere
-<<<<<<< HEAD
 	dirLight = new Dirlight(vec3(0.2, 0.2, 0.2), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(5.0,5.0,5.0)), base, vec3(-0.2f, -1.0f, -0.1f));
 	pointLights.push_back(new PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0f, 0.09f, 0.032f, Translation(vec3(2.0f, 1.0f, 0.0f)), base));
 
@@ -40,19 +39,6 @@ int Scene::init(){
 
 
 	
-=======
-	dirLight = new Dirlight(vec3(0.5, 0.5, 0.5), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(5.0,5.0,5.0)), base, vec3(-0.2f, -1.0f, -0.3f));
-	//pointLights.push_back(new PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0f, 0.09f, 0.032f, Translation(vec3(2.0f, 1.0f, 0.0f)), base));
-
-	// Creation d'un objet 3D (un terrain et de l'eau)
-
-	objects.push_back(new Terrain("../tutos/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity(), base));
-	//objects.push_back(new Eau("../tutos/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity(), base));
-	Arbres * a = new Arbres("../scene/shaders/arbres.glsl", vec3(0.55f, 0.27f, 0.07f), Identity(), base, (Terrain *)objects[0]);
-	for (int i = 0; i < 3; i++)
-		objects.push_back(a->get_tree(i));
-
->>>>>>> origin/scène
     // etat openGL par defaut
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);        // couleur par defaut de la fenetre
@@ -107,7 +93,6 @@ int Scene::render(){
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//base->ChangeTransform(   RotationZ(1));
-<<<<<<< HEAD
     //objects[0]->ChangeTransform(RotationY(10));
     Uint32 currentTime = SDL_GetTicks();
     float deltaTime = (currentTime - lastTime) / 1000.0f; // en secondes
@@ -117,11 +102,7 @@ int Scene::render(){
 	//std::cout << dirLight->direction.x << " " << dirLight->direction.y << " " << dirLight->direction.z << std::endl;
 
 	//objects[2]->ChangeTransform(Translation(vec3(1.0 * deltaTime , 0.0 , 0.0)));
-=======
-    //objects[1]->ChangeTransform(Translation(vec3(1.0, 0.0, 0.0)));
->>>>>>> origin/scène
     for(int i=0; i<objects.size(); i++){
-	std:cout << "Drawing object " << i << std::endl;
         objects[i]->Draw(&m_camera, dirLight, pointLights);
     }
 

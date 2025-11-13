@@ -169,7 +169,7 @@ void main( )
     // tu peux aussi multiplier par material_color si tu veux
 
     //fragment_color = vec4(r, g, a, 1); //N'utilise pas la transparance entre guillemets
-    fragment_color = vec4(r, g, b, a); //Utilise la transparence entre guillemets
+    //fragment_color = color;//vec4(r, g, b, a); //Utilise la transparence entre guillemets
 
 }
 
