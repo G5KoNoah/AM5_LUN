@@ -46,7 +46,8 @@ Mesh Terrain::make_terrain(float width, int subdivisions, float height_max)
             else {
                 mesh.color(0., 1., 0.);           // Couleur
             }
-            mesh.texcoord(float(x) / subdivisions, float(z) / subdivisions);
+            mesh.texcoord(std::abs(std::fmod(px, 1.0)),std::abs(std::fmod(pz, 1.0)));
+            std::cout << std::abs(std::fmod(px, 1.0)) << std::endl;
             mesh.normal(normal);             // Normale vers le haut
             mesh.vertex(px, y, pz);           // Position
 
