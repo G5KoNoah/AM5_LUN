@@ -31,7 +31,7 @@ int Scene::init(){
 
 	objects.push_back(new Terrain("../tutos/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity(), base));
 	//objects.push_back(new Eau("../tutos/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity(), base));
-	Arbres * a = new Arbres("../scene/shaders/arbre.glsl", vec3(0.55f, 0.27f, 0.07f), Identity(), base, (Terrain *)objects[0]);
+	Arbres * a = new Arbres("../scene/shaders/arbres.glsl", vec3(0.55f, 0.27f, 0.07f), Identity(), base, (Terrain *)objects[0]);
 	for (int i = 0; i < 3; i++)
 		objects.push_back(a->get_tree(i));
 
