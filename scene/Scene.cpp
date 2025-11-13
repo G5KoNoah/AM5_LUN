@@ -62,6 +62,8 @@ int Scene::init(){
     //GLuint texSampler = glGetUniformLocation(shaderLights, "shadowMap");
     //glUniform1i(texSampler, 0);
 
+    /*
+
     glGenFramebuffers(1, &m_fbo); // Creation du framebuffer
 
     glGenTextures(1, &m_shadowMap); // Creation du depthBuffer
@@ -88,6 +90,8 @@ int Scene::init(){
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    */
 
     return 0;   // ras, pas d'erreur
 }
@@ -128,6 +132,8 @@ Transform Scene::shadowMapPass(){
     int tps = SDL_GetTicks()/1000;
     //cout << tps << endl;
 
+    /*
+
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
 
     glUseProgram(depthMapShader); // Utilisation du shader de la shadowMap
@@ -159,6 +165,8 @@ Transform Scene::shadowMapPass(){
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_shadowMap);   
 
+    */
+
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     //renderQuad();
@@ -169,7 +177,7 @@ Transform Scene::shadowMapPass(){
 
 void Scene::lightingPass(){
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Utilisation du framebuffer
+    //glBindFramebuffer(GL_FRAMEBUFFER, 0); // Utilisation du framebuffer
 
     glViewport(0, 0, 1080, 720); // Dimensions de la fenetre
 
@@ -225,7 +233,7 @@ int Scene::render(){
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Utilisation du framebuffer
+    //glBindFramebuffer(GL_FRAMEBUFFER, 0); // Utilisation du framebuffer
 
 	//base->ChangeTransform(   RotationZ(1));
     //objects[0]->ChangeTransform(RotationY(10));
@@ -238,7 +246,8 @@ int Scene::render(){
 
 	//objects[2]->ChangeTransform(Translation(vec3(1.0 * deltaTime , 0.0 , 0.0)));
     for(int i=0; i<objects.size(); i++){
-        objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
+        //objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
+        objects[i]->Draw(&m_camera, dirLight, pointLights);
     }
 
 	return 1;
