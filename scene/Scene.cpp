@@ -35,7 +35,9 @@ int Scene::init(){
     //objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
 	//objects.push_back(new Plane("../tutos/multipleLights.glsl","../data/container2.png","../data/container2_specular.png", Identity(), base));
 
-    objects.push_back(new Billboard("../shader/billboard.glsl", "../data/cloud.png", Identity() * Translation(vec3(0.0,10.0,0.0)), base));
+    //objects.push_back(new Billboard("../shader/billboard.glsl", "../data/cloud.png", Identity() * Scale(10.), base));
+
+
 	
     // etat openGL par defaut
 
