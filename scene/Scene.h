@@ -2,13 +2,13 @@
 #define _SCENE
 
 #include "Object3D.h"
+#include "ObjectLoad.h"
+#include "Plane.h"
+#include "Billboard.h"
 #include "lights/DirLight.h"
 #include "lights/PointLight.h"
 #include "Cube.h"
-#include "terrain.h"
-#include "Plane.h"
-#include "Eau.h"
-#include "Arbres.h"
+#include "Sky.h"
 
 #include "mat.h"
 #include "mesh.h"
@@ -34,13 +34,24 @@ class Scene : public App{
 		vector<PointLight*> pointLights; ///Liste des lumieres ponctuelles de la scene
 		Dirlight* dirLight = nullptr; ///Lumiere directionnelle de la scene
         Orbiter m_camera;
+        Uint32 lastTime = SDL_GetTicks();
+        Transform mvpLight;
 
     public:
-		Scene() : App(1920, 1080) {} ///Constructeur
+		Scene() : App(1024, 640) {} ///Constructeur
         int quit(); ///Destructeur
 		int init(); ///Initialise la scene
-		int render(); ///Dessine la scene
+		int render() override; ///Dessine la scene
+        Transform shadowMapPass();
+        void lightingPass();
 
+        GLuint m_fbo;
+        GLuint m_shadowMap;
+        GLuint depthMapShader; // Shader de la depthMap
+
+        const unsigned int SHADOW_WIDTH = 1024;
+        const unsigned int SHADOW_HEIGHT = 1024;
+        
 };
 
 #endif

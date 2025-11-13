@@ -21,14 +21,14 @@ public:
     
     int init( )
     {
-        m_objet= read_mesh("../data/robot.obj");
+        m_objet= read_mesh("data/robot.obj");
         if(m_objet.materials().count() == 0)
             // pas de matieres, pas d'affichage
             return -1;
         printf("%d materials.\n", m_objet.materials().count());
         
         // etape 1 : creer le shader program
-        m_program= read_program("../tutos/tuto9_materials.glsl");
+        m_program= read_program("tutos/tuto9_materials.glsl");
         program_print_errors(m_program);
         
         // recupere les matieres.

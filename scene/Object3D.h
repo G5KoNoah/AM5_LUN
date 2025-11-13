@@ -35,7 +35,9 @@ class Object3D : public Entity {
 		Object3D(std::string strShader, vec3 c, Transform tr, Entity* p); ///Constructeur couleur
 		~Object3D(); ///Destructeur
 
+		void shadowDraw(GLuint shaderAutre, Transform mvp); ///Dessine l'objet avec un certain shader
 		virtual void Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> pointLights); ///Dessine l'objet
+		virtual void Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> pointLights, Transform light, GLuint shadowMap); ///Dessine l'objet
 
 };
 

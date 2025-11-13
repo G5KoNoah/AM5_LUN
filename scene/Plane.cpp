@@ -1,59 +1,57 @@
 #include "Plane.h"
+#include "Plane.h"
 
-// Classe representant un plane
-
-Plane::Plane(std::string strShader, std::string strTexture1, Transform tr, Entity* p) : Object3D(strShader, strTexture1, tr, p) {
-    mesh = make_plane(10.0f, 100);
-
+Plane::Plane(std::string strShader, std::string strTexture1, Transform tr, Entity* p) : Object3D(strShader, strTexture1, tr, p){
+	mesh = makePlane(100, 100);
 }
 
-Plane::Plane(std::string strShader, std::string strTexture1, std::string strTexture2, Transform tr, Entity* p) : Object3D(strShader, strTexture1, strTexture2, tr, p) {
-    mesh = make_plane(10.0f, 100);
+Plane::Plane(std::string strShader, std::string strTexture1, std::string strTexture2, Transform tr, Entity* p) : Object3D(strShader, strTexture1, strTexture2, tr, p){
+	mesh = makePlane(100, 100);
 }
 
-Plane::Plane(std::string strShader, vec3 c, Transform tr, Entity* p) : Object3D(strShader, c, tr, p) {
-    mesh = make_plane(10.0f, 100);
+Plane::Plane(std::string strShader, vec3 c, Transform tr, Entity* p) : Object3D(strShader, c, tr, p){
+	mesh = makePlane(100, 100);
 }
 
-Mesh Plane::make_plane(float width, int subdivisions)
+
+Mesh Plane::makePlane(int width, int height)
 {
-    Mesh mesh = Mesh(GL_TRIANGLES);
+    Mesh p_mesh = Mesh(GL_TRIANGLES);
 
-    int vertex_count = subdivisions + 1;
-    float half_width = width / 2.0f;
-    float step = width / subdivisions;
-
-    // Génération des sommets
-    for (int z = 0; z < vertex_count; ++z)
+    // 1) Gï¿½nï¿½rer tous les sommets
+    for (int j = 0; j <= height; j++)
     {
-        for (int x = 0; x < vertex_count; ++x)
+        for (int i = 0; i <= width; i++)
         {
-            float px = -half_width + x * step;
-            float pz = -half_width + z * step;
+            // coordonnï¿½es dans [0,1], tu peux centrer si tu veux
+            float x = float(i);
+            float z = float(j);
 
-            mesh.color(0., 1., 0.);           // Couleur
-            mesh.vertex(px, 0, pz);           // Position
-            mesh.normal(0, 1, 0);             // Normale vers le haut
+            // uv
+            p_mesh.texcoord(vec2(float(i) / width, float(j) / height));
+
+            // normale (vers le haut)
+            p_mesh.normal(vec3(0, 1, 0));
+            // position
+            p_mesh.vertex(Point(x, 0.0f, z));
 
         }
     }
 
-    // Génération des triangles
-    for (int z = 0; z < subdivisions; ++z)
+    // 2) Gï¿½nï¿½rer les triangles (2 par carrï¿½)
+    // attention : (width+1) sommets par ligne
+    for (int j = 0; j < height; j++)
     {
-        for (int x = 0; x < subdivisions; ++x)
+        for (int i = 0; i < width; i++)
         {
-            int i0 = z * vertex_count + x;
-            int i1 = i0 + 1;
-            int i2 = i0 + vertex_count;
-            int i3 = i2 + 1;
+            int row1 = j * (width + 1);
+            int row2 = (j + 1) * (width + 1);
 
-            // Deux triangles par case
-            mesh.triangle(i0, i2, i1); // triangle bas-gauche
-            mesh.triangle(i1, i2, i3); // triangle haut-droit
+            // 2 triangles pour chaque quad
+            p_mesh.triangle(row1 + i, row1 + i + 1, row2 + i + 1);
+            p_mesh.triangle(row1 + i, row2 + i + 1, row2 + i);
         }
     }
 
-    return mesh;
+    return p_mesh;
 }
-
