@@ -63,7 +63,7 @@ int Scene::init(){
     //GLuint texSampler = glGetUniformLocation(shaderLights, "shadowMap");
     //glUniform1i(texSampler, 0);
 
-    
+    /*    
 
     glGenFramebuffers(1, &m_fbo); // Creation du framebuffer
 
@@ -92,7 +92,7 @@ int Scene::init(){
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    
+    */
 
     return 0;   // ras, pas d'erreur
 }
@@ -133,7 +133,7 @@ Transform Scene::shadowMapPass(){
     int tps = SDL_GetTicks()/1000;
     //cout << tps << endl;
 
-    
+    /*
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
 
@@ -166,7 +166,7 @@ Transform Scene::shadowMapPass(){
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_shadowMap);   
 
-    
+    */
 
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
