@@ -3,6 +3,7 @@ bin/*.exe
 bin/*.pdb
 bin/*.idb
 bin/*.lib
+bin/*
 build
 *.make
 *.cbp

@@ -51,6 +51,8 @@ void main( )
     D[3] = vec3(1.,0.,-0.2);
     D[4] = vec3(1.,0.,-0.4);
 
+    int k = 2; //Exposant
+
     vec3 pos = position;
     vec3 vagSum = vec3(0.,0.,0.); // Somme de toutes les vagues
 
@@ -60,8 +62,23 @@ void main( )
     //vagSum += 0.5 * A * sin(dot(D2,vec3(pos.x,pos.y,pos.z)*w + 1.2*time*phi));
 
     for(int i = 0; i < 5; i++){
-        vagSum += 2*A[i] * pow(sin(dot(D[i],vec3(pos.x,pos.y,pos.z)*w[i] + time*phi[i]))/2,2);
+        vagSum += 2*A[i] * pow(sin(dot(D[i],vec3(pos.x,pos.y,pos.z)*w[i] + time*phi[i]))/2,k); //Equation 8a
     }
+
+    //Derivees partielles, binormale et tangente
+
+    float deriveePartiellex = 0;
+    float deriveePartiellez = 0;
+
+    for(int i = 0; i < 5; i++){
+        deriveePartiellex += k * D[i].x * w[i] * A[i] * pow(sin(dot(D[i],vec3(pos.x,pos.y,pos.z)*w[i] + time*phi[i]))/2,k-1) * cos(dot(D[i],vec3(pos.x,pos.y,pos.z)) * w[i] + time*phi[i]);
+        deriveePartiellez += k * D[i].z * w[i] * A[i] * pow(sin(dot(D[i],vec3(pos.x,pos.y,pos.z)*w[i] + time*phi[i]))/2,k-1) * cos(dot(D[i],vec3(pos.x,pos.y,pos.z)) * w[i] + time*phi[i]); 
+    }
+
+    //vec3 B = vec3(1, deriveePartiellex, 0);
+    //vec3 T = vec3(0, deriveePartiellez, 1);
+
+    vec3 N = vec3(-1. * deriveePartiellex, 1., -1. * deriveePartiellez); //Normale au plan
 
     //Gerstner waves
 
