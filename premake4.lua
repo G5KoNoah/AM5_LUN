@@ -270,7 +270,7 @@ project("Scene3D")
     kind "ConsoleApp"       
     targetdir "bin"        
     files ( gkit_files )  
-    includedirs { ".", "src/gKit" } 
+    includedirs { ".", "src/gKit", "extern" } 
     files { "scene/*.cpp" }  
     files { "scene/*.h" } 
     files { "scene/lights/*.cpp" }  

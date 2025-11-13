@@ -1,4 +1,5 @@
 #include "Plane.h"
+#include "Plane.h"
 
 Plane::Plane(std::string strShader, std::string strTexture1, Transform tr, Entity* p) : Object3D(strShader, strTexture1, tr, p){
 	mesh = makePlane(100, 100);
@@ -17,12 +18,12 @@ Mesh Plane::makePlane(int width, int height)
 {
     Mesh p_mesh = Mesh(GL_TRIANGLES);
 
-    // 1) Générer tous les sommets
+    // 1) Gï¿½nï¿½rer tous les sommets
     for (int j = 0; j <= height; j++)
     {
         for (int i = 0; i <= width; i++)
         {
-            // coordonnées dans [0,1], tu peux centrer si tu veux
+            // coordonnï¿½es dans [0,1], tu peux centrer si tu veux
             float x = float(i);
             float z = float(j);
 
@@ -37,7 +38,7 @@ Mesh Plane::makePlane(int width, int height)
         }
     }
 
-    // 2) Générer les triangles (2 par carré)
+    // 2) Gï¿½nï¿½rer les triangles (2 par carrï¿½)
     // attention : (width+1) sommets par ligne
     for (int j = 0; j < height; j++)
     {

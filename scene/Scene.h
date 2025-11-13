@@ -35,13 +35,23 @@ class Scene : public App{
 		Dirlight* dirLight = nullptr; ///Lumiere directionnelle de la scene
         Orbiter m_camera;
         Uint32 lastTime = SDL_GetTicks();
+        Transform mvpLight;
 
     public:
 		Scene() : App(1024, 640) {} ///Constructeur
         int quit(); ///Destructeur
 		int init(); ///Initialise la scene
-		int render(); ///Dessine la scene
+		int render() override; ///Dessine la scene
+        Transform shadowMapPass();
+        void lightingPass();
 
+        GLuint m_fbo;
+        GLuint m_shadowMap;
+        GLuint depthMapShader; // Shader de la depthMap
+
+        const unsigned int SHADOW_WIDTH = 1024;
+        const unsigned int SHADOW_HEIGHT = 1024;
+        
 };
 
 #endif

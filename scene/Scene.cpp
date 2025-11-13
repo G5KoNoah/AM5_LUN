@@ -20,6 +20,7 @@ int Scene::quit(){
 	cout << "Destruction App" << endl;
 	return 0;   // ras, pas d'erreur
 }
+
 int Scene::init(){
 
 
@@ -28,6 +29,15 @@ int Scene::init(){
 	dirLight = new Dirlight(vec3(0.2, 0.2, 0.2), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(5.0,5.0,5.0)), base, vec3(-0.2f, -1.0f, -0.1f));
 	pointLights.push_back(new PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0f, 0.09f, 0.032f, Translation(vec3(2.0f, 1.0f, 0.0f)), base));
 
+	// LISTE DES OBJETS
+	objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base));
+    objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base));
+    objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,2.0,0.0)), base));
+    objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,4.0,0.0)), base));
+    //objects.push_back(new Cube("../tutos/multipleLights.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
+	//objects.push_back(new Terrain("../tutos/tuto9_color.glsl", vec3(0.0f,1.0f,0.0f), Identity(), base));
+	//objects.push_back(new Eau("../tutos/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity(), base));
+    objects.push_back(new Plane("../tutos/tuto9_color.glsl", vec3(0.0f, 0.0f, 1.0f), Identity() * Translation(vec3(0.0, -1.0, 0.0)), base));
 	// Creation d'un objet 3D (un cube)
     objects.push_back(new Sky("../shader/sky.glsl", vec3(1.0, 1.0, 1.0), Identity(), base));
 	objects.push_back(new ObjectLoad(  "../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base, "../data/source/van.obj" ));
@@ -41,17 +51,140 @@ int Scene::init(){
 	
     // etat openGL par defaut
 
-    glClearColor(0.2f, 0.2f, 0.2f, 1.f);        // couleur par defaut de la fenetre
+    glClearColor(1.0f, 1.0f, 1.0f, 1.f);        // couleur par defaut de la fenetre
 
     glClearDepth(1.f);                          // profondeur par defaut
     glDepthFunc(GL_LESS);                       // ztest, conserver l'intersection la plus proche de la camera
     glEnable(GL_DEPTH_TEST);                    // activer le ztest
 
+    depthMapShader = read_program("../scene/shaders/depthShader.glsl"); // Shader de la depthMap
+
+    //GLuint texSampler = glGetUniformLocation(shaderLights, "shadowMap");
+    //glUniform1i(texSampler, 0);
+
+    glGenFramebuffers(1, &m_fbo); // Creation du framebuffer
+
+    glGenTextures(1, &m_shadowMap); // Creation du depthBuffer
+    glBindTexture(GL_TEXTURE_2D, m_shadowMap); // Attacher la texture
+    //glBindSampler(3, texSampler);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_shadowMap, 0);
+
+    glDrawBuffer(GL_NONE); // Pour na pas mettre de buffer de draw
+    glReadBuffer(GL_NONE); // car on a besoin seulement de la profondeur
+
+    GLuint shaderLights = read_program("../tutos/multipleLights.glsl");
+    program_uniform(shaderLights,"shadowMap",0);
+    
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
+        std::cout << "ERROR : Frambuffer for DepthMap not initialized"; // Test pour verifier si le buffer est initialise
+        return -1;
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
     return 0;   // ras, pas d'erreur
+}
+
+unsigned int quadVAO = 0;
+unsigned int quadVBO;
+void renderQuad()
+{
+    if (quadVAO == 0)
+    {
+        float quadVertices[] = {
+            // positions        // texture Coords
+            -10.0f,  10.0f, 0.0f, 0.0f, 1.0f,
+            -10.0f, -10.0f, 0.0f, 0.0f, 0.0f,
+             10.0f,  10.0f, 0.0f, 1.0f, 1.0f,
+             10.0f, -10.0f, 0.0f, 1.0f, 0.0f,
+        };
+        // setup plane VAO
+        glGenVertexArrays(1, &quadVAO);
+        glGenBuffers(1, &quadVBO);
+        glBindVertexArray(quadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    }
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glBindVertexArray(0);
+}
+
+Transform Scene::shadowMapPass(){
+
+    //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT); // Clear du buffer
+
+    int tps = SDL_GetTicks()/1000;
+    //cout << tps << endl;
+
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
+
+    glUseProgram(depthMapShader); // Utilisation du shader de la shadowMap
+
+    float near_plane = 1.0f, far_plane = 50.0f; // Plans    
+    Transform proj = Ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane); // Creation d'une projection orthogonale
+    Transform lightView = Lookat(vec3(0.f,10.f,10.f),vec3(0.f,0.f,0.f),vec3(0.f,1.f,0.f)); // Creation d'une matrice de lumiere arbitraire : Position de la lumiere puis direction vers quoi regarde puis vecteur
+    Transform model = Identity(); // Arbitraire
+    mvpLight = proj * lightView * model;
+    //cout << MVP[0][0] << endl;
+    //cout << MVP[1][1] << endl;
+    //cout << MVP[2][2] << endl;
+    //cout << MVP[3][3] << endl;
+
+    program_uniform(depthMapShader,"mvp",mvpLight);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Utilisation du framebuffer
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, 1080, 720); // Dimensions de la fenetre
+    glActiveTexture(GL_TEXTURE0);
+
+    //glBindTextureUnit(GL_TEXTURE0, m_shadowMap);
+    //glUniform1i(glGetUniformLocation(shaderLights, "shadowMap"), 2);
+
+    for(int i=0; i<objects.size(); i++){
+        objects[i]->shadowDraw(depthMapShader, mvpLight);
+    }
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_shadowMap);   
+
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    //renderQuad();
+
+    return mvpLight;
+
+}
+
+void Scene::lightingPass(){
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Utilisation du framebuffer
+
+    glViewport(0, 0, 1080, 720); // Dimensions de la fenetre
+
+    for(int i=0; i<objects.size(); i++){
+        //objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
+    }
+
+
 }
 
 int Scene::render(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    Transform mvpLight = shadowMapPass();
+    lightingPass();
 
     // deplace la camera
     int mx, my;
@@ -64,23 +197,23 @@ int Scene::render(){
 
 
     Transform view = m_camera.view();
-    Transform camWorld = view.inverse(); // pour repasser dans l’espace monde
+    Transform camWorld = view.inverse(); // pour repasser dans lï¿½espace monde
 
-    // vecteurs caméra en espace monde
+    // vecteurs camï¿½ra en espace monde
     Vector forward = normalize(camWorld(Vector(0.0f, 0.0f, -1.0f)));
     Vector right = normalize(camWorld(Vector(1.0f, 0.0f, 0.0f)));
 
     const float moveSpeed = 0.1f;
     const float scaleSpeed = 0.02f;
 
-    // --- ÉCHELLE ---
-    // Z = agrandir, S = rétrécir
+    // --- ï¿½CHELLE ---
+    // Z = agrandir, S = rï¿½trï¿½cir
     if (key_state(SDLK_z))
         base->ChangeTransform(Scale(1.0f + scaleSpeed));
     else if (key_state(SDLK_s))
         base->ChangeTransform(Scale(1.0f - scaleSpeed));
 
-    // --- TRANSLATION (selon la caméra) ---
+    // --- TRANSLATION (selon la camï¿½ra) ---
     // Q = gauche, D = droite
     if (key_state(SDLK_q))
         base->ChangeTransform(Translation(right * moveSpeed));
@@ -91,6 +224,8 @@ int Scene::render(){
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Utilisation du framebuffer
 
 	//base->ChangeTransform(   RotationZ(1));
     //objects[0]->ChangeTransform(RotationY(10));
@@ -103,7 +238,7 @@ int Scene::render(){
 
 	//objects[2]->ChangeTransform(Translation(vec3(1.0 * deltaTime , 0.0 , 0.0)));
     for(int i=0; i<objects.size(); i++){
-        objects[i]->Draw(&m_camera, dirLight, pointLights);
+        objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
     }
 
 	return 1;
