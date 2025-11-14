@@ -59,12 +59,53 @@ class Scene : public App{
         void renderQuad();
         void FBO_2_PPM_file();
 
+        // Framebuffers d'eau
+        int createFrameBuffer();
+        int createTextureAttachment( int width, int height);
+        int createDepthTextureAttachment( int width, int height);
+        int createDepthBufferAttachment(int width, int height);
+
+        void initialiseReflectionFrameBuffer();
+        void initialiseRefractionFrameBuffer();
+
+        void bindFrameBuffer(int frameBuffer, int width, int height);
+
         GLuint m_fbo;
         GLuint m_shadowMap;
         GLuint depthMapShader; // Shader de la depthMap
 
+        unsigned int reflectionFrameBuffer;
+	    unsigned int reflectionTexture;
+	    unsigned int reflectionDepthBuffer;
+    
+        unsigned int refractionFrameBuffer;
+	    unsigned int refractionTexture;
+	    unsigned int refractionDepthTexture;
+
         const unsigned int SHADOW_WIDTH = 1024;
         const unsigned int SHADOW_HEIGHT = 720;
+
+        static const int REFLECTION_WIDTH = 320;
+        static const int REFLECTION_HEIGHT = 180;
+
+        static const int REFRACTION_WIDTH = 320;
+        static const int REFRACTION_HEIGHT = 180;
+
+        //Geters
+        GLuint getReflectionTexture();
+        GLuint getRefractionTexture();
+        GLuint getRefractionDepthTexture();
+
+        //Bind
+        void bindReflectionFrameBuffer();
+        void bindRefractionFrameBuffer();
+
+        //Unbind
+        void unbindCurrentFrameBuffer();
+
+        //cleanup
+        void cleanUp();
+
         
 };
 
