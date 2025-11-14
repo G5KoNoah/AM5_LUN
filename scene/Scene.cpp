@@ -341,7 +341,7 @@ void Scene::unbindCurrentFrameBuffer()
 	glViewport(0, 0, 1600, 1200);
 }
 
-void Scene::cleanUp()
+void Scene::waterCleanUp()
 {
     glDeleteFramebuffers(1, &reflectionFrameBuffer);
     glDeleteTextures(1, &reflectionTexture);
@@ -387,12 +387,12 @@ int Scene::createDepthTextureAttachment(int width, int height)
 
 int Scene::createDepthBufferAttachment(int width, int height)
 {
-        unsigned int depthBuffer;
-        glGenRenderbuffers(1, &depthBuffer);
-		glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
-		return depthBuffer;
+    unsigned int depthBuffer;
+    glGenRenderbuffers(1, &depthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+	return depthBuffer;
 }
 
 void Scene::bindFrameBuffer(int frameBuffer, int width, int height){

@@ -77,7 +77,7 @@ class Scene : public App{
         unsigned int reflectionFrameBuffer;
 	    unsigned int reflectionTexture;
 	    unsigned int reflectionDepthBuffer;
-    
+
         unsigned int refractionFrameBuffer;
 	    unsigned int refractionTexture;
 	    unsigned int refractionDepthTexture;
@@ -103,8 +103,8 @@ class Scene : public App{
         //Unbind
         void unbindCurrentFrameBuffer();
 
-        //cleanup
-        void cleanUp();
+        //Nettoyage de l'eau
+        void waterCleanUp();
 
         
 };
