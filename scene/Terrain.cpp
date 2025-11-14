@@ -46,8 +46,9 @@ Mesh Terrain::make_terrain(float width, int subdivisions, float height_max)
             else {
                 mesh.color(0., 1., 0.);           // Couleur
             }
-            mesh.texcoord(std::abs(std::fmod(px, 1.0)),std::abs(std::fmod(pz, 1.0)));
-            std::cout << std::abs(std::fmod(px, 1.0)) << std::endl;
+            //mesh.texcoord(std::abs(std::fmod(px, 1.0)),std::abs(std::fmod(pz, 1.0)));
+            //std::cout << std::abs(std::fmod(px, 1.0)) << std::endl;
+			mesh.texcoord((x / (float)subdivisions) *10., (z / (float)subdivisions)*10.); // Coordonn�es de texture
             mesh.normal(normal);             // Normale vers le haut
             mesh.vertex(px, y, pz);           // Position
 
@@ -75,4 +76,12 @@ float Terrain::getHeight(float x, float z)
 	float frequency = 0.1f;
     float height = 3.0f * BruitPerlin::fbm(x * frequency, z * frequency) + 2.0f; // Le 3 et le 2 permettent de r�gler la hauteur 
     return height;
+}
+
+void Terrain::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLights)
+{
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    Object3D::Draw(camera, dirLight, pointLights);
 }
