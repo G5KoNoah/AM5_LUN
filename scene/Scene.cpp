@@ -6,6 +6,7 @@ int Scene::quit(){
 		delete objects[i];
 	}
 	objects.clear();
+    waterCleanUp();
     std::cout << "Destruction Scene" << std::endl;
     for(int i=0; i<pointLights.size(); i++){
 		delete pointLights[i];
@@ -289,10 +290,13 @@ int Scene::render(){
 	//std::cout << dirLight->direction.x << " " << dirLight->direction.y << " " << dirLight->direction.z << std::endl;
 
 	//objects[2]->ChangeTransform(Translation(vec3(1.0 * deltaTime , 0.0 , 0.0)));
+
+    bindReflectionFrameBuffer();
     for(int i=0; i<objects.size(); i++){
         //objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
         objects[i]->Draw(&m_camera, dirLight, pointLights);
     }
+    unbindCurrentFrameBuffer();
 
     glBindTexture(GL_TEXTURE_2D, m_shadowMap);
     //renderQuad();
@@ -310,19 +314,23 @@ int Scene::render(){
 ///
 
 void Scene::initialiseReflectionFrameBuffer() {
+    cout << "Scene : Initialisation du FBO de reflection" << endl;
 	reflectionFrameBuffer = createFrameBuffer();
 	reflectionTexture = createTextureAttachment(REFLECTION_WIDTH,REFLECTION_HEIGHT);
 	reflectionDepthBuffer = createDepthBufferAttachment(REFLECTION_WIDTH,REFLECTION_HEIGHT);	
     unbindCurrentFrameBuffer();
+    cout << "Scene : FBO de reflection initialise" << endl;
 }
 
 
 void Scene::initialiseRefractionFrameBuffer()
 {
+    cout << "Scene : Initialisation du FBO de refraction" << endl;
     refractionFrameBuffer = createFrameBuffer();
 	refractionTexture = createTextureAttachment(REFRACTION_WIDTH,REFRACTION_HEIGHT);
 	refractionDepthTexture = createDepthTextureAttachment(REFRACTION_WIDTH,REFRACTION_HEIGHT);
 	unbindCurrentFrameBuffer();
+    cout << "Scene : FBO de reflection initalise" << endl;
 }
 
 void Scene::bindReflectionFrameBuffer()
@@ -338,7 +346,8 @@ void Scene::bindRefractionFrameBuffer()
 void Scene::unbindCurrentFrameBuffer()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0); //back to default frame buffer
-	glViewport(0, 0, 1600, 1200);
+	glViewport(0, 0, 1024, 640);
+    cout << "Scene : FBO de reflection initalise" << endl;
 }
 
 void Scene::waterCleanUp()
@@ -403,6 +412,7 @@ void Scene::bindFrameBuffer(int frameBuffer, int width, int height){
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, width, height);
+    cout << "Scene : Changement de framebuffer : " << frameBuffer << endl;
 }
 
 unsigned int Scene::getReflectionTexture() {
