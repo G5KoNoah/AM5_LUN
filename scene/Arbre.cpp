@@ -23,45 +23,41 @@ Arbre::Arbre(std::string strShader, Transform tr, Entity* p) : Object3D(strShade
 }
 
 void Arbre::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLights) {
-	Transform mvp = Perspective(45.0f, float(1920) / 1080, 0.1f, 1000.0f) * camera->view() * transform;
-	glUseProgram(shader);
-		
-	program_uniform(shader, "mvpMatrix", mvp);
 
-	int location = glGetUniformLocation(shader, "materials");
-	glUniform4fv(location, m_colors.size(), &m_colors[0].r);
+    // dessiner m_objet avec le shader program
+    // configurer le pipeline 
+    glUseProgram(shader);
 
-	program_uniform(shader, "material.diffuse", 0);
-	if (texture_specular != 0) {
-		program_uniform(shader, "material.specular", 1);
-	}
-	else {
-		program_uniform(shader, "material.specular", 0);
-	}
-	program_uniform(shader, "material.shininess", 10.0f);
+    // configurer le shader program
+    // . recuperer les transformations
+    Transform model = transform;
+    Transform view = camera->view();
+    Transform projection = Perspective(45.0f, float(1024) / 640, 0.1f, 1000.0f) * camera->view() * transform;
 
-	program_uniform(shader, "model", transform);
-	program_uniform(shader, "viewPos", camera->position());
-	if (dirLight != nullptr) {
-		program_uniform(shader, "dirLight.direction", dirLight->direction);
-		program_uniform(shader, "dirLight.ambient", dirLight->ambient);
-		program_uniform(shader, "dirLight.diffuse", dirLight->diffuse);
-		program_uniform(shader, "dirLight.specular", dirLight->specular);
-	}
-	program_uniform(shader, "nbPointLights", (int)pointLights.size());
-	for (int i = 0; i < pointLights.size(); i++) {
-		std::string number = std::to_string(i);
-		program_uniform(shader, ("pointLights[" + number + "].position").c_str(), pointLights[i]->transform);
-		program_uniform(shader, ("pointLights[" + number + "].ambient").c_str(), pointLights[i]->ambient);
-		program_uniform(shader, ("pointLights[" + number + "].diffuse").c_str(), pointLights[i]->diffuse);
-		program_uniform(shader, ("pointLights[" + number + "].specular").c_str(), pointLights[i]->specular);
-		program_uniform(shader, ("pointLights[" + number + "].constant").c_str(), pointLights[i]->constant);
-		program_uniform(shader, ("pointLights[" + number + "].linear").c_str(), pointLights[i]->linear);
-		program_uniform(shader, ("pointLights[" + number + "].quadratic").c_str(), pointLights[i]->quadratic);
-	}
+    // . composer les transformations : model, view et projection
+    Transform mv = view * model;
+    Transform mvp = projection * mv;
 
+    // . parametrer le shader program :
+    //   . transformation : la matrice declaree dans le vertex shader s'appelle mvpMatrix
+    program_uniform(shader, "mvpMatrix", mvp);
+    program_uniform(shader, "mvMatrix", mv);
 
+    //   . ou, directement en utilisant openGL :
+    //   int location= glGetUniformLocation(program, "mvpMatrix");
+    //   glUniformMatrix4fv(location, 1, GL_TRUE, mvp.buffer());
 
-	mesh.draw(shader, /* use position */ true, /* use texcoord */ true, /* use normal */ true, /* use color */ false, /* use material index*/ true);
+    // . parametres "supplementaires" :
+    //   . couleur diffuse des matieres, cf la declaration 'uniform vec4 materials[];' dans le fragment shader
+    int location = glGetUniformLocation(shader, "materials");
+    glUniform4fv(location, m_colors.size(), &m_colors[0].r);
+
+    // go !
+    // indiquer quels attributs de sommets du mesh sont necessaires a l'execution du shader.
+    // tuto9_materials.glsl n'utilise que position et material_index. les autres de servent a rien.
+    // 1 draw pour tous les triangles de l'objet.
+    mesh.draw(shader, /* use position */ true, /* use texcoord */ false, /* use normal */ true, /* use color */ false, /* use material index*/ true);
+
+    
 }
 

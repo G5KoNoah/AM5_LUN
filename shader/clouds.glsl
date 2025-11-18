@@ -23,6 +23,7 @@ in vec3 vPos;
   uniform float time = 0.0;
   uniform float cirrus = 0.4;
   uniform float cumulus = 0.6;
+  uniform vec3 sun_dir;
 
   const float Br = 0.0025;
   const float Bm = 0.0003;
@@ -34,6 +35,12 @@ in vec3 vPos;
   float hash(float n)
   {
     return fract(sin(n) * 43758.5453123);
+  }
+
+  float hashStars(vec3 p) {
+    p = fract(p * 0.3183099 + vec3(0.1, 0.2, 0.3));
+    p *= 17.0;
+    return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
   }
 
   float noise(vec3 x)
@@ -61,7 +68,12 @@ in vec3 vPos;
   void main()
   {
   	vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
-    vec3 fsun = vec3(0.0, sin(time * 0.01), cos(time * 0.01));
+
+    vec3 dir = normalize(vPos);
+    vec3 moonDir = normalize(sun_dir);
+    vec3 fsun = vec3(-moonDir.x, -moonDir.y, moonDir.z);
+    //vec3 fsun = vec3(0.0, sin(time * 0.01), cos(time * 0.01));
+
     if (vPos.y < 0)
       color = vec4(0.0, 0.0, 0.0, 1.0);
 
@@ -74,6 +86,34 @@ in vec3 vPos;
     vec3 night_extinction = vec3(1.0 - exp(fsun.y)) * 0.2;
     vec3 extinction = mix(day_extinction, night_extinction, -fsun.y * 0.2 + 0.5);
     color.rgb = rayleigh * mie * extinction;
+
+    float cosSun = dot(dir, fsun);
+    float cosMoon = dot(dir, moonDir);
+
+    // --- Paramètres apparents ---
+    float sunSize = 0.995;  // plus proche de 1 = plus petit disque
+    float moonSize = 0.995;
+
+    vec3 sunColor = vec3(1.0, 0.9, 0.6); // jaune chaud
+    vec3 moonColor = vec3(0.9, 0.9, 1.0); // blanc bleuté
+
+        // --- Soleil : disque + halo ---
+    float halo = smoothstep(sunSize - 0.002, 1.0, cosSun); // dégradé doux
+    color.rgb = mix(color.rgb, sunColor, halo);              // mélange progressif
+    color.rgb += sunColor * pow(halo, 100.0);               // cœur très brillant
+
+    float moonCore = smoothstep(moonSize, 1.0, cosMoon); 
+    color.rgb = mix(color.rgb, moonColor, pow(moonCore, 10.0)); 
+
+    // --- Étoiles ---
+    float brightness = clamp(-fsun.y, 0.0, 1.0); // 0 = jour, 1 = nuit
+    float star = hashStars(floor(dir * 100.0)); // densité
+    float phase = hashStars(floor(dir * 100.0) + vec3(1.0, 0.0, 0.0));
+    float blink = 0.5 + 0.5 * cos(time * 5.0 + phase * 6.2831);
+    float starsVisible = smoothstep(0.998, 1.0, star) * brightness * blink;
+
+    // --- Ajout des étoiles ---
+    color.rgb += vec3(1.0, 1.0, 0.8) * starsVisible;
 
     // Cirrus Clouds
     float density = smoothstep(1.0 - cirrus, 1.0, fbm(vPos.xyz / vPos.y * 2.0 + time * 0.05)) * 0.3;
