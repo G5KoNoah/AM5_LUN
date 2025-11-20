@@ -57,7 +57,7 @@ class Scene : public App{
         Transform shadowMapPass();
         void lightingPass();
         void renderQuad();
-        void FBO_2_PPM_file(string st);
+        void FBO_2_PPM_file(string st,int width, int height);
 
         float scaleFactor = 1.0f;
         float prevScale = 1.0f;
@@ -65,7 +65,7 @@ class Scene : public App{
 		Vector prevTranslation = Vector(0.0f, 0.0f, 0.0f);
 		Vector currentTranslation = Vector(0.0f, 0.0f, 0.0f);
 
-        float waterHeight = 0.5; // Hauteur de l'eau
+        float waterHeight = 1.0; // Hauteur de l'eau
 
         // Framebuffers d'eau
         int createFrameBuffer();

@@ -37,12 +37,11 @@ int Scene::init(){
     objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,4.0,0.0)), base));
     //objects.push_back(new Cube("../tutos/multipleLights.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
 	//objects.push_back(new Terrain("../tutos/tuto9_color.glsl", vec3(0.0f,1.0f,0.0f), Identity(), base));
-    objects.push_back(new Plane("../tutos/tuto9_color.glsl", vec3(0.0f, 0.0f, 1.0f), Identity() * Translation(vec3(0.0, -1.0, 0.0)), base));
-	// Creation d'un objet 3D (un cube)
+    //objects.push_back(new Plane("../tutos/tuto9_color.glsl", vec3(0.0f, 0.0f, 1.0f), Identity() * Translation(vec3(0.0, -1.0, 0.0)), base));
     objects.push_back(new Sky("../shader/sky.glsl", vec3(1.0, 1.0, 1.0), Identity(), base));
 	objects.push_back(new ObjectLoad(  "../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base, "../data/source/van.obj" ));
     objects.push_back(new Terrain("../tutos/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity(), base));
-    objects.push_back(new Eau("../scene/shaders/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(-2.0,waterHeight,-2.0)), base));
+    objects.push_back(new Eau("../scene/shaders/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(-20.0,waterHeight,-20.0)), base));
     //objects.push_back(new ObjectLoad("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base, "../data/source/van.obj"));
     //objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
 	//objects.push_back(new Plane("../tutos/multipleLights.glsl","../data/container2.png","../data/container2_specular.png", Identity(), base));
@@ -196,13 +195,13 @@ void Scene::lightingPass(){
 
 }
 
-void Scene::FBO_2_PPM_file(string st)
+void Scene::FBO_2_PPM_file(string st,int width, int height)
 {
     FILE    *output_image;
     int     output_width, output_height;
 
-    output_width = SHADOW_WIDTH;
-    output_height = SHADOW_HEIGHT;
+    output_width = width;
+    output_height = height;
 
     /// READ THE PIXELS VALUES from FBO AND SAVE TO A .PPM FILE
     int             i, j, k;
@@ -342,7 +341,7 @@ int Scene::render(){
     //TODO
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
-        //FBO_2_PPM_file("ReflectionFramebuffer.ppm");
+        //FBO_2_PPM_file("ReflectionFramebuffer.ppm",REFLECTION_WIDTH,REFLECTION_HEIGHT);
     }
     unbindCurrentFrameBuffer();
 
@@ -350,17 +349,18 @@ int Scene::render(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,false);
-        //FBO_2_PPM_file("RefractionFramebuffer.ppm");
+        //FBO_2_PPM_file("RefractionFramebuffer.ppm",REFRACTION_WIDTH,REFRACTION_HEIGHT);
     }
     unbindCurrentFrameBuffer();
 
     
 
     glDisable(GL_CLIP_DISTANCE0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights);
         //objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
-        //FBO_2_PPM_file("Frammebuffer");
+        FBO_2_PPM_file("Frammebuffer",1024,640);
     }
 
     //glBindTexture(GL_TEXTURE_2D, m_shadowMap);
@@ -473,9 +473,9 @@ void Scene::bindFrameBuffer(int frameBuffer, int width, int height){
     //glBindTexture(GL_TEXTURE_2D, 0); //To make sure the texture isn't bound
 
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl; 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, width, height);
     cout << "Scene : Changement de framebuffer : " << frameBuffer << endl;
 }
