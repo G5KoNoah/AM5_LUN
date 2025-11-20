@@ -177,7 +177,7 @@ Transform Scene::shadowMapPass(){
 
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    //FBO_2_PPM_file();
+    //FBO_2_PPM_file("ShadowMap.ppm");
 
     return mvpLight;
 
@@ -239,8 +239,6 @@ int Scene::render(){
     Transform mvpLight = shadowMapPass();
     lightingPass();
 
-    glEnable(GL_CLIP_DISTANCE0); // Activation de gl_clip_distance
-
     // deplace la camera
     int mx, my;
     unsigned int mb = SDL_GetRelativeMouseState(&mx, &my);
@@ -295,8 +293,12 @@ int Scene::render(){
 
     
 
+    glEnable(GL_CLIP_DISTANCE0); // Activation de gl_clip_distance
+
     bindReflectionFrameBuffer();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    float distance = 2 * (m_camera.position().y - waterHeight); // Renverser la camera pour illusion de reflections dans l'eau
+    //TODO
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
         //FBO_2_PPM_file("ReflectionFramebuffer.ppm");
@@ -314,8 +316,10 @@ int Scene::render(){
     
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    //glDisable(GL_CLIP_DISTANCE0);
     for(int i=0; i<objects.size(); i++){
-        objects[i]->Draw(&m_camera, dirLight, pointLights);
+        //objects[i]->Draw(&m_camera, dirLight, pointLights);
+        objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
         //FBO_2_PPM_file("Frammebuffer");
     }
 

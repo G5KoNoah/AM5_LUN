@@ -10,6 +10,8 @@ out vec3 AAA;
 uniform mat4 mvpMatrix;
 uniform float time;
 
+uniform vec4 plane;
+
 void main( )
 {
     float A[5]; //Amplitude

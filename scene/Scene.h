@@ -59,7 +59,7 @@ class Scene : public App{
         void renderQuad();
         void FBO_2_PPM_file(string st);
 
-        float waterHeight = 2.0; // Hauteur de l'eau
+        float waterHeight = 0.5; // Hauteur de l'eau
 
         // Framebuffers d'eau
         int createFrameBuffer();
