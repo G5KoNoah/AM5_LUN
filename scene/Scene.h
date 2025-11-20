@@ -59,6 +59,12 @@ class Scene : public App{
         void renderQuad();
         void FBO_2_PPM_file(string st);
 
+        float scaleFactor = 1.0f;
+        float prevScale = 1.0f;
+		// pour appliquer des translations relatives (delta)
+		Vector prevTranslation = Vector(0.0f, 0.0f, 0.0f);
+		Vector currentTranslation = Vector(0.0f, 0.0f, 0.0f);
+
         float waterHeight = 0.5; // Hauteur de l'eau
 
         // Framebuffers d'eau

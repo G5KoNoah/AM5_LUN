@@ -253,27 +253,68 @@ int Scene::render(){
     Transform camWorld = view.inverse(); // pour repasser dans l�espace monde
 
     // vecteurs cam�ra en espace monde
-    Vector forward = normalize(camWorld(Vector(0.0f, 0.0f, -1.0f)));
+    Vector forward = normalize(camWorld(Vector(0.0f, 0.0f, 1.0f)));
     Vector right = normalize(camWorld(Vector(1.0f, 0.0f, 0.0f)));
 
     const float moveSpeed = 0.1f;
     const float scaleSpeed = 0.02f;
 
-    // --- �CHELLE ---
-    // Z = agrandir, S = r�tr�cir
-    if (key_state(SDLK_z))
-        base->ChangeTransform(Scale(1.0f + scaleSpeed));
-    else if (key_state(SDLK_s))
-        base->ChangeTransform(Scale(1.0f - scaleSpeed));
+    const float scaleStep = 0.01f;
+    const float minScale = 0.001f;
 
-    // --- TRANSLATION (selon la cam�ra) ---
+    if (key_state(SDLK_r)) {
+        float newScale = scaleFactor + scaleStep;
+        float delta = newScale / prevScale;
+        base->ChangeTransform(Scale(delta)); // applique seulement la variation
+        prevScale = newScale;
+        scaleFactor = newScale;
+    }
+    else if (key_state(SDLK_f)) {
+        float newScale = scaleFactor - scaleStep;
+        if (newScale < minScale) newScale = minScale;
+        float delta = newScale / prevScale;
+        base->ChangeTransform(Scale(delta));
+        prevScale = newScale;
+        scaleFactor = newScale;
+    }
+
+    // --- TRANSLATION (selon la caméra) ---
     // Q = gauche, D = droite
-    if (key_state(SDLK_q))
-        base->ChangeTransform(Translation(right * moveSpeed));
-    else if (key_state(SDLK_d))
-        base->ChangeTransform(Translation(-right * moveSpeed));
+    // calculer la nouvelle translation voulue en espace monde (accumulée)
+    Vector newTranslation = currentTranslation;
+    if (key_state(SDLK_q)) {
+        Vector deltaMove = right * moveSpeed; // right est Vector
+        newTranslation = Vector(currentTranslation.x + deltaMove.x,
+                                currentTranslation.y + deltaMove.y,
+                                currentTranslation.z + deltaMove.z);
+    }
+    else if (key_state(SDLK_d)) {
+        Vector deltaMove = right * moveSpeed;
+        newTranslation = Vector(currentTranslation.x - deltaMove.x,
+                                currentTranslation.y - deltaMove.y,
+                                currentTranslation.z - deltaMove.z);
+    }
+    else if (key_state(SDLK_z)) {
+        Vector deltaMove = forward * moveSpeed;
+        newTranslation = Vector(currentTranslation.x + deltaMove.x,
+            currentTranslation.y + deltaMove.y,
+            currentTranslation.z + deltaMove.z);
+    }else if (key_state(SDLK_s)) {
+        Vector deltaMove = forward * moveSpeed;
+        newTranslation = Vector(currentTranslation.x - deltaMove.x,
+            currentTranslation.y - deltaMove.y,
+            currentTranslation.z - deltaMove.z);
+    }
+    // n'appliquer que la différence par rapport à la translation précédente
+    Vector delta = Vector(newTranslation.x - prevTranslation.x,
+                          newTranslation.y - prevTranslation.y,
+                          newTranslation.z - prevTranslation.z);
 
-
+    if (delta.x != 0.0f || delta.y != 0.0f || delta.z != 0.0f) {
+        base->ChangeTransform(Translation(delta));
+        prevTranslation = newTranslation;
+        currentTranslation = newTranslation;
+    }
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -318,8 +359,8 @@ int Scene::render(){
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     //glDisable(GL_CLIP_DISTANCE0);
     for(int i=0; i<objects.size(); i++){
-        //objects[i]->Draw(&m_camera, dirLight, pointLights);
-        objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
+        objects[i]->Draw(&m_camera, dirLight, pointLights);
+        //objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
         //FBO_2_PPM_file("Frammebuffer");
     }
 
