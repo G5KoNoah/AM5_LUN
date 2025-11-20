@@ -37,6 +37,7 @@ class Object3D : public Entity {
 
 		void shadowDraw(GLuint shaderAutre, Transform mvp); ///Dessine l'objet avec un certain shader
 		virtual void Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> pointLights); ///Dessine l'objet
+		virtual void Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> pointLights, float waterHeight); ///Dessine l'objet avec plan d'eau
 		virtual void Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> pointLights, Transform light, GLuint shadowMap); ///Dessine l'objet
 
 };

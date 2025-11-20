@@ -15,9 +15,20 @@ out vec3 FragPos;
 out vec2 vertex_texcoord;
 out vec4 fragPosLightSpace;
 
+uniform vec4 plane;
+
+out gl_PerVertex
+{
+  vec4 gl_Position;
+  float gl_ClipDistance[1];
+};
+
 void main()
 {
-    gl_Position = mvpMatrix * vec4(position, 1.0);
+    gl_Position = mvpMatrix * vec4(position, 1.0); // Calcul de la position
+
+    gl_ClipDistance[0] = dot(gl_Position,plane); // Calcul de la hauteur par rapport au plan
+
     FragPos = vec3(model * vec4(position, 1.0));
     Normal = mat3(transpose(inverse(model))) * aNormal;
     vertex_texcoord = texcoord;

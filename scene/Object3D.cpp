@@ -84,6 +84,60 @@ void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> p
 
 }
 
+void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> pointLights, float waterHeight) {
+	Transform mvp = Perspective(45.0f, float(1024) / 640, 0.1f, 1000.0f) * camera->view() * transform;
+	glUseProgram(shader);
+	program_uniform(shader, "mvpMatrix", mvp);
+	//program_uniform(shader, "lightSpaceMatrix", mvpLight);
+	
+	if(texture != 0){
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture); // Texture diffuse
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture_specular);
+
+
+		program_uniform(shader, "material.diffuse", 0);
+		program_uniform(shader, "material.specular", 1);
+		program_uniform(shader, "material.shininess", 10.0f);
+		vec4 vecWater = vec4(0,-1,0,waterHeight);
+		program_uniform(shader,"plane",vecWater);
+
+		program_uniform(shader, "model", transform);
+		program_uniform(shader, "viewPos", camera->position());
+		if (dirLight != nullptr) {
+			program_uniform(shader, "dirLight.direction", dirLight->direction);
+			program_uniform(shader, "dirLight.ambient", dirLight->ambient);
+			program_uniform(shader, "dirLight.diffuse", dirLight->diffuse);
+			program_uniform(shader, "dirLight.specular", dirLight->specular);
+		}
+		else {
+			program_uniform(shader, "dirLight.direction", vec3(0.0f, 0.0f, 0.0f));
+			program_uniform(shader, "dirLight.ambient", vec3(0.0f, 0.0f, 0.0f));
+			program_uniform(shader, "dirLight.diffuse", vec3(0.0f, 0.0f, 0.0f));
+			program_uniform(shader, "dirLight.specular", vec3(0.0f, 0.0f, 0.0f));
+		}
+		program_uniform(shader, "nbPointLights", (int)pointLights.size());
+		for (int i = 0; i < pointLights.size(); i++) {
+			std::string number = std::to_string(i);
+			program_uniform(shader, ("pointLights[" + number + "].position").c_str(), pointLights[i]->transform);
+			program_uniform(shader, ("pointLights[" + number + "].ambient").c_str(), pointLights[i]->ambient);
+			program_uniform(shader, ("pointLights[" + number + "].diffuse").c_str(), pointLights[i]->diffuse);
+			program_uniform(shader, ("pointLights[" + number + "].specular").c_str(), pointLights[i]->specular);
+			program_uniform(shader, ("pointLights[" + number + "].constant").c_str(), pointLights[i]->constant);
+			program_uniform(shader, ("pointLights[" + number + "].linear").c_str(), pointLights[i]->linear);
+			program_uniform(shader, ("pointLights[" + number + "].quadratic").c_str(), pointLights[i]->quadratic);
+		}
+		mesh.draw(shader, /* use position */ true, /* use texcoord */ (texture != 0), /* use normal */ (dirLight != nullptr || pointLights.size() > 0), /* use color */ false, /* use material index*/ true);
+	}
+	else {
+		program_uniform(shader, "color", Color(color.x, color.y, color.z, 1.0f));
+		mesh.draw(shader, /* use position */ true, /* use texcoord */ (texture != 0), /* use normal */ (dirLight != nullptr || pointLights.size() > 0), /* use color */ false, /* use material index*/ true);
+	}
+	
+
+}
+
 void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> pointLights, Transform light, GLuint shadowMap) {
 	Transform mvp = Perspective(45.0f, float(1920) / 1080, 0.1f, 1000.0f) * camera->view() * transform;
 	glUseProgram(shader);
