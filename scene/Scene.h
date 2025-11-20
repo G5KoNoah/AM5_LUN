@@ -114,6 +114,9 @@ class Scene : public App{
         //Nettoyage de l'eau
         void waterCleanUp();
 
+        //Affichage dans texture
+        void renderWater();
+
         
 };
 
