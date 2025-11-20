@@ -55,6 +55,8 @@ class Scene : public App{
 		Vector prevTranslation = Vector(0.0f, 0.0f, 0.0f);
 		Vector currentTranslation = Vector(0.0f, 0.0f, 0.0f);
 
+		float speedSun = 10.0f;
+
     public:
 		Scene() : App(1024, 640) {} ///Constructeur
         int quit(); ///Destructeur

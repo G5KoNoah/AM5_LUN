@@ -304,6 +304,16 @@ int Scene::render(){
             currentTranslation.z - deltaMove.z);
     }
 
+    Uint32 currentTime = SDL_GetTicks();
+    float deltaTime = (currentTime - lastTime) / 1000.0f; // en secondes
+    lastTime = currentTime;
+    if (key_state(SDLK_UP)) {
+		speedSun += 1.0f ;
+    }
+    else if(key_state(SDLK_DOWN)){
+        speedSun -= 1.0f;
+    }
+    dirLight->Rotation(deltaTime * speedSun);
     // n'appliquer que la différence par rapport à la translation précédente
     Vector delta = Vector(newTranslation.x - prevTranslation.x,
                           newTranslation.y - prevTranslation.y,
@@ -322,11 +332,9 @@ int Scene::render(){
 
 	//base->ChangeTransform(   RotationZ(1));
     //objects[0]->ChangeTransform(RotationY(10));
-    Uint32 currentTime = SDL_GetTicks();
-    float deltaTime = (currentTime - lastTime) / 1000.0f; // en secondes
-    lastTime = currentTime;
 
-	dirLight->Rotation(deltaTime *30);
+
+	
 	//std::cout << dirLight->direction.x << " " << dirLight->direction.y << " " << dirLight->direction.z << std::endl;
 
 	//objects[2]->ChangeTransform(Translation(vec3(1.0 * deltaTime , 0.0 , 0.0)));
@@ -334,7 +342,7 @@ int Scene::render(){
         //objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
         objects[i]->Draw(&m_camera, dirLight, pointLights);
     }
-
+ 
     glBindTexture(GL_TEXTURE_2D, m_shadowMap);
     renderQuad();
 

@@ -85,7 +85,11 @@ in vec3 vPos;
     vec3 day_extinction = exp(-exp(-((vPos.y + fsun.y * 4.0) * (exp(-vPos.y * 16.0) + 0.1) / 80.0) / Br) * (exp(-vPos.y * 16.0) + 0.1) * Kr / Br) * exp(-vPos.y * exp(-vPos.y * 8.0 ) * 4.0) * exp(-vPos.y * 2.0) * 4.0;
     vec3 night_extinction = vec3(1.0 - exp(fsun.y)) * 0.2;
     vec3 extinction = mix(day_extinction, night_extinction, -fsun.y * 0.2 + 0.5);
-    color.rgb = rayleigh * mie * extinction;
+
+    vec3 scattering = rayleigh * mie * extinction;
+    scattering = clamp(scattering, 0.0, 1.0);   
+    color.rgb = scattering * 0.7;             
+
 
     float cosSun = dot(dir, fsun);
     float cosMoon = dot(dir, moonDir);
@@ -123,12 +127,12 @@ in vec3 vPos;
     for (int i = 0; i < 10; i++)
     {
       float density = smoothstep(1.0 - cumulus, 1.0, fbm((0.7 + float(i) * 0.01) * vPos.xyz / vPos.y + time * 0.3));
-      color.rgb = mix(color.rgb, extinction * density * 5.0, min(density, 1.0) * max(vPos.y, 0.0));
+      color.rgb = mix(color.rgb, extinction * density * 2.0, min(density, 1.0) * max(vPos.y, 0.0));
     }
 
     // Dithering Noise
     color.rgb += noise(vPos * 1000) * 0.01;
-fragment_color = color; // bleu ciel fixe
+    fragment_color = color; // bleu ciel fixe
   }
 
 #endif
