@@ -84,7 +84,7 @@ void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> p
 
 }
 
-void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> pointLights, float waterHeight) {
+void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> pointLights, float waterHeight, bool dir) {
 	Transform mvp = Perspective(45.0f, float(1024) / 640, 0.1f, 1000.0f) * camera->view() * transform;
 	glUseProgram(shader);
 	program_uniform(shader, "mvpMatrix", mvp);
@@ -100,7 +100,12 @@ void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> p
 		program_uniform(shader, "material.diffuse", 0);
 		program_uniform(shader, "material.specular", 1);
 		program_uniform(shader, "material.shininess", 10.0f);
-		vec4 vecWater = vec4(0,-1,0,waterHeight);
+		vec4 vecWater;
+		if(dir){
+			vecWater = vec4(0,1,0,waterHeight);
+		}else{
+			vecWater = vec4(0,-1,0,waterHeight);
+		}
 		program_uniform(shader,"plane",vecWater);
 
 		program_uniform(shader, "model", transform);

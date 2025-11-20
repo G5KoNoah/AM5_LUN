@@ -196,7 +196,7 @@ void Scene::lightingPass(){
 
 }
 
-void Scene::FBO_2_PPM_file()
+void Scene::FBO_2_PPM_file(string st)
 {
     FILE    *output_image;
     int     output_width, output_height;
@@ -212,7 +212,7 @@ void Scene::FBO_2_PPM_file()
     glReadBuffer(GL_COLOR_ATTACHMENT0);
     glReadPixels(0, 0, output_width, output_height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 
-    output_image = fopen("C:\\Dataset\\output.ppm", "wt");
+    output_image = fopen(st.c_str(), "wt");
     fprintf(output_image,"P3\n");
     fprintf(output_image,"# Created by Ricao\n");
     fprintf(output_image,"%d %d\n",output_width,output_height);
@@ -293,31 +293,34 @@ int Scene::render(){
 
 	//objects[2]->ChangeTransform(Translation(vec3(1.0 * deltaTime , 0.0 , 0.0)));
 
-    /*
+    
 
     bindReflectionFrameBuffer();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for(int i=0; i<objects.size(); i++){
-        //objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
-        objects[i]->Draw(&m_camera, dirLight, pointLights);
+        objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
+        //FBO_2_PPM_file("ReflectionFramebuffer.ppm");
     }
     unbindCurrentFrameBuffer();
 
     bindRefractionFrameBuffer();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for(int i=0; i<objects.size(); i++){
-        objects[i]->Draw(&m_camera, dirLight, pointLights);
+        objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,false);
+        //FBO_2_PPM_file("RefractionFramebuffer.ppm");
     }
     unbindCurrentFrameBuffer();
 
-    */
+    
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     for(int i=0; i<objects.size(); i++){
-        objects[i]->Draw(&m_camera, dirLight, pointLights, waterHeight);
+        objects[i]->Draw(&m_camera, dirLight, pointLights);
+        //FBO_2_PPM_file("Frammebuffer");
     }
 
     //glBindTexture(GL_TEXTURE_2D, m_shadowMap);
     //renderQuad();
-    FBO_2_PPM_file();
 
 	return 1;
 }
