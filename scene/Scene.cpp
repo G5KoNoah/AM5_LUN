@@ -356,8 +356,7 @@ int Scene::render(){
 
     
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    //glDisable(GL_CLIP_DISTANCE0);
+    glDisable(GL_CLIP_DISTANCE0);
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights);
         //objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
@@ -413,7 +412,7 @@ void Scene::unbindCurrentFrameBuffer()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0); //back to default frame buffer
 	glViewport(0, 0, 1024, 640);
-    cout << "Scene : FBO de reflection initalise" << endl;
+    cout << "Scene : FBO de base initalise" << endl;
 }
 
 void Scene::waterCleanUp()
