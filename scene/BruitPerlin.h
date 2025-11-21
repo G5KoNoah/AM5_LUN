@@ -12,7 +12,7 @@
 class BruitPerlin{
 
 public:
-	static float hash(float x, float y);
+	static float hash(float x, float y, float seed);
 	static void randomGradient(int ix, int iy, float& gx, float& gy);
 	static float fade(float t);
 	static float gradDot(int ix, int iy, float x, float y);
