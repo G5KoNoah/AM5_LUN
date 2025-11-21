@@ -1,4 +1,3 @@
-
 //! \file tuto9_groups.cpp afficher un objet Mesh et ses matieres, dessine les groupe de triangles, un par un.
 
 #include "mat.h"
@@ -8,6 +7,7 @@
 #include "orbiter.h"
 #include "program.h"
 #include "uniforms.h"
+#include "texture.h"
 #include "draw.h"
 
 #include "app_camera.h"        // classe Application a deriver
@@ -16,12 +16,14 @@
 class TP : public AppCamera
 {
 public:
+    GLuint m_texture0;
+    GLuint m_texture1;
     // constructeur : donner les dimensions de l'image, et eventuellement la version d'openGL.
     TP( ) : AppCamera(1024, 640) {}
     
     int init( )
     {
-        m_objet= read_mesh("../data/IronMan.obj");
+        m_objet= read_mesh("../data/Tree.obj");
         if(m_objet.materials().count() == 0)
             // pas de matieres, pas d'affichage
             return -1;
@@ -40,7 +42,15 @@ public:
         
         // creer le shader program, uniquement necessaire pour l'option 2, cf render()
         m_program= read_program("../tutos/tuto9_groups.glsl");
+        m_texture1 = read_texture(0, "../data/DB2X2_L01.png");
         program_print_errors(m_program);
+        m_texture0 = read_texture(0, "../data/bark_0021.jpg");
+
+        // corrige l'affichage du tronc : autoriser le tiling si les UV dépassent [0,1]
+        glBindTexture(GL_TEXTURE_2D, m_texture0);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glBindTexture(GL_TEXTURE_2D, 0);
         
         // etat openGL par defaut
         glClearColor(0.2f, 0.2f, 0.2f, 1.f);        // couleur par defaut de la fenetre
@@ -48,6 +58,10 @@ public:
         glClearDepth(1.f);                          // profondeur par defaut
         glDepthFunc(GL_LESS);                       // ztest, conserver l'intersection la plus proche de la camera
         glEnable(GL_DEPTH_TEST);                    // activer le ztest
+
+        // Activer le blending pour supporter les textures avec alpha (feuillage, feuilles...)
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
         return 0;   // ras, pas d'erreur
     }
@@ -95,28 +109,36 @@ public:
             //   . transformations : la matrice declaree dans le vertex shader s'appelle mvpMatrix
             program_uniform(m_program, "mvpMatrix", mvp);
             // et mvMatrix 
-            program_uniform(m_program, "mvMatrix", mv);
-            
+      
             // afficher chaque groupe
             const Materials& materials= m_objet.materials();
             for(unsigned i= 0; i < m_groups.size(); i++)
             {
                 // recuperer la couleur de base de la matiere
                 const Material& material= materials(m_groups[i].index);
-                
-                // . parametres "supplementaires" :
-                //   . couleur de la matiere du groupe de triangle
-                program_uniform(m_program, "material_color", material.diffuse);
-                
-                //   . c'est aussi le bon moment pour changer de texture, par exemple...
-                // program_use_texture(m_program, "material_texture", ... );
-                
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, m_texture0); // Texture diffuse
+                glActiveTexture(GL_TEXTURE1);
+                glBindTexture(GL_TEXTURE_2D, m_texture1);
+
+
+
+                if (m_groups[i].index == 0) {
+
+                    program_uniform(m_program, "texture0", 0);
+              
+                }
+                else {
+                    program_uniform(m_program, "texture0", 1);
+                    
+                }
+
                 // go !
-                // indiquer quels attributs de sommets du mesh sont necessaires a l'execution du shader.
+                // indiquer quels attributs de Sommets du mesh sont necessaires a l'execution du shader.
                 // tuto9_groups.glsl n'utilise que position et normale. les autres de servent a rien.
                 
                 // 1 draw par groupe de triangles...
-                m_objet.draw(m_groups[i].first, m_groups[i].n, m_program, /* use position */ true, /* use texcoord */ false, /* use normal */ true, /* use color */ false, /* use material index*/ false);
+                m_objet.draw(m_groups[i].first, m_groups[i].n, m_program, /* use position */ true, /* use texcoord */ true, /* use normal */ true, /* use color */ false, /* use material index*/ false);
             }
         }
     #endif

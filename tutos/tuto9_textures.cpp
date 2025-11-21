@@ -22,19 +22,19 @@ public:
     
     int init( )
     {
-        m_objet= read_mesh("data/Tree.obj");
+        m_objet= read_mesh("../data/Tree.obj");
         
         Point pmin, pmax;
         m_objet.bounds(pmin, pmax);
         m_camera.lookat(pmin, pmax);
         
         // lire une texture sur l'unite 0
-        m_texture0= read_texture(0, "data/bark_0021.jpg");
+        m_texture0= read_texture(0, "../data/bark_0021.jpg");
         // lire une texture sur l'unite 1
-        m_texture1= read_texture(1, "data/DB2X2_L01.png");
+        m_texture1= read_texture(1, "../data/DB2X2_L01.png");
         
         // creer le shader program
-        m_program= read_program("tutos/tuto9_textures.glsl");
+        m_program= read_program("../tutos/tuto9_textures.glsl");
         program_print_errors(m_program);
         
         // etat openGL par defaut
