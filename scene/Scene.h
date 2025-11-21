@@ -94,11 +94,11 @@ class Scene : public App{
         const unsigned int SHADOW_WIDTH = 1024;
         const unsigned int SHADOW_HEIGHT = 720;
 
-        static const int REFLECTION_WIDTH = 320;
-        static const int REFLECTION_HEIGHT = 180;
+        static const int REFLECTION_WIDTH = 720;
+        static const int REFLECTION_HEIGHT = 720;
 
-        static const int REFRACTION_WIDTH = 320;
-        static const int REFRACTION_HEIGHT = 180;
+        static const int REFRACTION_WIDTH = 720;
+        static const int REFRACTION_HEIGHT = 720;
 
         //Geters
         GLuint getReflectionTexture();

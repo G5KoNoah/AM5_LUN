@@ -138,9 +138,6 @@ Transform Scene::shadowMapPass(){
 
     //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT); // Clear du buffer
 
-    int tps = SDL_GetTicks()/1000;
-    //cout << tps << endl;
-
     
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
@@ -353,6 +350,7 @@ int Scene::render(){
     bindRefractionFrameBuffer();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for(int i=0; i<objects.size(); i++){
+        showFramebufferError();
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,false);
         //FBO_2_PPM_file("RefractionFramebuffer.ppm",REFRACTION_WIDTH,REFRACTION_HEIGHT);
     }
@@ -360,12 +358,12 @@ int Scene::render(){
 
     
 
-    glDisable(GL_CLIP_DISTANCE0);
+    //glDisable(GL_CLIP_DISTANCE0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights);
         //objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
-        FBO_2_PPM_file("Frammebuffer",1024,640);
+        //FBO_2_PPM_file("Frammebuffer",1024,640);
     }
 
     //glBindTexture(GL_TEXTURE_2D, m_shadowMap);
