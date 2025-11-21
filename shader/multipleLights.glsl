@@ -26,8 +26,9 @@ out gl_PerVertex
 void main()
 {
     gl_Position = mvpMatrix * vec4(position, 1.0); // Calcul de la position
+    vec4 worldPosition = mvpMatrix * vec4(position, 1.0);
 
-    gl_ClipDistance[0] = dot(gl_Position,plane); // Calcul de la hauteur par rapport au plan
+    gl_ClipDistance[0] = dot(worldPosition,plane); // Calcul de la hauteur par rapport au plan
 
     FragPos = vec3(model * vec4(position, 1.0));
     Normal = mat3(transpose(inverse(model))) * aNormal;

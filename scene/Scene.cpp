@@ -42,8 +42,8 @@ int Scene::init(){
     
     objects.push_back(new Sky("../shader/sky.glsl", vec3(1.0, 1.0, 1.0), Identity(), base));
 	objects.push_back(new ObjectLoad(  "../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base, "../data/source/van.obj" ));
-    objects.push_back(new Terrain("../tutos/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity(), base));
-    objects.push_back(new Eau("../scene/shaders/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(-20.0,waterHeight,-20.0)), base));
+    objects.push_back(new Terrain("../shader/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity(), base));
+    //objects.push_back(new Eau("../scene/shaders/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(-20.0,waterHeight,-20.0)), base));
     
     //objects.push_back(new ObjectLoad("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base, "../data/source/van.obj"));
     //objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
@@ -341,30 +341,29 @@ int Scene::render(){
     float distance = 2 * (m_camera.position().y - waterHeight); // Renverser la camera pour illusion de reflections dans l'eau
     //TODO
     for(int i=0; i<objects.size(); i++){
-        showFramebufferError();
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
-        //FBO_2_PPM_file("ReflectionFramebuffer.ppm",REFLECTION_WIDTH,REFLECTION_HEIGHT);
     }
+    FBO_2_PPM_file("ReflectionFramebuffer.ppm",REFLECTION_WIDTH,REFLECTION_HEIGHT);
     unbindCurrentFrameBuffer();
 
     bindRefractionFrameBuffer();
+    showFramebufferError();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for(int i=0; i<objects.size(); i++){
-        showFramebufferError();
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,false);
-        //FBO_2_PPM_file("RefractionFramebuffer.ppm",REFRACTION_WIDTH,REFRACTION_HEIGHT);
     }
+    FBO_2_PPM_file("RefractionFramebuffer.ppm",REFRACTION_WIDTH,REFRACTION_HEIGHT);
     unbindCurrentFrameBuffer();
 
     
 
-    //glDisable(GL_CLIP_DISTANCE0);
+    glDisable(GL_CLIP_DISTANCE0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for(int i=0; i<objects.size(); i++){
         //objects[i]->Draw(&m_camera, dirLight, pointLights);
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
-        //FBO_2_PPM_file("Frammebuffer",1024,640);
     }
+    FBO_2_PPM_file("Frammebuffer",1024,640);
 
     //glBindTexture(GL_TEXTURE_2D, m_shadowMap);
     //renderQuad();

@@ -17,8 +17,8 @@ class Sky : public Object3D {
         Sky(std::string strShader, std::string strTexture1, std::string strTexture2, Transform tr, Entity* p); ///Constructeur deux textures
         Sky(std::string strShader, vec3 c, Transform tr, Entity* p); ///Constructeur couleur
 
-
         void Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLights);
+        void Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLights, float waterHeight, bool dir);
 };
 
 #endif
