@@ -65,7 +65,7 @@ class Scene : public App{
 		Vector prevTranslation = Vector(0.0f, 0.0f, 0.0f);
 		Vector currentTranslation = Vector(0.0f, 0.0f, 0.0f);
 
-        float waterHeight = 0.2; // Hauteur de l'eau
+        float waterHeight = 1.0; // Hauteur de l'eau
 
         // Framebuffers d'eau
         int createFrameBuffer();

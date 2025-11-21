@@ -102,7 +102,7 @@ void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> p
 		program_uniform(shader, "material.shininess", 10.0f);
 		vec4 vecWater;
 		if(dir){
-			vecWater = vec4(0,1,0,waterHeight);
+			vecWater = vec4(0,1,0,-waterHeight);
 		}else{
 			vecWater = vec4(0,-1,0,waterHeight);
 		}
