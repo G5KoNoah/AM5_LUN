@@ -138,7 +138,7 @@ Transform Scene::shadowMapPass(){
 
     //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT); // Clear du buffer
 
-    
+    /*
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
 
@@ -172,7 +172,7 @@ Transform Scene::shadowMapPass(){
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    
+    */
 
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
@@ -188,9 +188,9 @@ void Scene::lightingPass(){
 
     //glViewport(0, 0, 1080, 720); // Dimensions de la fenetre
 
-    for(int i=0; i<objects.size(); i++){
+    //for(int i=0; i<objects.size(); i++){
         //objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
-    }
+    //}
 
 
 }
@@ -361,8 +361,8 @@ int Scene::render(){
     //glDisable(GL_CLIP_DISTANCE0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for(int i=0; i<objects.size(); i++){
-        objects[i]->Draw(&m_camera, dirLight, pointLights);
-        //objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
+        //objects[i]->Draw(&m_camera, dirLight, pointLights);
+        objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
         //FBO_2_PPM_file("Frammebuffer",1024,640);
     }
 
@@ -400,7 +400,7 @@ void Scene::initialiseRefractionFrameBuffer()
 	refractionDepthTexture = createDepthTextureAttachment(REFRACTION_WIDTH,REFRACTION_HEIGHT);
     showFramebufferError();
 	unbindCurrentFrameBuffer();
-    cout << "Scene : FBO de reflection initalise" << endl;
+    cout << "Scene : FBO de refraction initalise" << endl;
 }
 
 void Scene::bindReflectionFrameBuffer()
