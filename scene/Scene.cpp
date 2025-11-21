@@ -30,22 +30,17 @@ int Scene::init(){
 	pointLights.push_back(new PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0f, 0.09f, 0.032f, Translation(vec3(2.0f, 1.0f, 0.0f)), base));
     objects.push_back(new Sky("../shader/clouds.glsl", vec3(1.0, 1.0, 1.0), Identity(), base));
 	// LISTE DES OBJETS
-	objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base));
-    objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base));
-    objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,2.0,0.0)), base));
-    objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,4.0,0.0)), base));
     //objects.push_back(new Cube("../tutos/multipleLights.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
 	//objects.push_back(new Terrain("../tutos/tuto9_color.glsl", vec3(0.0f,1.0f,0.0f), Identity(), base));
 	//objects.push_back(new Eau("../tutos/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity(), base));
     objects.push_back(new Plane("../tutos/tuto9_color.glsl", vec3(0.0f, 0.0f, 1.0f), Identity() * Translation(vec3(0.0, -1.0, 0.0)), base));
-	// Creation d'un objet 3D (un cube)
 
 	objects.push_back(new ObjectLoad(  "../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base, "../data/source/van.obj" ));
     objects.push_back(new Terrain("../tutos/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity(), base));
     //objects.push_back(new ObjectLoad("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base, "../data/source/van.obj"));
     //objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
 	//objects.push_back(new Plane("../tutos/multipleLights.glsl","../data/container2.png","../data/container2_specular.png", Identity(), base));
-	objects.push_back(new Arbre("../tutos/tuto9_materials.glsl", Identity(), base));
+	objects.push_back(new Arbre("../tutos/tuto9_materials.glsl", Identity() * Translation(vec3(0.0, 1.0, 0.0)), base));
     //objects.push_back(new Billboard("../shader/billboard.glsl", "../data/cloud.png", Identity() * Scale(10.), base));
 
 
@@ -248,27 +243,87 @@ int Scene::render(){
     Transform camWorld = view.inverse(); // pour repasser dans l�espace monde
 
     // vecteurs cam�ra en espace monde
-    Vector forward = normalize(camWorld(Vector(0.0f, 0.0f, -1.0f)));
+    Vector forward = normalize(camWorld(Vector(0.0f, 0.0f, 1.0f)));
     Vector right = normalize(camWorld(Vector(1.0f, 0.0f, 0.0f)));
 
-    const float moveSpeed = 0.1f;
-    const float scaleSpeed = 0.02f;
+    //const float moveSpeed = 0.1f;
+    //const float scaleSpeed = 0.02f;
 
     // --- �CHELLE ---
     // Z = agrandir, S = r�tr�cir
-    if (key_state(SDLK_z))
-        base->ChangeTransform(Scale(1.0f + scaleSpeed));
-    else if (key_state(SDLK_s))
-        base->ChangeTransform(Scale(1.0f - scaleSpeed));
+    //if (key_state(SDLK_z))
+    //    base->ChangeTransform(Scale(1.0f + scaleSpeed));
+    //else if (key_state(SDLK_s))
+    //    base->ChangeTransform(Scale(1.0f - scaleSpeed));
 
-    // --- TRANSLATION (selon la cam�ra) ---
+    const float scaleStep = 0.01f;
+    const float minScale = 0.001f;
+
+    if (key_state(SDLK_r)) {
+        float newScale = scaleFactor + scaleStep;
+        float delta = newScale / prevScale;
+        base->ChangeTransform(Scale(delta)); // applique seulement la variation
+        prevScale = newScale;
+        scaleFactor = newScale;
+    }
+    else if (key_state(SDLK_f)) {
+        float newScale = scaleFactor - scaleStep;
+        if (newScale < minScale) newScale = minScale;
+        float delta = newScale / prevScale;
+        base->ChangeTransform(Scale(delta));
+        prevScale = newScale;
+        scaleFactor = newScale;
+    }
+
+    // --- TRANSLATION (selon la caméra) ---
     // Q = gauche, D = droite
-    if (key_state(SDLK_q))
-        base->ChangeTransform(Translation(right * moveSpeed));
-    else if (key_state(SDLK_d))
-        base->ChangeTransform(Translation(-right * moveSpeed));
+    const float moveSpeed = 0.1f;
+    // calculer la nouvelle translation voulue en espace monde (accumulée)
+    Vector newTranslation = currentTranslation;
+    if (key_state(SDLK_q)) {
+        Vector deltaMove = right * moveSpeed; // right est Vector
+        newTranslation = Vector(currentTranslation.x + deltaMove.x,
+                                currentTranslation.y + deltaMove.y,
+                                currentTranslation.z + deltaMove.z);
+    }
+    else if (key_state(SDLK_d)) {
+        Vector deltaMove = right * moveSpeed;
+        newTranslation = Vector(currentTranslation.x - deltaMove.x,
+                                currentTranslation.y - deltaMove.y,
+                                currentTranslation.z - deltaMove.z);
+    }
+    else if (key_state(SDLK_z)) {
+        Vector deltaMove = forward * moveSpeed;
+        newTranslation = Vector(currentTranslation.x + deltaMove.x,
+            currentTranslation.y + deltaMove.y,
+            currentTranslation.z + deltaMove.z);
+    }else if (key_state(SDLK_s)) {
+        Vector deltaMove = forward * moveSpeed;
+        newTranslation = Vector(currentTranslation.x - deltaMove.x,
+            currentTranslation.y - deltaMove.y,
+            currentTranslation.z - deltaMove.z);
+    }
 
+    Uint32 currentTime = SDL_GetTicks();
+    float deltaTime = (currentTime - lastTime) / 1000.0f; // en secondes
+    lastTime = currentTime;
+    if (key_state(SDLK_UP)) {
+		speedSun += 1.0f ;
+    }
+    else if(key_state(SDLK_DOWN)){
+        speedSun -= 1.0f;
+    }
+    dirLight->Rotation(deltaTime * speedSun);
+    // n'appliquer que la différence par rapport à la translation précédente
+    Vector delta = Vector(newTranslation.x - prevTranslation.x,
+                          newTranslation.y - prevTranslation.y,
+                          newTranslation.z - prevTranslation.z);
 
+    if (delta.x != 0.0f || delta.y != 0.0f || delta.z != 0.0f) {
+        base->ChangeTransform(Translation(delta));
+        prevTranslation = newTranslation;
+        currentTranslation = newTranslation;
+    }
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -277,11 +332,9 @@ int Scene::render(){
 
 	//base->ChangeTransform(   RotationZ(1));
     //objects[0]->ChangeTransform(RotationY(10));
-    Uint32 currentTime = SDL_GetTicks();
-    float deltaTime = (currentTime - lastTime) / 1000.0f; // en secondes
-    lastTime = currentTime;
 
-	dirLight->Rotation(deltaTime *30);
+
+	
 	//std::cout << dirLight->direction.x << " " << dirLight->direction.y << " " << dirLight->direction.z << std::endl;
 
 	//objects[2]->ChangeTransform(Translation(vec3(1.0 * deltaTime , 0.0 , 0.0)));
@@ -289,7 +342,7 @@ int Scene::render(){
         //objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
         objects[i]->Draw(&m_camera, dirLight, pointLights);
     }
-
+ 
     glBindTexture(GL_TEXTURE_2D, m_shadowMap);
     renderQuad();
 

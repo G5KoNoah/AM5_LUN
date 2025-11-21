@@ -32,7 +32,7 @@ void Arbre::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointL
     // . recuperer les transformations
     Transform model = transform;
     Transform view = camera->view();
-    Transform projection = Perspective(45.0f, float(1024) / 640, 0.1f, 1000.0f) * camera->view() * transform;
+    Transform projection = Perspective(45.0f, float(1024) / 640, 0.1f, 1000.0f);
 
     // . composer les transformations : model, view et projection
     Transform mv = view * model;
