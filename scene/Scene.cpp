@@ -40,7 +40,8 @@ int Scene::init(){
     //objects.push_back(new ObjectLoad("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base, "../data/source/van.obj"));
     //objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
 	//objects.push_back(new Plane("../tutos/multipleLights.glsl","../data/container2.png","../data/container2_specular.png", Identity(), base));
-	objects.push_back(new Arbre("../tutos/tuto9_groups.glsl", Identity() * Translation(vec3(0.0, 1.0, 0.0)), base));
+	
+    objects.push_back(new Arbre("../shader/multipleLights.glsl", Identity() * Translation(vec3(0.0, 1.0, 0.0)), base));
     //objects.push_back(new Billboard("../shader/billboard.glsl", "../data/cloud.png", Identity() * Scale(10.), base));
 
 

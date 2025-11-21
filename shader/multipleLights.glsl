@@ -95,6 +95,10 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 
 void main()
 {
+    vec4 tex = texture(material.diffuse, vertex_texcoord); // sample once (r,g,b,a)
+
+    float alpha = tex.a;
+
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
 
@@ -102,6 +106,6 @@ void main()
     for(int i = 0; i < nbPointLights; i++)
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
 
-    FragColor = vec4(result, 1.0);
+    FragColor = vec4(result, alpha);
 }
 #endif
