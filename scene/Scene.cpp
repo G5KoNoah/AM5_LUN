@@ -343,7 +343,7 @@ int Scene::render(){
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
     }
-    //FBO_2_PPM_file("ReflectionFramebuffer.ppm",REFLECTION_WIDTH,REFLECTION_HEIGHT);
+    FBO_2_PPM_file("ReflectionFramebuffer.ppm",REFLECTION_WIDTH,REFLECTION_HEIGHT);
     unbindCurrentFrameBuffer();
 
     bindRefractionFrameBuffer();
@@ -352,21 +352,25 @@ int Scene::render(){
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,false);
     }
-    //FBO_2_PPM_file("RefractionFramebuffer.ppm",REFRACTION_WIDTH,REFRACTION_HEIGHT);
+    FBO_2_PPM_file("RefractionFramebuffer.ppm",REFRACTION_WIDTH,REFRACTION_HEIGHT);
     unbindCurrentFrameBuffer();
 
     
 
-    //glDisable(GL_CLIP_DISTANCE0);
+    glDisable(GL_CLIP_DISTANCE0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for(int i=0; i<objects.size(); i++){
-        //objects[i]->Draw(&m_camera, dirLight, pointLights);
-        objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
+        objects[i]->Draw(&m_camera, dirLight, pointLights);
+        //objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
     }
     //FBO_2_PPM_file("Frammebuffer",1024,640);
 
     //glBindTexture(GL_TEXTURE_2D, m_shadowMap);
     //renderQuad();
+
+    if (key_state(SDLK_e)) {
+        //FAIRE UN TRUC POUR FERMER LA FENETRE TOUT DE SUITE POUR VOIR SI LE TRUC SE DEBUG LES IMAGES DE FRAMEBUFFERS
+    }
 
 	return 1;
 }
