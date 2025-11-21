@@ -2,12 +2,12 @@
 
 // Classe contenant les fonctions pour le bruit de Perlin
 
-float BruitPerlin::hash(float x, float y) {
-    return std::fmod(std::sin(x * 127.1f + y * 311.7f) * 43758.5453f, 1.0f);
+float BruitPerlin::hash(float x, float y, float seed) {
+    return std::fmod(std::sin(x * 127.1f + y * 311.7f) * 43758.5453f * seed, 1.0f);
 }
 
 void BruitPerlin::randomGradient(int ix, int iy, float& gx, float& gy) {
-    float h = hash((float)ix, (float)iy);
+	float h = hash((float)ix, (float)iy, 411.1547f); // Changer la graine pour differentes variations
     float angle = h * 2.0f * 3.14159265f; // 2π
     gx = std::cos(angle);
     gy = std::sin(angle);
