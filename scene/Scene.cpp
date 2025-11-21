@@ -339,10 +339,12 @@ int Scene::render(){
     glEnable(GL_CLIP_DISTANCE0); // Activation de gl_clip_distance
 
     bindReflectionFrameBuffer();
+    showFramebufferError();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     float distance = 2 * (m_camera.position().y - waterHeight); // Renverser la camera pour illusion de reflections dans l'eau
     //TODO
     for(int i=0; i<objects.size(); i++){
+        showFramebufferError();
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
         //FBO_2_PPM_file("ReflectionFramebuffer.ppm",REFLECTION_WIDTH,REFLECTION_HEIGHT);
     }
@@ -386,6 +388,7 @@ void Scene::initialiseReflectionFrameBuffer() {
 	reflectionFrameBuffer = createFrameBuffer();
 	reflectionTexture = createTextureAttachment(REFLECTION_WIDTH,REFLECTION_HEIGHT);
 	reflectionDepthBuffer = createDepthBufferAttachment(REFLECTION_WIDTH,REFLECTION_HEIGHT);	
+    showFramebufferError();
     unbindCurrentFrameBuffer();
     cout << "Scene : FBO de reflection initialise" << endl;
 }   
@@ -397,6 +400,7 @@ void Scene::initialiseRefractionFrameBuffer()
     refractionFrameBuffer = createFrameBuffer();
 	refractionTexture = createTextureAttachment(REFRACTION_WIDTH,REFRACTION_HEIGHT);
 	refractionDepthTexture = createDepthTextureAttachment(REFRACTION_WIDTH,REFRACTION_HEIGHT);
+    showFramebufferError();
 	unbindCurrentFrameBuffer();
     cout << "Scene : FBO de reflection initalise" << endl;
 }
@@ -414,6 +418,7 @@ void Scene::bindRefractionFrameBuffer()
 void Scene::unbindCurrentFrameBuffer()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0); //back to default frame buffer
+    showFramebufferError();
 	glViewport(0, 0, 1024, 640);
     cout << "Scene : FBO de base initalise" << endl;
 }
@@ -435,6 +440,7 @@ int Scene::createFrameBuffer()
     glGenFramebuffers(1, &fbo);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo); 
     glDrawBuffer(GL_COLOR_ATTACHMENT0);
+    showFramebufferError();
     return fbo;
 }
 
@@ -481,6 +487,7 @@ void Scene::bindFrameBuffer(int frameBuffer, int width, int height){
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glViewport(0, 0, width, height);
     cout << "Scene : Changement de framebuffer : " << frameBuffer << endl;
+    showFramebufferError();
 }
 
 void Scene::renderWater(){
@@ -500,4 +507,56 @@ unsigned int Scene::getRefractionTexture() {
 
 unsigned int Scene::getRefractionDepthTexture() {
     return refractionDepthTexture;
+}
+
+void Scene::showFramebufferError(){
+
+GLuint status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+switch(status) {
+    case GL_FRAMEBUFFER_COMPLETE:
+    //cout << "FRAMEBUFFER : Pas de probleme ?" << endl;
+        return;
+        break;
+
+case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+    cout << "FRAMEBUFFER : An attachment could not be bound to frame buffer object!" << endl;
+    break;
+
+case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+    cout << "FRAMEBUFFER : Attachments are missing! At least one image (texture) must be bound to the frame buffer object!" << endl;
+    break;
+
+case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
+    cout << "FRAMEBUFFER : The dimensions of the buffers attached to the currently used frame buffer object do not match!" << endl;
+    break;
+
+case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
+    cout << "FRAMEBUFFER : The formats of the currently used frame buffer object are not supported or do not fit together!" << endl;
+    break;
+
+case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+    cout << "FRAMEBUFFER : A Draw buffer is incomplete or undefinied. All draw buffers must specify attachment points that have images attached." << endl;
+    break;
+
+case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+    cout << "FRAMEBUFFER : A Read buffer is incomplete or undefinied. All read buffers must specify attachment points that have images attached." << endl;
+    break;
+
+case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+    cout << "FRAMEBUFFER : All images must have the same number of multisample samples." << endl;
+    break;
+
+case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS :
+    cout << "FRAMEBUFFER : If a layered image is attached to one attachment, then all attachments must be layered attachments. The attached layers do not have to have the same number of layers, nor do the layers have to come from the same kind of texture." << endl;
+    break;
+
+case GL_FRAMEBUFFER_UNSUPPORTED:
+    cout << "FRAMEBUFFER : Attempt to use an unsupported format combinaton!" << endl;
+    break;
+
+default:
+    cout << "FRAMEBUFFER : Unknown error while attempting to create frame buffer object!" << endl;
+    break;
+}
+
 }

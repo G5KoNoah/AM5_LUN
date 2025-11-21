@@ -77,6 +77,7 @@ class Scene : public App{
         void initialiseRefractionFrameBuffer();
 
         void bindFrameBuffer(int frameBuffer, int width, int height);
+        void showFramebufferError();
 
         GLuint m_fbo;
         GLuint m_shadowMap;
