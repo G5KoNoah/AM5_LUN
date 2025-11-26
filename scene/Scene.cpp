@@ -44,7 +44,8 @@ int Scene::init(){
 	objects.push_back(new ObjectLoad(  "../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base, "../data/source/van.obj" ));
     objects.push_back(new Terrain("../shader/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity(), base));
     //objects.push_back(new Eau("../scene/shaders/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(-20.0,waterHeight,-20.0)), base));
-    
+    eau = new Eau("../scene/shaders/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(-20.0,waterHeight,-20.0)), base);
+
     //objects.push_back(new ObjectLoad("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base, "../data/source/van.obj"));
     //objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
 	//objects.push_back(new Plane("../tutos/multipleLights.glsl","../data/container2.png","../data/container2_specular.png", Identity(), base));
@@ -365,6 +366,16 @@ int Scene::render(){
         objects[i]->Draw(&m_camera, dirLight, pointLights);
         //objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
     }
+    //Render de l'eau en dernier
+    cout << "Avant connexion" << endl;
+    glUseProgram(waterShader);
+    cout << "Apres connexion" << endl;
+    connectTextureUnits();
+    cout << "Apres lien" << endl;
+    renderWater();
+    cout << "Apres rendu eau" << endl;
+    eau->Draw(&m_camera, dirLight, pointLights);
+    cout << "Apres affichage eau" << endl;
     //FBO_2_PPM_file("Frammebuffer",1024,640);
 
     //glBindTexture(GL_TEXTURE_2D, m_shadowMap);
@@ -423,7 +434,7 @@ void Scene::unbindCurrentFrameBuffer()
     glBindFramebuffer(GL_FRAMEBUFFER, 0); //back to default frame buffer
     showFramebufferError();
 	glViewport(0, 0, 1024, 640);
-    cout << "Scene : FBO de base initalise" << endl;
+    //cout << "Scene : FBO de base initalise" << endl;
 }
 
 void Scene::waterCleanUp()
@@ -435,7 +446,6 @@ void Scene::waterCleanUp()
     glDeleteTextures(1, &refractionTexture);
     glDeleteTextures(1, &refractionDepthTexture);
 }
-
 
 int Scene::createFrameBuffer()
 {
@@ -489,7 +499,7 @@ void Scene::bindFrameBuffer(int frameBuffer, int width, int height){
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glViewport(0, 0, width, height);
-    cout << "Scene : Changement de framebuffer : " << frameBuffer << endl;
+    //cout << "Scene : Changement de framebuffer : " << frameBuffer << endl;
     showFramebufferError();
 }
 
@@ -521,8 +531,8 @@ void Scene::getUniformLocations(){
 
 void Scene::connectTextureUnits(){
     
-    program_uniform(waterShader,"reflextionTexture",0);
-    program_uniform(waterShader,"refraxtionTexture",1);
+    program_uniform(waterShader,"reflextionTexture",reflectionTexture);
+    program_uniform(waterShader,"refraxtionTexture",refractionTexture);
 
 }
 

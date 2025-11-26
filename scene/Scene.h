@@ -48,6 +48,7 @@ class Scene : public App{
         Orbiter m_camera;
         Uint32 lastTime = SDL_GetTicks();
         Transform mvpLight;
+        Object3D * eau;
 
     public:
 		Scene() : App(1024, 640) {} ///Constructeur

@@ -14,6 +14,7 @@ Eau::Eau(std::string strShader, vec3 c, Transform tr, Entity* p) : Plane(strShad
 void Eau::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLights) {
 	Transform mvp = Perspective(45.0f, float(1920) / 1080, 0.1f, 1000.0f) * camera->view() * transform;
 	glUseProgram(shader);
+
 	program_uniform(shader, "mvpMatrix", mvp);
 	program_uniform(shader, "time", global_time() / 1000);
 	if (texture != 0) {
