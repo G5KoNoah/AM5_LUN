@@ -83,6 +83,8 @@ class Scene : public App{
         GLuint m_shadowMap;
         GLuint depthMapShader; // Shader de la depthMap
 
+        GLuint waterShader; // Shader de l'eau
+
         unsigned int reflectionFrameBuffer;
 	    unsigned int reflectionTexture;
 	    unsigned int reflectionDepthBuffer;
@@ -104,6 +106,9 @@ class Scene : public App{
         GLuint getReflectionTexture();
         GLuint getRefractionTexture();
         GLuint getRefractionDepthTexture();
+        void getUniformLocations();
+
+        void connectTextureUnits();
 
         //Bind
         void bindReflectionFrameBuffer();

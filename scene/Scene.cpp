@@ -63,6 +63,8 @@ int Scene::init(){
 
     depthMapShader = read_program("../scene/shaders/depthShader.glsl"); // Shader de la depthMap
 
+    waterShader = read_program("../scene/shaders/water.glsl"); // Shader de l'eau
+
     //GLuint texSampler = glGetUniformLocation(shaderLights, "shadowMap");
     //glUniform1i(texSampler, 0);
 
@@ -343,7 +345,7 @@ int Scene::render(){
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
     }
-    FBO_2_PPM_file("ReflectionFramebuffer.ppm",REFLECTION_WIDTH,REFLECTION_HEIGHT);
+    //FBO_2_PPM_file("ReflectionFramebuffer.ppm",REFLECTION_WIDTH,REFLECTION_HEIGHT);
     unbindCurrentFrameBuffer();
 
     bindRefractionFrameBuffer();
@@ -352,7 +354,7 @@ int Scene::render(){
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,false);
     }
-    FBO_2_PPM_file("RefractionFramebuffer.ppm",REFRACTION_WIDTH,REFRACTION_HEIGHT);
+    //FBO_2_PPM_file("RefractionFramebuffer.ppm",REFRACTION_WIDTH,REFRACTION_HEIGHT);
     unbindCurrentFrameBuffer();
 
     
@@ -508,6 +510,20 @@ unsigned int Scene::getRefractionTexture() {
 
 unsigned int Scene::getRefractionDepthTexture() {
     return refractionDepthTexture;
+}
+
+void Scene::getUniformLocations(){
+    
+    reflectionTexture = glGetUniformLocation(waterShader,"reflextionTexture");
+    refractionTexture = glGetUniformLocation(waterShader,"refraxtionTexture");
+
+}
+
+void Scene::connectTextureUnits(){
+    
+    program_uniform(waterShader,"reflextionTexture",0);
+    program_uniform(waterShader,"refraxtionTexture",1);
+
 }
 
 void Scene::showFramebufferError(){
