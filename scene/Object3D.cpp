@@ -11,6 +11,9 @@ Object3D::Object3D(std::string strShader, std::string strTexture1, std::string s
 	texture_specular = read_texture(1, strTexture2.c_str());
 	shader = read_program(strShader.c_str());
 	std::cout << "Deux textures" << std::endl;
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
 Object3D::Object3D(std::string strShader, vec3 c, Transform tr, Entity* p) : Entity(tr, p){

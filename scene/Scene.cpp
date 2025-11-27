@@ -36,6 +36,10 @@ int Scene::init(){
     objects.push_back(new Plane("../tutos/tuto9_color.glsl", vec3(0.0f, 0.0f, 1.0f), Identity() * Translation(vec3(0.0, -1.0, 0.0)), base));
 
 	objects.push_back(new ObjectLoad(  "../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base, "../data/source/van.obj" ));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/road/texture_road.jpg", "../data/road/texture_road.jpg", Identity(), base, "../data/road/road.obj"));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/bridge/texture_bridge.jpg", "../data/bridge/texture_bridge.jpg", Identity(), base, "../data/bridge/bridge.obj"));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/island/beton.jpg", "../data/island/beton.jpg", Identity(), base, "../data/island/island.obj"));
+
     objects.push_back(new Terrain("../tutos/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity(), base));
     //objects.push_back(new ObjectLoad("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base, "../data/source/van.obj"));
     //objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
