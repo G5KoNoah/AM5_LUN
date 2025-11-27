@@ -341,12 +341,18 @@ int Scene::render(){
     bindReflectionFrameBuffer();
     showFramebufferError();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    float distance = 2 * (m_camera.position().y - waterHeight); // Renverser la camera pour illusion de reflections dans l'eau
-    //TODO
+    float distance = 0.2 * (m_camera.position().y - waterHeight); // Renverser la camera pour illusion de reflections dans l'eau
+    cout << distance << endl;
+    m_camera.write_orbiter("CameraPositionAvant");
+    m_camera.translation(0,-distance); // Translation
+    m_camera.rotation(-180,180); // Rotation
+    m_camera.write_orbiter("CameraPositionApres");
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
     }
-    //FBO_2_PPM_file("ReflectionFramebuffer.ppm",REFLECTION_WIDTH,REFLECTION_HEIGHT);
+    FBO_2_PPM_file("ReflectionFramebuffer.ppm",REFLECTION_WIDTH,REFLECTION_HEIGHT);
+    m_camera.translation(0,distance); // Translation inverse
+    m_camera.rotation(180,-180); // Rotiation inverse
     unbindCurrentFrameBuffer();
 
     bindRefractionFrameBuffer();
@@ -355,7 +361,7 @@ int Scene::render(){
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,false);
     }
-    //FBO_2_PPM_file("RefractionFramebuffer.ppm",REFRACTION_WIDTH,REFRACTION_HEIGHT);
+    FBO_2_PPM_file("RefractionFramebuffer.ppm",REFRACTION_WIDTH,REFRACTION_HEIGHT);
     unbindCurrentFrameBuffer();
 
     
@@ -367,15 +373,15 @@ int Scene::render(){
         //objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
     }
     //Render de l'eau en dernier
-    cout << "Avant connexion" << endl;
-    glUseProgram(waterShader);
-    cout << "Apres connexion" << endl;
-    connectTextureUnits();
-    cout << "Apres lien" << endl;
-    renderWater();
-    cout << "Apres rendu eau" << endl;
-    eau->Draw(&m_camera, dirLight, pointLights);
-    cout << "Apres affichage eau" << endl;
+    //cout << "Avant connexion" << endl;
+    //glUseProgram(waterShader);
+    //cout << "Apres connexion" << endl;
+    //connectTextureUnits();
+    //cout << "Apres lien" << endl;
+    //renderWater();
+    //cout << "Apres rendu eau" << endl;
+    //eau->Draw(&m_camera, dirLight, pointLights);
+    //cout << "Apres affichage eau" << endl;
     //FBO_2_PPM_file("Frammebuffer",1024,640);
 
     //glBindTexture(GL_TEXTURE_2D, m_shadowMap);
