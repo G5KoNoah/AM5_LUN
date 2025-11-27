@@ -33,16 +33,25 @@ int Scene::init(){
     //objects.push_back(new Cube("../tutos/multipleLights.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
 	//objects.push_back(new Terrain("../tutos/tuto9_color.glsl", vec3(0.0f,1.0f,0.0f), Identity(), base));
 	//objects.push_back(new Eau("../tutos/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity(), base));
-    objects.push_back(new Plane("../tutos/tuto9_color.glsl", vec3(0.0f, 0.0f, 1.0f), Identity() * Translation(vec3(0.0, -1.0, 0.0)), base));
 
-	objects.push_back(new ObjectLoad(  "../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base, "../data/source/van.obj" ));
-    objects.push_back(new Terrain("../tutos/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity(), base));
+	//objects.push_back(new ObjectLoad(  "../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base, "../data/source/van.obj" ));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/Cottage_Dirt_Base_Color.png", "../data/Cottage_Dirt_Normal.png", Identity()*Translation(2.0f,2.0f,2.0f)*Scale(0.2), base, "../data/Cottage_FREE.obj"));
+    //objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/Cat_diffuse.jpg", "../data/Cat_bump.jpg", Identity() * Translation(-2.0f, 2.0f, 2.0f) * RotationX(-90.0f) * Scale(0.02), base, "../data/cat.obj"));
+    //objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/Wood_Tower_Col.jpg", "../data/Wood_Tower_Nor.jpg", Identity() * Translation(-2.0f, 2.0f, -2.0f) * Scale(0.5), base, "../data/watchTower.obj"));
+    //objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/fish.jpg", Identity() * Translation(-2.0f, 2.0f, -2.0f) * Scale(0.5), base, "../data/fish.obj"));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/boat_d.tga", "../data/boat_n.tga", Identity() * Translation(-2.0f, 2.0f, -2.0f) * Scale(0.008), base, "../data/boat.obj"));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/banc_base.png", "../data/banc_normal", Identity() * Translation(2.0f, 2.0f, -2.0f) * Scale(0.5), base, "../data/banc.obj"));
+    //objects.push_back(new Terrain("../tutos/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity(), base));
     //objects.push_back(new ObjectLoad("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base, "../data/source/van.obj"));
     //objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
 	//objects.push_back(new Plane("../tutos/multipleLights.glsl","../data/container2.png","../data/container2_specular.png", Identity(), base));
 	
-    objects.push_back(new Arbre("../shader/multipleLights.glsl", Identity() * Translation(vec3(0.0, 1.0, 0.0)), base));
+    //objects.push_back(new Arbre("../shader/multipleLights.glsl", Identity() * Translation(vec3(0.0, 1.0, 0.0)), base));
     //objects.push_back(new Billboard("../shader/billboard.glsl", "../data/cloud.png", Identity() * Scale(10.), base));
+	Arbres * a = new Arbres("../shader/multipleLights.glsl", vec3(0.4, 0.25, 0.1), Identity(), base, (Terrain*)objects[1]);
+    for (unsigned int i = 0; i < 5; i++) {
+		objects.push_back(a->get_tree(i));
+    }
 
 
 	
