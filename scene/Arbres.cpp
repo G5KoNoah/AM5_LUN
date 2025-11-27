@@ -14,7 +14,7 @@ Arbres::Arbres(std::string strShader, std::string strTexture1, std::string strTe
 }*/
 
 Arbres::Arbres(std::string strShader, vec3 c, Transform tr, Entity* p, Terrain* terrain){
-    arbres = make_trees(strShader, c, tr, p, 0.0f, 0.0f, 5.0f, 3, 0.2f, terrain);
+    arbres = make_trees(strShader, c, tr, p, 0.0f, 0.0f, 5.0f, 5, 0.2f, terrain);
 }
 
 vector<Object3D*> Arbres::make_trees(std::string strShader, vec3 c, Transform tr, Entity* p, float px, float pz, float r, int nb_arbre, float ra, Terrain * terrain)

@@ -7,7 +7,7 @@ float BruitPerlin::hash(float x, float y, float seed) {
 }
 
 void BruitPerlin::randomGradient(int ix, int iy, float& gx, float& gy) {
-	float h = hash((float)ix, (float)iy, 411.1547f); // Changer la graine pour differentes variations
+	float h = hash((float)ix, (float)iy, 54.1547f); // Changer la graine pour differentes variations
     float angle = h * 2.0f * 3.14159265f; // 2π
     gx = std::cos(angle);
     gy = std::sin(angle);
