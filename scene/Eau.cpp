@@ -20,33 +20,13 @@ void Eau::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLig
 	if (texture != 0) {
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, reflection); // Texture diffuse
+		glBindTexture(GL_TEXTURE_2D, reflection); // Reflection
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, refraction);
+		glBindTexture(GL_TEXTURE_2D, refraction); // Refraction
 
-		program_uniform(shader, "material.diffuse", 0);
-		program_uniform(shader, "material.specular", 1);
-		program_uniform(shader, "material.shininess", 10.0f);
+		program_uniform(shader, "reflection", 0);
+		program_uniform(shader, "refraction", 1);
 
-		program_uniform(shader, "model", transform);
-		program_uniform(shader, "viewPos", camera->position());
-		if (dirLight != nullptr) {
-			program_uniform(shader, "dirLight.direction", dirLight->direction);
-			program_uniform(shader, "dirLight.ambient", dirLight->ambient);
-			program_uniform(shader, "dirLight.diffuse", dirLight->diffuse);
-			program_uniform(shader, "dirLight.specular", dirLight->specular);
-		}
-		program_uniform(shader, "nbPointLights", (int)pointLights.size());
-		for (int i = 0; i < pointLights.size(); i++) {
-			std::string number = std::to_string(i);
-			program_uniform(shader, ("pointLights[" + number + "].position").c_str(), pointLights[i]->transform);
-			program_uniform(shader, ("pointLights[" + number + "].ambient").c_str(), pointLights[i]->ambient);
-			program_uniform(shader, ("pointLights[" + number + "].diffuse").c_str(), pointLights[i]->diffuse);
-			program_uniform(shader, ("pointLights[" + number + "].specular").c_str(), pointLights[i]->specular);
-			program_uniform(shader, ("pointLights[" + number + "].constant").c_str(), pointLights[i]->constant);
-			program_uniform(shader, ("pointLights[" + number + "].linear").c_str(), pointLights[i]->linear);
-			program_uniform(shader, ("pointLights[" + number + "].quadratic").c_str(), pointLights[i]->quadratic);
-		}
 		mesh.draw(shader, /* use position */ true, /* use texcoord */ (texture != 0), /* use normal */ (dirLight != nullptr || pointLights.size() > 0), /* use color */ false, /* use material index*/ true);
 	}
 	else {
