@@ -17,6 +17,9 @@ public:
     Eau(std::string strShader, vec3 c, Transform tr, Entity* p); ///Constructeur couleur
 
 	void Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLights) override;
+
+    GLuint reflection; ///Texture de l'objet
+	GLuint refraction; ///Seconde texture de l'objet
 };
 
 #endif

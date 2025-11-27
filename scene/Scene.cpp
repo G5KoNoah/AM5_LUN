@@ -46,13 +46,11 @@ int Scene::init(){
     //objects.push_back(new Eau("../scene/shaders/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(-20.0,waterHeight,-20.0)), base));
     eau = new Eau("../scene/shaders/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(-20.0,waterHeight,-20.0)), base);
 
-    //objects.push_back(new ObjectLoad("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base, "../data/source/van.obj"));
+    objects.push_back(new ObjectLoad("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base, "../data/cube.obj"));
     //objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
 	//objects.push_back(new Plane("../tutos/multipleLights.glsl","../data/container2.png","../data/container2_specular.png", Identity(), base));
 
     //objects.push_back(new Billboard("../shader/billboard.glsl", "../data/cloud.png", Identity() * Scale(10.), base));
-
-
 	
     // etat openGL par defaut
 
@@ -336,23 +334,28 @@ int Scene::render(){
 
     
 
+    objects[3]->texture = getReflectionTexture();
+    objects[3]->texture_specular = getRefractionTexture();
+
     glEnable(GL_CLIP_DISTANCE0); // Activation de gl_clip_distance
 
     bindReflectionFrameBuffer();
     showFramebufferError();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    float distance = 0.2 * (m_camera.position().y - waterHeight); // Renverser la camera pour illusion de reflections dans l'eau
-    cout << distance << endl;
-    m_camera.write_orbiter("CameraPositionAvant");
-    m_camera.translation(0,-distance); // Translation
-    m_camera.rotation(-180,180); // Rotation
-    m_camera.write_orbiter("CameraPositionApres");
+    cout << "Position y camera :" << m_camera.position().y  << endl;
+    float distance = 2 * (m_camera.position().y - waterHeight); // Renverser la camera pour illusion de reflections dans l'eau
+    cout << "Distance calculee avec eau : " << distance << endl;
+    //m_camera.translation(0,distance); // Translation
+    //base->ChangeTransform(Translation(vec3(0,-distance,0)));
+    //m_camera.rotation(-180,180); // Rotation
+    //cout << "Position y camera apres calcul :" << m_camera.position().y  << endl;
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
     }
-    FBO_2_PPM_file("ReflectionFramebuffer.ppm",REFLECTION_WIDTH,REFLECTION_HEIGHT);
-    m_camera.translation(0,distance); // Translation inverse
-    m_camera.rotation(180,-180); // Rotiation inverse
+    //FBO_2_PPM_file("ReflectionFramebuffer.ppm",REFLECTION_WIDTH,REFLECTION_HEIGHT);
+    //m_camera.translation(0,-distance); // Translation inverse
+    //base->ChangeTransform(Translation(vec3(0,distance,0)));
+    //m_camera.rotation(180,-180); // Rotiation inverse
     unbindCurrentFrameBuffer();
 
     bindRefractionFrameBuffer();
@@ -361,7 +364,7 @@ int Scene::render(){
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,false);
     }
-    FBO_2_PPM_file("RefractionFramebuffer.ppm",REFRACTION_WIDTH,REFRACTION_HEIGHT);
+    //FBO_2_PPM_file("RefractionFramebuffer.ppm",REFRACTION_WIDTH,REFRACTION_HEIGHT);
     unbindCurrentFrameBuffer();
 
     
@@ -380,6 +383,7 @@ int Scene::render(){
     //cout << "Apres lien" << endl;
     //renderWater();
     //cout << "Apres rendu eau" << endl;
+    //eau->reflection
     //eau->Draw(&m_camera, dirLight, pointLights);
     //cout << "Apres affichage eau" << endl;
     //FBO_2_PPM_file("Frammebuffer",1024,640);

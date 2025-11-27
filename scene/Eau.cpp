@@ -19,6 +19,10 @@ void Eau::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLig
 	program_uniform(shader, "time", global_time() / 1000);
 	if (texture != 0) {
 
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, reflection); // Texture diffuse
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, refraction);
 
 		program_uniform(shader, "material.diffuse", 0);
 		program_uniform(shader, "material.specular", 1);

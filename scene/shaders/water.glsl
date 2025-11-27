@@ -19,6 +19,8 @@ void main( )
 #endif
 
 
+
+
 #ifdef FRAGMENT_SHADER
 
 in vec4 clipSpace;

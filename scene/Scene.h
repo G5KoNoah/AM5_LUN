@@ -48,7 +48,7 @@ class Scene : public App{
         Orbiter m_camera;
         Uint32 lastTime = SDL_GetTicks();
         Transform mvpLight;
-        Object3D * eau; // Objet eau rendu en dernier
+        Eau * eau; // Objet eau rendu en dernier
 
     public:
 		Scene() : App(1024, 640) {} ///Constructeur
@@ -66,7 +66,7 @@ class Scene : public App{
 		Vector prevTranslation = Vector(0.0f, 0.0f, 0.0f);
 		Vector currentTranslation = Vector(0.0f, 0.0f, 0.0f);
 
-        float waterHeight = 1.5; // Hauteur de l'eau
+        float waterHeight = 2.0; // Hauteur de l'eau
 
         // Framebuffers d'eau
         int createFrameBuffer();
