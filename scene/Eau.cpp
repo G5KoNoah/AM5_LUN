@@ -28,15 +28,9 @@ void Eau::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLig
 	mesh.draw(shader, /* use position */ true, /* use texcoord */ (texture != 0), /* use normal */ (dirLight != nullptr || pointLights.size() > 0), /* use color */ false, /* use material index*/ true);
 
 	if (reflection != 0 && refraction != 0) {
-
-		
-
-		
-
+		//cout << "Bien dans Eau" << endl;
 	}
 	else {
 		cout << "Probleme dans Eau car else : Voir Eau.cpp" << endl;
-		//program_uniform(shader, "color", Color(color.x, color.y, color.z, 1.0f));
-		//mesh.draw(shader, /* use position */ true, /* use texcoord */ (texture != 0), /* use normal */ (dirLight != nullptr || pointLights.size() > 0), /* use color */ false, /* use material index*/ true);
 	}
 }
