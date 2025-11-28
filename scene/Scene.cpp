@@ -42,7 +42,7 @@ int Scene::init(){
     
     objects.push_back(new Sky("../shader/sky.glsl", vec3(1.0, 1.0, 1.0), Identity(), base));
 	objects.push_back(new ObjectLoad(  "../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base, "../data/source/van.obj" ));
-    objects.push_back(new Terrain("../shader/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity(), base));
+    objects.push_back(new Terrain("../shader/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity()* Translation(vec3(0.0,-2.0,0.0)), base));
     //objects.push_back(new Eau("../scene/shaders/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(-20.0,waterHeight,-20.0)), base));
     eau = new Eau("../scene/shaders/water.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(-20.0,waterHeight,-20.0)), base);
 
@@ -342,13 +342,15 @@ int Scene::render(){
     bindReflectionFrameBuffer();
     showFramebufferError();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //cout << "Position y camera :" << m_camera.position().y  << endl;
+    cout << "Position y camera :" << m_camera.position().y  << endl;
     float distance = 2 * (m_camera.position().y - waterHeight); // Renverser la camera pour illusion de reflections dans l'eau
-    //cout << "Distance calculee avec eau : " << distance << endl;
+    cout << "Distance calculee avec eau : " << distance << endl;
     //m_camera.translation(0,distance); // Translation
-    //base->ChangeTransform(Translation(vec3(0,-distance,0)));
-    //m_camera.rotation(-180,180); // Rotation
-    //cout << "Position y camera apres calcul :" << m_camera.position().y  << endl;
+    base->ChangeTransform(Translation(vec3(0,-distance,0)));
+    waterHeight -= distance;
+    //base->ChangeTransform(RotationX(180));
+    m_camera.rotation(-180,180); // Rotation
+    cout << "Position y camera apres calcul :" << m_camera.position().y  << endl;
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
     }
@@ -356,7 +358,9 @@ int Scene::render(){
         FBO_2_PPM_file("ReflectionFramebuffer.ppm",REFLECTION_WIDTH,REFLECTION_HEIGHT);
     }
     //m_camera.translation(0,-distance); // Translation inverse
-    //base->ChangeTransform(Translation(vec3(0,distance,0)));
+    base->ChangeTransform(Translation(vec3(0,distance,0)));
+    waterHeight += distance;
+    //base->ChangeTransform(RotationX(-180));
     //m_camera.rotation(180,-180); // Rotiation inverse
     unbindCurrentFrameBuffer();
 
