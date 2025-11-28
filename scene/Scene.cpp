@@ -30,7 +30,6 @@ int Scene::init(){
 	//pointLights.push_back(new PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0f, 0.09f, 0.032f, Translation(vec3(2.0f, 1.0f, 0.0f)), base));
     objects.push_back(new Sky("../shader/clouds.glsl", vec3(1.0, 1.0, 1.0), Identity(), base));
 	// LISTE DES OBJETS
-<<<<<<< HEAD
     objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/island/beton.jpg", "../data/island/beton.jpg", Identity(), base, "../data/island/island.obj"));
     objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/Cottage_Dirt_Base_Color.png", "../data/Cottage_Dirt_Normal.png", Identity()*Translation(0.0f,0.3f,3.0f)*Scale(0.3), objects[1], "../data/Cottage_FREE.obj"));
     objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/road/texture_road.jpg", "../data/road/texture_road.jpg", Identity() * Translation(-0.4f, 0.0f, 0.f) * Scale(0.36), objects[1], "../data/road/road.obj"));
