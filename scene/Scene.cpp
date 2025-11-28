@@ -26,7 +26,7 @@ int Scene::init(){
     
 	base = new Entity();
 	// Creation d'une lumiere
-	dirLight = new Dirlight(vec3(0.2, 0.2, 0.2), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(5.0,5.0,5.0)), base, vec3(-0.2f, -1.0f, -0.1f));
+	dirLight = new Dirlight(vec3(0.30f, 0.30f, 0.30f), vec3(0.85f, 0.85f, 0.80f), vec3(0.20f, 0.20f, 0.20f), Identity(), base, vec3(-0.2f, -1.0f, -0.3f));
 	//pointLights.push_back(new PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0f, 0.09f, 0.032f, Translation(vec3(2.0f, 1.0f, 0.0f)), base));
     objects.push_back(new Sky("../shader/clouds.glsl", vec3(1.0, 1.0, 1.0), Identity(), base));
 	// LISTE DES OBJETS
@@ -39,7 +39,7 @@ int Scene::init(){
     objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/bridge/texture_bridge.jpg", "../data/bridge/texture_bridge.jpg", Identity() * Translation(5.0f, 0.3f, -4.0f)* RotationY(30.) * Scale(0.5), objects[1], "../data/bridge/bridge.obj"));
     objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/boat_d.tga", "../data/boat_n.tga", Identity() * Translation(6.5f, 0.f, -5.5f) * RotationY(120.) * Scale(0.008), objects[1], "../data/boat.obj"));
     objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/lampadaire/lampadaire.png", "../data/lampadaire/lampadaire.png", Identity() * Translation(3.0f, 0.3f, 1.0f) * Scale(0.05), objects[1], "../data/lampadaire/lampadaire.obj"));
-    pointLights.push_back(new PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0f, 0.045f, 0.0075f, Identity() * Translation(4.0f, 0.3f, 1.0f), base));
+    pointLights.push_back(new PointLight(vec3(0.05f, 0.04f, 0.02f), vec3(0.90f, 0.75f, 0.40f), vec3(1.0f, 0.9f, 0.6f), 1.0f, 0.09f, 0.032f, Identity() * Translation(4.0f, 0.3f, 1.0f), base));
 
     //   objects.push_back(new Terrain("../tutos/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity(), base));
  
