@@ -23,7 +23,7 @@ int Scene::quit(){
 
 int Scene::init(){
 
-
+    
 	base = new Entity();
 	// Creation d'une lumiere
 	dirLight = new Dirlight(vec3(0.2, 0.2, 0.2), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(5.0,5.0,5.0)), base, vec3(-0.2f, -1.0f, -0.1f));
@@ -341,6 +341,7 @@ int Scene::render(){
         prevTranslation = newTranslation;
         currentTranslation = newTranslation;
     }
+
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
