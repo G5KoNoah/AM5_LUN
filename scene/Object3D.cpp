@@ -69,7 +69,9 @@ void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> p
 		program_uniform(shader, "nbPointLights", (int)pointLights.size());
 		for (int i = 0; i < pointLights.size(); i++) {
 			std::string number = std::to_string(i);
-			program_uniform(shader, ("pointLights[" + number + "].position").c_str(), pointLights[i]->transform);
+
+			//std::cout << pointLights[i]->position.x << " " << pointLights[i]->position.y << " " << pointLights[i]->position.z << " " << number << std::endl;
+			program_uniform(shader, ("pointLights[" + number + "].position").c_str(), pointLights[i]->position);
 			program_uniform(shader, ("pointLights[" + number + "].ambient").c_str(), pointLights[i]->ambient);
 			program_uniform(shader, ("pointLights[" + number + "].diffuse").c_str(), pointLights[i]->diffuse);
 			program_uniform(shader, ("pointLights[" + number + "].specular").c_str(), pointLights[i]->specular);
@@ -97,7 +99,7 @@ void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> p
 
 		program_uniform(shader, "material.diffuse", 0);
 		program_uniform(shader, "material.specular", 1);
-		program_uniform(shader, "material.shininess", 10.0f);
+		program_uniform(shader, "material.shininess", 16.0f);
 
 		program_uniform(shader, "lightSpaceMatrix", light);
 		//program_uniform(shader, "shadowMap", shadowMap);
@@ -113,7 +115,7 @@ void Object3D::Draw(Orbiter * camera, Dirlight * dirLight, vector<PointLight*> p
 		program_uniform(shader, "nbPointLights", (int)pointLights.size());
 		for (int i = 0; i < pointLights.size(); i++) {
 			std::string number = std::to_string(i);
-			program_uniform(shader, ("pointLights[" + number + "].position").c_str(), pointLights[i]->transform);
+			program_uniform(shader, ("pointLights[" + number + "].position").c_str(), pointLights[i]->position);
 			program_uniform(shader, ("pointLights[" + number + "].ambient").c_str(), pointLights[i]->ambient);
 			program_uniform(shader, ("pointLights[" + number + "].diffuse").c_str(), pointLights[i]->diffuse);
 			program_uniform(shader, ("pointLights[" + number + "].specular").c_str(), pointLights[i]->specular);

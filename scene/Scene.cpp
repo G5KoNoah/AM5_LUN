@@ -26,22 +26,24 @@ int Scene::init(){
     
 	base = new Entity();
 	// Creation d'une lumiere
-	dirLight = new Dirlight(vec3(0.2, 0.2, 0.2), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(5.0,5.0,5.0)), base, vec3(-0.2f, -1.0f, -0.1f));
+	dirLight = new Dirlight(vec3(0.30f, 0.30f, 0.30f), vec3(0.85f, 0.85f, 0.80f), vec3(0.20f, 0.20f, 0.20f), Identity(), base, vec3(-0.2f, -1.0f, -0.3f));
 	//pointLights.push_back(new PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0f, 0.09f, 0.032f, Translation(vec3(2.0f, 1.0f, 0.0f)), base));
     objects.push_back(new Sky("../shader/clouds.glsl", vec3(1.0, 1.0, 1.0), Identity(), base));
 	// LISTE DES OBJETS
-
-    // Objets de l'île
     objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/island/beton.jpg", "../data/island/beton.jpg", Identity(), base, "../data/island/island.obj"));
-    //objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/road/texture_road.jpg", "../data/road/texture_road.jpg", Identity() * Scale(0.36f), objects[1], "../data/road/road.obj"));
-    //objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/bridge/texture_bridge.jpg", "../data/bridge/texture_bridge.jpg", Identity() * Translation(1.5f,0.0f,1.5f ) * RotationX(90), objects[1], "../data/bridge/bridge.obj"));
-    //objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/Cottage_Dirt_Base_Color.png", "../data/Cottage_Dirt_Normal.png", Identity() * Translation(2.0f, 2.0f, 2.0f) * Scale(0.2), base, "../data/Cottage_FREE.obj"));
-    //objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/boat_d.tga", "../data/boat_n.tga", Identity() * Translation(-2.0f, 2.0f, -2.0f) * Scale(0.008), base, "../data/boat.obj"));
-    //objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/banc_base.png", "../data/banc_normal", Identity() * Translation(2.0f, 2.0f, -2.0f) * Scale(0.5), objects[4], "../data/banc.obj"));
-    //objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base, "../data/source/van.obj"));
-    //objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/Cat_diffuse.jpg", "../data/Cat_bump.jpg", Identity() * Translation(-2.0f, 2.0f, 2.0f) * RotationX(-90.0f) * Scale(0.02), base, "../data/cat.obj"));
-    //objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/Wood_Tower_Col.jpg", "../data/Wood_Tower_Nor.jpg", Identity() * Translation(-2.0f, 2.0f, -2.0f) * Scale(0.5), base, "../data/watchTower.obj"));
-    
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/Cottage_Dirt_Base_Color.png", "../data/Cottage_Dirt_Normal.png", Identity()*Translation(0.0f,0.3f,3.0f)*Scale(0.3), objects[1], "../data/Cottage_FREE.obj"));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/road/texture_road.jpg", "../data/road/texture_road.jpg", Identity() * Translation(-0.4f, 0.0f, 0.f) * Scale(0.36), objects[1], "../data/road/road.obj"));
+	objects.push_back(new ObjectLoad(  "../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity() * Translation(0.0f, 0.3f, -3.0f) * Scale(0.5), objects[1], "../data/source/van.obj" ));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity() * Translation(-1.0f, 0.3f, -3.0f) * Scale(0.5), objects[1], "../data/source/van.obj"));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity() * Translation(1.0f, 0.3f, -3.0f) * Scale(0.5), objects[1], "../data/source/van.obj"));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/bridge/texture_bridge.jpg", "../data/bridge/texture_bridge.jpg", Identity() * Translation(5.0f, 0.3f, -4.0f)* RotationY(30.) * Scale(0.5), objects[1], "../data/bridge/bridge.obj"));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/boat_d.tga", "../data/boat_n.tga", Identity() * Translation(6.5f, 0.f, -5.5f) * RotationY(120.) * Scale(0.008), objects[1], "../data/boat.obj"));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/lampadaire/lampadaire.png", "../data/lampadaire/lampadaire.png", Identity() * Translation(3.0f, 0.3f, 1.0f) * Scale(0.05), objects[1], "../data/lampadaire/lampadaire.obj"));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/statue/sculpture.png", "../data/statue/sculpture.png", Identity() * Translation(-3.0f, 0.3f, - 2.0f) * RotationY(180) * Scale(0.2), objects[1], "../data/statue/statue.obj"));
+	objects.push_back(new Arbre("../shader/multipleLights.glsl", Identity() * Translation(-3.0f, 0.3f, 2.0f) ,objects[1]));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/banc_base.png", "../data/banc_normal", Identity() * Translation(-3.0f, 0.3f, 1.0f) * RotationY(180) * Scale(0.5), objects[1], "../data/banc.obj"));
+    pointLights.push_back(new PointLight(vec3(0.05f, 0.04f, 0.02f), vec3(0.90f, 0.75f, 0.40f), vec3(1.0f, 0.9f, 0.6f), 1.0f, 0.09f, 0.032f, Identity() * Translation(4.0f, 1.0f, 1.0f), base));
+
 	//Objets du terrain
     objects.push_back(new Terrain("../shader/terrain.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity() * Translation(125.0f,-3.5f,2.0f)* Scale(3.0f), base));
     Arbres* a = new Arbres("../shader/multipleLights.glsl", vec3(0.4, 0.25, 0.1), Identity() * Translation(125.0f, -3.5f, 2.0f) * Scale(3.0f), objects[2], (Terrain*)objects[2],10);
@@ -334,7 +336,7 @@ int Scene::render(){
         prevTranslation = newTranslation;
         currentTranslation = newTranslation;
     }
-
+    
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -349,8 +351,12 @@ int Scene::render(){
 	//std::cout << dirLight->direction.x << " " << dirLight->direction.y << " " << dirLight->direction.z << std::endl;
 
 	//objects[2]->ChangeTransform(Translation(vec3(1.0 * deltaTime , 0.0 , 0.0)));
+    for (int i = 0; i < (int)pointLights.size(); ++i) {
+        if (pointLights[i]) pointLights[i]->updatePosition();
+    }
     for(int i=0; i<objects.size(); i++){
         //objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
+        //std::cout << pointLights.size() << std::endl;
         objects[i]->Draw(&m_camera, dirLight, pointLights);
     }
  

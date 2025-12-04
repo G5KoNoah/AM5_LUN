@@ -36,5 +36,6 @@ void Entity::applyParentTransform(const Transform& t){
 	transform = t * transform;
 	for(auto it = child.begin(); it != child.end(); ++it){
 		(*it)->applyParentTransform(t);
+		
 	}
 }
