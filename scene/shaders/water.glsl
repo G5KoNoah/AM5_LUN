@@ -30,7 +30,7 @@ in vec2 texCoord;
 
 out vec4 color;
 
-uniform sampler2D reflextionTexture;
+uniform sampler2D reflectionTexture;
 uniform sampler2D refractionTexture;
 
 void main( )

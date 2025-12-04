@@ -375,7 +375,6 @@ int Scene::render(){
 
     
 
-
     objects[3]->texture = getReflectionTexture();
     objects[3]->texture_specular = getRefractionTexture();
 
