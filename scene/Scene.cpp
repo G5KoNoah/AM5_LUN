@@ -39,7 +39,10 @@ int Scene::init(){
     objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/bridge/texture_bridge.jpg", "../data/bridge/texture_bridge.jpg", Identity() * Translation(5.0f, 0.3f, -4.0f)* RotationY(30.) * Scale(0.5), objects[1], "../data/bridge/bridge.obj"));
     objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/boat_d.tga", "../data/boat_n.tga", Identity() * Translation(6.5f, 0.f, -5.5f) * RotationY(120.) * Scale(0.008), objects[1], "../data/boat.obj"));
     objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/lampadaire/lampadaire.png", "../data/lampadaire/lampadaire.png", Identity() * Translation(3.0f, 0.3f, 1.0f) * Scale(0.05), objects[1], "../data/lampadaire/lampadaire.obj"));
-    pointLights.push_back(new PointLight(vec3(0.05f, 0.04f, 0.02f), vec3(0.90f, 0.75f, 0.40f), vec3(1.0f, 0.9f, 0.6f), 1.0f, 0.09f, 0.032f, Identity() * Translation(4.0f, 0.3f, 1.0f), base));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/statue/sculpture.png", "../data/statue/sculpture.png", Identity() * Translation(-3.0f, 0.3f, - 2.0f) * RotationY(180) * Scale(0.2), objects[1], "../data/statue/statue.obj"));
+	objects.push_back(new Arbre("../shader/multipleLights.glsl", Identity() * Translation(-3.0f, 0.3f, 2.0f) ,objects[1]));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/banc_base.png", "../data/banc_normal", Identity() * Translation(-3.0f, 0.3f, 1.0f) * RotationY(180) * Scale(0.5), objects[1], "../data/banc.obj"));
+    pointLights.push_back(new PointLight(vec3(0.05f, 0.04f, 0.02f), vec3(0.90f, 0.75f, 0.40f), vec3(1.0f, 0.9f, 0.6f), 1.0f, 0.09f, 0.032f, Identity() * Translation(4.0f, 1.0f, 1.0f), base));
 
     //   objects.push_back(new Terrain("../tutos/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity(), base));
  
@@ -351,8 +354,12 @@ int Scene::render(){
 	//std::cout << dirLight->direction.x << " " << dirLight->direction.y << " " << dirLight->direction.z << std::endl;
 
 	//objects[2]->ChangeTransform(Translation(vec3(1.0 * deltaTime , 0.0 , 0.0)));
+    for (int i = 0; i < (int)pointLights.size(); ++i) {
+        if (pointLights[i]) pointLights[i]->updatePosition();
+    }
     for(int i=0; i<objects.size(); i++){
         //objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
+        //std::cout << pointLights.size() << std::endl;
         objects[i]->Draw(&m_camera, dirLight, pointLights);
     }
  
