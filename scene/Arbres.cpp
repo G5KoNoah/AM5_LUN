@@ -13,8 +13,8 @@ Arbres::Arbres(std::string strShader, std::string strTexture1, std::string strTe
     mesh = make_plane(10.0f, 100);
 }*/
 
-Arbres::Arbres(std::string strShader, vec3 c, Transform tr, Entity* p, Terrain* terrain){
-    arbres = make_trees(strShader, c, tr, p, 0.0f, 0.0f, 5.0f, 5, 0.2f, terrain);
+Arbres::Arbres(std::string strShader, vec3 c, Transform tr, Entity* p, Terrain* terrain, int nb_arbre){
+    arbres = make_trees(strShader, c, tr, p, 0.0f, 0.0f, 5.0f, nb_arbre, 0.2f, terrain);
 }
 
 vector<Object3D*> Arbres::make_trees(std::string strShader, vec3 c, Transform tr, Entity* p, float px, float pz, float r, int nb_arbre, float ra, Terrain * terrain)
@@ -44,7 +44,7 @@ vector<Object3D*> Arbres::make_trees(std::string strShader, vec3 c, Transform tr
         for (auto arbre : a) {
 			float dx = pxa - arbre->transform.column(3).x;
 			float dz = pza - arbre->transform.column(3).z;
-            if(sqrt(dx * dx + dz * dz) < ra) {
+            if(sqrt(dx * dx + dz * dz) < ra || py<0.5f || py>2.5f) {
                 hit = true;
                 break;
 			}

@@ -44,19 +44,16 @@ int Scene::init(){
     objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/banc_base.png", "../data/banc_normal", Identity() * Translation(-3.0f, 0.3f, 1.0f) * RotationY(180) * Scale(0.5), objects[1], "../data/banc.obj"));
     pointLights.push_back(new PointLight(vec3(0.05f, 0.04f, 0.02f), vec3(0.90f, 0.75f, 0.40f), vec3(1.0f, 0.9f, 0.6f), 1.0f, 0.09f, 0.032f, Identity() * Translation(3.0f, 1.4f, 1.0f), base));
 
-    //   objects.push_back(new Terrain("../tutos/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity(), base));
- 
- //   objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/banc_base.png", "../data/banc_normal", Identity() * Translation(2.0f, 2.0f, -2.0f) * Scale(0.5), objects[4], "../data/banc.obj"));
-
-	//Arbres * a = new Arbres("../shader/multipleLights.glsl", vec3(0.4, 0.25, 0.1), Identity(), base, (Terrain*)objects[1]);
- //   for (unsigned int i = 0; i < 5; i++) {
-	//	objects.push_back(a->get_tree(i));
- //   }
-
-
-    objects.push_back(new Terrain("../tutos/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity() * Translation(25.0f,2.0f,2.0f), base));
-
-
+	//Objets du terrain
+    objects.push_back(new Terrain("../shader/terrain.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity() * Translation(125.0f,-3.5f,2.0f)* Scale(3.0f), base));
+    Arbres* a = new Arbres("../shader/multipleLights.glsl", vec3(0.4, 0.25, 0.1), Identity() * Translation(125.0f, -3.5f, 2.0f) * Scale(3.0f), objects[2], (Terrain*)objects[2],10);
+    for (unsigned int i = 0; i < 5; i++) {
+        objects.push_back(a->get_tree(i));
+    }
+    
+   // Objets de l'océan
+    objects.push_back(new Eau("../tutos/eau.glsl",vec3(0.0f,0.0f,1.0f), Identity() * Translation(-100.0f,-1.0f, -100.0f) * Scale(10.0f,1.0f,10.0f), base));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/fish.jpg", Identity() * Translation(-2.0f, -5.0f, -2.0f) * Scale(0.005), base, "../data/fish.obj"));
 
 
 	

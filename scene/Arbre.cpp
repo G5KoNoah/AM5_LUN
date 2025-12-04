@@ -100,6 +100,7 @@ void Arbre::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointL
 			program_uniform(shader, ("pointLights[" + number + "].quadratic").c_str(), pointLights[i]->quadratic);
 		}
 
+
         // go !
         // indiquer quels attributs de Sommets du mesh sont necessaires a l'execution du shader.
         // tuto9_groups.glsl n'utilise que position et normale. les autres de servent a rien.
