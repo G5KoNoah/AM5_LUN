@@ -29,7 +29,7 @@ vector<Object3D*> Arbres::make_trees(std::string strShader, vec3 c, Transform tr
     uniform_real_distribution<float> dist_radius(0, 1.0f);
 
 	int essais = 0;
-	int max_essais = 1000;
+	int max_essais = 10000;
 
     while (i < nb_arbre && essais<max_essais) {
 		float angle = dist_angle(generator);

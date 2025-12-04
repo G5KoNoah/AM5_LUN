@@ -46,8 +46,8 @@ int Scene::init(){
 
 	//Objets du terrain
     objects.push_back(new Terrain("../shader/terrain.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity() * Translation(125.0f,0.0f,2.0f)* Scale(3.0f), base));
-    Arbres* a = new Arbres("../shader/multipleLights.glsl", vec3(0.4, 0.25, 0.1), Identity() * Translation(125.0f, 0.0f, 2.0f) * Scale(3.0f), objects[objects.size()-1], (Terrain*)objects[objects.size() - 1], 0.0f, 0.0f, 0.5f, 10, 0.1f);
-    for (unsigned int i = 0; i < 5; i++) {
+    Arbres* a = new Arbres("../shader/multipleLights.glsl", vec3(0.4, 0.25, 0.1), Identity() * Translation(125.0f, 0.0f, 2.0f) * Scale(3.0f), objects[objects.size()-1], (Terrain*)objects[objects.size() - 1], 0.0f, 0.0f, 8.f, 150, 0.1f);
+    for (unsigned int i = 0; i < a->get_size(); i++) {
         objects.push_back(a->get_tree(i));
     }
     
