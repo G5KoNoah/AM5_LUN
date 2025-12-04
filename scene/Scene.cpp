@@ -41,13 +41,13 @@ int Scene::init(){
     //objects.push_back(new Plane("../tutos/tuto9_color.glsl", vec3(0.0f, 0.0f, 1.0f), Identity() * Translation(vec3(0.0, -1.0, 0.0)), base));
     
     objects.push_back(new Sky("../shader/sky.glsl", vec3(1.0, 1.0, 1.0), Identity(), base));
-	objects.push_back(new ObjectLoad(  "../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base, "../data/source/van.obj" ));
+	objects.push_back(new ObjectLoad(  "../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(-2.0,-1.0,0.0)), base, "../data/source/van.obj" ));
     objects.push_back(new Terrain("../shader/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity()* Translation(vec3(0.0,-2.0,0.0)), base));
     //objects.push_back(new Eau("../scene/shaders/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(-20.0,waterHeight,-20.0)), base));
     eau = new Eau("../scene/shaders/water.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(-12.0,waterHeight,-12.0)) * Scale(0.2), base);
     //eau = new Eau("../scene/shaders/water.glsl", vec3(0.0f, 0.0f, 1.0f), Identity() , base);
 
-    objects.push_back(new ObjectLoad("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,3.0,0.0)), base, "../data/cube.obj"));
+    objects.push_back(new ObjectLoad("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(0.0,3.0,0.0)), base, "../data/cube.obj"));
     //objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
 	//objects.push_back(new Plane("../tutos/multipleLights.glsl","../data/container2.png","../data/container2_specular.png", Identity(), base));
 
@@ -297,11 +297,13 @@ int Scene::render(){
     }
     else if (key_state(SDLK_z)) {
         Vector deltaMove = forward * moveSpeed;
+        //waterHeight += deltaMove.y;
         newTranslation = Vector(currentTranslation.x + deltaMove.x,
             currentTranslation.y + deltaMove.y,
             currentTranslation.z + deltaMove.z);
     }else if (key_state(SDLK_s)) {
         Vector deltaMove = forward * moveSpeed;
+        //waterHeight -= deltaMove.y;
         newTranslation = Vector(currentTranslation.x - deltaMove.x,
             currentTranslation.y - deltaMove.y,
             currentTranslation.z - deltaMove.z);
@@ -344,10 +346,10 @@ int Scene::render(){
     float distance = 2 * (m_camera.position().y - waterHeight); // Renverser la camera pour illusion de reflections dans l'eau
     //cout << "Distance calculee avec eau : " << distance << endl;
     //m_camera.translation(0,distance); // Translation
-    base->ChangeTransform(Translation(vec3(0,-distance,0)));
-    waterHeight -= distance;
-    //base->ChangeTransform(RotationX(180));
-    m_camera.rotation(-180,180); // Rotation
+    //base->ChangeTransform(Translation(vec3(0,-distance,0)));
+    //waterHeight -= distance;
+    //base->ChangeTransform(RotationY(180));
+    //m_camera.rotation(0,180); // Rotation
     //cout << "Position y camera apres calcul :" << m_camera.position().y  << endl;
     for(int i=0; i<objects.size(); i++){
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
@@ -356,10 +358,11 @@ int Scene::render(){
         FBO_2_PPM_file("ReflectionFramebuffer.ppm",REFLECTION_WIDTH,REFLECTION_HEIGHT);
     }
     //m_camera.translation(0,-distance); // Translation inverse
-    base->ChangeTransform(Translation(vec3(0,distance,0)));
-    waterHeight += distance;
-    m_camera.rotation(180,-180); // Rotation
-    //base->ChangeTransform(RotationX(-180));
+    //base->ChangeTransform(Translation(vec3(0,distance,0)));
+    //waterHeight += distance;
+    //m_camera.lookat
+    //m_camera.rotation(-180,-180); // Rotation
+    //base->ChangeTransform(RotationY(-180));
     //m_camera.rotation(180,-180); // Rotiation inverse
     unbindCurrentFrameBuffer();
 
