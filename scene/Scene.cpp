@@ -42,7 +42,7 @@ int Scene::init(){
     objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/statue/sculpture.png", "../data/statue/sculpture.png", Identity() * Translation(-3.0f, 0.3f, - 2.0f) * RotationY(180) * Scale(0.2), objects[1], "../data/statue/statue.obj"));
 	objects.push_back(new Arbre("../shader/multipleLights.glsl", Identity() * Translation(-3.0f, 0.3f, 2.0f) ,objects[1]));
     objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/banc_base.png", "../data/banc_normal", Identity() * Translation(-3.0f, 0.3f, 1.0f) * RotationY(180) * Scale(0.5), objects[1], "../data/banc.obj"));
-    pointLights.push_back(new PointLight(vec3(0.05f, 0.04f, 0.02f), vec3(0.90f, 0.75f, 0.40f), vec3(1.0f, 0.9f, 0.6f), 1.0f, 0.09f, 0.032f, Identity() * Translation(4.0f, 1.0f, 1.0f), base));
+    pointLights.push_back(new PointLight(vec3(0.05f, 0.04f, 0.02f), vec3(0.90f, 0.75f, 0.40f), vec3(1.0f, 0.9f, 0.6f), 1.0f, 0.09f, 0.032f, Identity() * Translation(3.0f, 1.4f, 1.0f), base));
 
 	//Objets du terrain
     objects.push_back(new Terrain("../shader/terrain.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity() * Translation(125.0f,0.0f,2.0f)* Scale(3.0f), base));
