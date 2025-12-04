@@ -61,8 +61,8 @@ void Eau::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLig
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, refraction); // Refraction
 
-	cout << "Reflection eau dans eau " << reflection << endl;
-	cout << "Refraction eau dans eau " << refraction << endl;
+	//cout << "Reflection eau dans eau " << reflection << endl;
+	//cout << "Refraction eau dans eau " << refraction << endl;
 	//cout << waterShader << endl;
 
 	program_uniform(waterShader, "reflectionTexture", 0);
@@ -70,7 +70,7 @@ void Eau::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLig
 
 	program_uniform(waterShader, "mvpMatrix", mvp);
 
-	mesh.draw(waterShader, /* use position */ true, /* use texcoord */ (texture != 0), /* use normal */ (dirLight != nullptr || pointLights.size() > 0), /* use color */ false, /* use material index*/ false);
+	mesh.draw(waterShader, /* use position */ true, /* use texcoord */ true, /* use normal */ (dirLight != nullptr || pointLights.size() > 0), /* use color */ false, /* use material index*/ false);
 
 	if (reflection != 0 && refraction != 0) {
 		//cout << "Bien dans Eau" << endl;

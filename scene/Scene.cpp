@@ -45,6 +45,7 @@ int Scene::init(){
     objects.push_back(new Terrain("../shader/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity()* Translation(vec3(0.0,-2.0,0.0)), base));
     //objects.push_back(new Eau("../scene/shaders/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(-20.0,waterHeight,-20.0)), base));
     eau = new Eau("../scene/shaders/water.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(10.0,waterHeight,10.0)), base);
+    //eau = new Eau("../scene/shaders/water.glsl", vec3(0.0f, 0.0f, 1.0f), Identity() , base);
 
     objects.push_back(new ObjectLoad("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,3.0,0.0)), base, "../data/cube.obj"));
     //objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
