@@ -44,9 +44,9 @@ int Scene::init(){
 	objects.push_back(new ObjectLoad(  "../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base, "../data/source/van.obj" ));
     objects.push_back(new Terrain("../shader/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity()* Translation(vec3(0.0,-2.0,0.0)), base));
     //objects.push_back(new Eau("../scene/shaders/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(-20.0,waterHeight,-20.0)), base));
-    eau = new Eau("../scene/shaders/water.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(1.0,waterHeight,1.0)), base);
+    eau = new Eau("../scene/shaders/water.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(10.0,waterHeight,10.0)), base);
 
-    objects.push_back(new ObjectLoad("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base, "../data/cube.obj"));
+    objects.push_back(new ObjectLoad("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,3.0,0.0)), base, "../data/cube.obj"));
     //objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
 	//objects.push_back(new Plane("../tutos/multipleLights.glsl","../data/container2.png","../data/container2_specular.png", Identity(), base));
 
@@ -334,9 +334,6 @@ int Scene::render(){
 
     
 
-    objects[3]->texture = getReflectionTexture();
-    objects[3]->texture_specular = getRefractionTexture();
-
     glEnable(GL_CLIP_DISTANCE0); // Activation de gl_clip_distance
 
     bindReflectionFrameBuffer();
@@ -378,6 +375,10 @@ int Scene::render(){
 
     
 
+
+    objects[3]->texture = getReflectionTexture();
+    objects[3]->texture_specular = getRefractionTexture();
+
     glDisable(GL_CLIP_DISTANCE0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for(int i=0; i<objects.size(); i++){
@@ -392,10 +393,17 @@ int Scene::render(){
     //cout << "Apres lien" << endl;
     //renderWater();
     //cout << "Apres rendu eau" << endl;
+    //cout << waterShader << endl;
+
     eau->reflection = getReflectionTexture();
     eau->refraction = getRefractionTexture();
-    
-    eau->Draw(&m_camera, dirLight, pointLights);
+    //program_uniform(waterShader, "reflection", getReflectionTexture());
+	//program_uniform(waterShader, "refraction", getRefractionTexture());
+    //cout << "Reflection eau " << eau->reflection << endl;
+    //cout << "Refraction eau " << eau->refraction << endl;
+    //cout << "Endroit reflection eau ? " << glGetUniformLocation(waterShader,"reflextionTexture") << endl;
+    //cout << "Endroit refraction eau ? " << glGetUniformLocation(waterShader,"refraxtionTexture") << endl;
+    eau->Draw(&m_camera, dirLight, pointLights,waterShader);
     //cout << "Apres affichage eau" << endl;
     //FBO_2_PPM_file("Frammebuffer",1024,640);
 
