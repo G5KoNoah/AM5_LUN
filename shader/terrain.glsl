@@ -62,6 +62,46 @@ struct PointLight {
 uniform int nbPointLights;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 
+float random(vec2 st) {
+    return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
+}
+
+// Fonction noise
+float noise(vec2 st) {
+    vec2 i = floor(st);
+    vec2 f = fract(st);
+    
+    float a = random(i);
+    float b = random(i + vec2(1.0, 0.0));
+    float c = random(i + vec2(0.0, 1.0));
+    float d = random(i + vec2(1.0, 1.0));
+    
+    vec2 u = smoothstep(0.0, 1.0, f);
+    
+    return mix(
+        mix(a, b, u.x),
+        mix(c, d, u.x),
+        u.y
+    );
+}
+
+float fbm(vec2 st, int octaves) {
+    float value = 0.0;
+    float amplitude = 0.5;
+    float frequency = 1.0;
+    
+    for(int i = 0; i < 10; i ++ ) {
+        if (i >= octaves)break;
+        
+        value += amplitude * noise(st * frequency);
+        
+        frequency *= 2.0;
+        amplitude *= 0.5;
+    }
+    
+    return value;
+}
+
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 {
     vec3 lightDir = normalize(-light.direction);
@@ -109,7 +149,9 @@ void main()
     for(int i = 0; i < nbPointLights; i++)
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
 
-    result = vec3(1.0,1.0,1.0) * ((pos.y - 1.5) * 1.5) + result * (1-((pos.y - 1.5) * 1.5));
+    
+    float t = max(min((pos.y - 2) + (random(vec2(pos.x, pos.z))/5), 0.8), 0.0);
+    result = t * vec3(0.9,0.9,0.9) + (1-t) * result;
     FragColor = vec4(result, alpha);
 }
 #endif
