@@ -27,3 +27,15 @@ void Entity::ChangeTransform(Transform t){
 		(*it)->ChangeTransform(t);
 	}
 }
+
+// Applique une rotation a tous les elements autour de la base
+void Entity::RotationGlobale(Transform t){
+	for(auto it = child.begin(); it != child.end(); ++it){
+		Transform posInit = (*it)->transform;
+		cout << transform << endl;
+		(*it)->ChangeTransform(Translation(transform.column(0).x,transform.column(1).y,transform.column(2).z));
+		(*it)->ChangeTransform(t);
+		(*it)->ChangeTransform(Translation(-transform.column(0).x,-transform.column(1).y,-transform.column(2).z));
+	}
+	transform = transform * t;
+}

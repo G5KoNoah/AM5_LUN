@@ -22,6 +22,7 @@ class Entity{
         ~Entity(); ///Destructeur
 		void addChild(Entity* e); ///Ajoute un enfant a l'entite
 		void ChangeTransform(Transform t); ///Change la transformation de l'entite et l'applique a ses enfants
+        void RotationGlobale(Transform t);
 };
 
 #endif
