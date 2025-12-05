@@ -1,7 +1,7 @@
 #ifndef _LIGHT
 #define _LIGHT
 
-#include "Entity.h"
+#include "../Entity.h"
 
 /*
     @class Light

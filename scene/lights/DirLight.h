@@ -1,7 +1,7 @@
 #ifndef _DIRLIGHT
 #define _DIRLIGHT
 
-#include "../Light.h"
+#include "../lights/Light.h"
 
 /*
     @class DirLight

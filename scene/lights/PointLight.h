@@ -1,7 +1,7 @@
 #ifndef _POINTLIGHT
 #define _POINTLIGHT
 
-#include "../Light.h"
+#include "../lights/Light.h"
 
 /*
     @class PointLight
