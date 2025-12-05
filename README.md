@@ -10,19 +10,19 @@ Un terrai est généré procéduralement avec un placement aléatoire d'arbres.
 
 ## ▶️ Détails de la scène
 > 👉 **Terrain généré**  
-> ![](assets/mon_image.png)  
+> ![](readme/mountain.png)  
 >
 > 👉 **Île composée de models 3D**  
-> ![](assets/mon_image.png)  
+> ![](readme/island.png)  
 >
 > 👉 **Lumière directionnelle et points de lumière**  
-> ![](assets/mon_image.png)  
+> ![](readme/light.png)  
 >
 > 👉 **Eau et reflets**  
-> ![](assets/mon_image.png)  
+> ![](readme/water.png)  
 >
 > 👉 **Ciel dynamique**  
-> ![](assets/mon_image.png)
+> ![](readme/sky.png)
 
 
 
