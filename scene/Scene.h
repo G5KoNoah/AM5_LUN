@@ -13,6 +13,7 @@
 #include "Eau.h"
 #include "ListeArbre.h"
 #include "Sky.h"
+#include "Ocean.h"
 
 #include "mat.h"
 #include "mesh.h"
@@ -50,11 +51,11 @@ class Scene : public App{
         Transform mvpLight;
         Eau * eau; // Objet eau rendu en dernier
 
-		float scaleFactor = 1.0f;
-        float prevScale = 1.0f;
-		// pour appliquer des translations relatives (delta)
-		Vector prevTranslation = Vector(0.0f, 0.0f, 0.0f);
-		Vector currentTranslation = Vector(0.0f, 0.0f, 0.0f);
+		//float scaleFactor = 1.0f;
+        //float prevScale = 1.0f;
+		//// pour appliquer des translations relatives (delta)
+		//Vector prevTranslation = Vector(0.0f, 0.0f, 0.0f);
+		//Vector currentTranslation = Vector(0.0f, 0.0f, 0.0f);
 
 		float speedSun = 10.0f;
 
