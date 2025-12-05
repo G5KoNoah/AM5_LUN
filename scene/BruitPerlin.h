@@ -12,12 +12,13 @@
 class BruitPerlin{
 
 public:
-	static float hash(float x, float y);
-	static void randomGradient(int ix, int iy, float& gx, float& gy);
+	static float randomFloat();
+	static float hash(float x, float y, float seed);
+	static void randomGradient(int ix, int iy, float& gx, float& gy, float seed);
 	static float fade(float t);
-	static float gradDot(int ix, int iy, float x, float y);
-	static float perlinNoise(float x, float y);
-	static float fbm(float x, float y);
+	static float gradDot(int ix, int iy, float x, float y, float seed);
+	static float perlinNoise(float x, float y, float seed);
+	static float fbm(float x, float y, float seed);
 };
 
 #endif

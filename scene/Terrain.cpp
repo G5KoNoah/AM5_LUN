@@ -3,25 +3,29 @@
 // Classe representant un terrain
 
 Terrain::Terrain(std::string strShader, std::string strTexture1, Transform tr, Entity* p) : Object3D(strShader, strTexture1, tr, p) {
-    mesh = make_terrain(20.0f, 100, 5.0f);
+    seed = BruitPerlin::randomFloat();
+    mesh = make_terrain(20.0f, 100);
 
 }
 
 Terrain::Terrain(std::string strShader, std::string strTexture1, std::string strTexture2, Transform tr, Entity* p) : Object3D(strShader, strTexture1, strTexture2, tr, p) {
-    mesh = make_terrain(20.0f, 100, 5.0f);
+    seed = BruitPerlin::randomFloat();
+    mesh = make_terrain(20.0f, 100);
 }
 
 Terrain::Terrain(std::string strShader, vec3 c, Transform tr, Entity* p) : Object3D(strShader, c, tr, p) {
-	mesh = make_terrain(20.0f, 100, 5.0f);
+    seed = BruitPerlin::randomFloat();
+    mesh = make_terrain(20.0f, 100);
 }
 
-Mesh Terrain::make_terrain(float width, int subdivisions, float height_max)
+Mesh Terrain::make_terrain(float width, int subdivisions)
 {
     Mesh mesh = Mesh(GL_TRIANGLES);
     int vertex_count = subdivisions + 1;
     float half_width = width / 2.0f;
     float step = width / subdivisions;
 	float frequency = 0.1f;
+    std::cout << "1 " << seed << std::endl;
     // G�n�ration des sommets
     for (int z = 0; z < vertex_count; ++z)
     {
@@ -29,27 +33,29 @@ Mesh Terrain::make_terrain(float width, int subdivisions, float height_max)
         {
             float px = -half_width + x * step;
             float pz = -half_width + z * step;
-            //float y = interpolation(0., height_max, ridgedfbm(px, pz));
-			float y = 3.0f * BruitPerlin::fbm(px * frequency, pz * frequency) + 2.0f; // Le 3 et le 2 permettent de r�gler la hauteur 
-            //std::cout << ridgedfbm(px, pz) << std::endl;
+			float y1;
+            if ((x+z) < vertex_count) {
+                y1 = -1.0f + min(x, z) * 0.25f; // Partie plage
+            }
+            else {
+                y1 = -1.0f + (vertex_count - max(x, z)) * 0.25f; // Partie plage
+            }
+            float y2 = 4.0f * BruitPerlin::fbm(px * frequency, pz * frequency, seed) + 2.0f; // Le 3 et le 2 permettent de r�gler la hauteur 
+            //std::cout << 4.0f * BruitPerlin::fbm(px * frequency, pz * frequency, seed) + 2.0f << std::endl;
 
             float eps = step;
-			float Hl = 3.0f * BruitPerlin::fbm((px - eps) * frequency, pz * frequency) + 2.0f;
-			float Hr = 3.0f * BruitPerlin::fbm((px + eps) * frequency, pz * frequency) + 2.0f;
-			float Hd = 3.0f * BruitPerlin::fbm(px * frequency, (pz - eps) * frequency) + 2.0f;
-			float Hu = 3.0f * BruitPerlin::fbm(px * frequency, (pz + eps) * frequency) + 2.0f;
+			float Hl = 3.0f * BruitPerlin::fbm((px - eps) * frequency, pz * frequency, seed) + 2.0f;
+			float Hr = 3.0f * BruitPerlin::fbm((px + eps) * frequency, pz * frequency, seed) + 2.0f;
+			float Hd = 3.0f * BruitPerlin::fbm(px * frequency, (pz - eps) * frequency, seed) + 2.0f;
+			float Hu = 3.0f * BruitPerlin::fbm(px * frequency, (pz + eps) * frequency, seed) + 2.0f;
 
             vec3 normal = normalize(vec3(Hl - Hr, 2.0f * step, Hd - Hu));
 
-            if (y >= height_max - 1)
-                mesh.color(1., 1., 1.);
-            else {
-                mesh.color(0., 1., 0.);           // Couleur
-            }
-            mesh.texcoord(std::abs(std::fmod(px, 1.0)),std::abs(std::fmod(pz, 1.0)));
+            //mesh.texcoord(std::abs(std::fmod(px, 1.0)),std::abs(std::fmod(pz, 1.0)));
             //std::cout << std::abs(std::fmod(px, 1.0)) << std::endl;
+			mesh.texcoord((x / (float)subdivisions) *10., (z / (float)subdivisions)*10.); // Coordonn�es de texture
             mesh.normal(normal);             // Normale vers le haut
-            mesh.vertex(px, y, pz);           // Position
+            mesh.vertex(px, min(y1,y2), pz);           // Position
 
         }
     }
@@ -73,6 +79,14 @@ Mesh Terrain::make_terrain(float width, int subdivisions, float height_max)
 float Terrain::getHeight(float x, float z)
 {
 	float frequency = 0.1f;
-    float height = 3.0f * BruitPerlin::fbm(x * frequency, z * frequency) + 2.0f; // Le 3 et le 2 permettent de r�gler la hauteur 
+    float height = 4.0f * BruitPerlin::fbm(x * frequency, z * frequency, seed) + 2.0f; // Le 3 et le 2 permettent de r�gler la hauteur 
     return height;
+}
+
+void Terrain::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLights)
+{
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    Object3D::Draw(camera, dirLight, pointLights);
 }

@@ -24,34 +24,40 @@ int Scene::quit(){
 
 int Scene::init(){
 
-
+    
 	base = new Entity();
 	// Creation d'une lumiere
-	dirLight = new Dirlight(vec3(0.2, 0.2, 0.2), vec3(0.5, 0.5, 0.5), vec3(1.0, 1.0, 1.0), Identity()* Translation(vec3(5.0,5.0,5.0)), base, vec3(-0.2f, -1.0f, -0.1f));
-	pointLights.push_back(new PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0f, 0.09f, 0.032f, Translation(vec3(2.0f, 1.0f, 0.0f)), base));
-
+	dirLight = new Dirlight(vec3(0.30f, 0.30f, 0.30f), vec3(0.85f, 0.85f, 0.80f), vec3(0.20f, 0.20f, 0.20f), Identity(), base, vec3(-0.2f, -1.0f, -0.3f));
+	//pointLights.push_back(new PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0f, 0.09f, 0.032f, Translation(vec3(2.0f, 1.0f, 0.0f)), base));
+    objects.push_back(new Sky("../shader/clouds.glsl", vec3(1.0, 1.0, 1.0), Identity(), base));
 	// LISTE DES OBJETS
-	//objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity(), base));
-    //objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,0.0,0.0)), base));
-    //objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,2.0,0.0)), base));
-    //objects.push_back(new Cube("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(2.0,4.0,0.0)), base));
-    
-    //objects.push_back(new Cube("../tutos/multipleLights.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
-	//objects.push_back(new Terrain("../tutos/tuto9_color.glsl", vec3(0.0f,1.0f,0.0f), Identity(), base));
-    //objects.push_back(new Plane("../tutos/tuto9_color.glsl", vec3(0.0f, 0.0f, 1.0f), Identity() * Translation(vec3(0.0, -1.0, 0.0)), base));
-    
-    objects.push_back(new Sky("../shader/sky.glsl", vec3(1.0, 1.0, 1.0), Identity(), base));
-	objects.push_back(new ObjectLoad(  "../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(-2.0,-0.5,0.0)), base, "../data/source/van.obj" ));
-    objects.push_back(new Terrain("../shader/multipleLights.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity()* Translation(vec3(0.0,-2.0,0.0)), base));
-    //objects.push_back(new Eau("../scene/shaders/eau2.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(-20.0,waterHeight,-20.0)), base));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/island/beton.jpg", "../data/island/beton.jpg", Identity(), base, "../data/island/island.obj"));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/Cottage_Dirt_Base_Color.png", "../data/Cottage_Dirt_Normal.png", Identity()*Translation(0.0f,0.3f,3.0f)*Scale(0.3), objects[1], "../data/Cottage_FREE.obj"));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/road/texture_road.jpg", "../data/road/texture_road.jpg", Identity() * Translation(-0.4f, 0.0f, 0.f) * Scale(0.36), objects[1], "../data/road/road.obj"));
+	objects.push_back(new ObjectLoad(  "../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity() * Translation(0.0f, 0.3f, -3.0f) * Scale(0.5), objects[1], "../data/source/van.obj" ));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity() * Translation(-1.0f, 0.3f, -3.0f) * Scale(0.5), objects[1], "../data/source/van.obj"));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity() * Translation(1.0f, 0.3f, -3.0f) * Scale(0.5), objects[1], "../data/source/van.obj"));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/bridge/texture_bridge.jpg", "../data/bridge/texture_bridge.jpg", Identity() * Translation(5.0f, 0.3f, -4.0f)* RotationY(30.) * Scale(0.5), objects[1], "../data/bridge/bridge.obj"));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/boat_d.tga", "../data/boat_n.tga", Identity() * Translation(6.5f, 0.f, -5.5f) * RotationY(120.) * Scale(0.008), objects[1], "../data/boat.obj"));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/lampadaire/lampadaire.png", "../data/lampadaire/lampadaire.png", Identity() * Translation(3.0f, 0.3f, 1.0f) * Scale(0.05), objects[1], "../data/lampadaire/lampadaire.obj"));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/statue/sculpture.png", "../data/statue/sculpture.png", Identity() * Translation(-3.0f, 0.3f, - 2.0f) * RotationY(180) * Scale(0.2), objects[1], "../data/statue/statue.obj"));
+	objects.push_back(new Arbre("../shader/multipleLights.glsl", Identity() * Translation(-3.0f, 0.3f, 2.0f) ,objects[1]));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/banc_base.png", "../data/banc_normal", Identity() * Translation(-3.0f, 0.3f, 1.0f) * RotationY(180) * Scale(0.5), objects[1], "../data/banc.obj"));
+    pointLights.push_back(new PointLight(vec3(0.05f, 0.04f, 0.02f), vec3(0.90f, 0.75f, 0.40f), vec3(1.0f, 0.9f, 0.6f), 1.0f, 0.09f, 0.032f, Identity() * Translation(3.0f, 1.4f, 1.0f), base));
     eau = new Eau("../scene/shaders/water.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(-12.0,waterHeight,-12.0)) * Scale(0.15), base);
-    //eau = new Eau("../scene/shaders/water.glsl", vec3(0.0f, 0.0f, 1.0f), Identity() , base);
 
-    objects.push_back(new ObjectLoad("../tutos/multipleLights.glsl", "../data/textures/Material_BaseColor.png", "../data/textures/Material_Metallic.png", Identity()* Translation(vec3(0.0,3.0,0.0)), base, "../data/cube.obj"));
-    //objects.push_back(new Cube("../tutos/tuto9_color.glsl", vec3(0.5, 0.5, 0.5), Identity() * Translation(vec3(2.5, 0.0, 0.0)), base));
-	//objects.push_back(new Plane("../tutos/multipleLights.glsl","../data/container2.png","../data/container2_specular.png", Identity(), base));
+	//Objets du terrain
+    objects.push_back(new Terrain("../shader/terrain.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity() * Translation(125.0f,0.0f,2.0f)* Scale(3.0f), base));
+    Arbres* a = new Arbres("../shader/multipleLights.glsl", vec3(0.4, 0.25, 0.1), Identity() * Translation(125.0f, 0.0f, 2.0f) * Scale(3.0f), objects[objects.size()-1], (Terrain*)objects[objects.size() - 1], 0.0f, 0.0f, 8.f, 150, 0.1f);
+    for (unsigned int i = 0; i < a->get_size(); i++) {
+        objects.push_back(a->get_tree(i));
+    }
+    
+   // Objets de l'océan
+    objects.push_back(new Eau("../tutos/eau.glsl",vec3(0.0f,0.0f,1.0f), Identity() * Translation(-100.0f,-1.0f, -100.0f) * Scale(10.0f,1.0f,10.0f), base));
+    objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/fish.jpg", Identity() * Translation(-2.0f, -5.0f, -2.0f) * Scale(0.005), base, "../data/fish.obj"));
 
-    //objects.push_back(new Billboard("../shader/billboard.glsl", "../data/cloud.png", Identity() * Scale(10.), base));
+
 	
     // etat openGL par defaut
 
@@ -257,8 +263,15 @@ int Scene::render(){
     Vector forward = normalize(camWorld(Vector(0.0f, 0.0f, 1.0f)));
     Vector right = normalize(camWorld(Vector(1.0f, 0.0f, 0.0f)));
 
-    const float moveSpeed = 0.1f;
-    const float scaleSpeed = 0.02f;
+    //const float moveSpeed = 0.1f;
+    //const float scaleSpeed = 0.02f;
+
+    // --- �CHELLE ---
+    // Z = agrandir, S = r�tr�cir
+    //if (key_state(SDLK_z))
+    //    base->ChangeTransform(Scale(1.0f + scaleSpeed));
+    //else if (key_state(SDLK_s))
+    //    base->ChangeTransform(Scale(1.0f - scaleSpeed));
 
     const float scaleStep = 0.01f;
     const float minScale = 0.001f;
@@ -281,6 +294,7 @@ int Scene::render(){
 
     // --- TRANSLATION (selon la caméra) ---
     // Q = gauche, D = droite
+    const float moveSpeed = 0.1f;
     // calculer la nouvelle translation voulue en espace monde (accumulée)
     Vector newTranslation = currentTranslation;
     if (key_state(SDLK_q)) {
@@ -306,6 +320,17 @@ int Scene::render(){
             currentTranslation.y - deltaMove.y,
             currentTranslation.z - deltaMove.z);
     }
+
+    Uint32 currentTime = SDL_GetTicks();
+    float deltaTime = (currentTime - lastTime) / 1000.0f; // en secondes
+    lastTime = currentTime;
+    if (key_state(SDLK_UP)) {
+		speedSun += 1.0f ;
+    }
+    else if(key_state(SDLK_DOWN)){
+        speedSun -= 1.0f;
+    }
+    dirLight->Rotation(deltaTime * speedSun);
     // n'appliquer que la différence par rapport à la translation précédente
     Vector delta = Vector(newTranslation.x - prevTranslation.x,
                           newTranslation.y - prevTranslation.y,
@@ -316,6 +341,7 @@ int Scene::render(){
         prevTranslation = newTranslation;
         currentTranslation = newTranslation;
     }
+    
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -324,14 +350,15 @@ int Scene::render(){
 
 	//base->ChangeTransform(   RotationZ(1));
     //objects[0]->ChangeTransform(RotationY(10));
-    Uint32 currentTime = SDL_GetTicks();
-    float deltaTime = (currentTime - lastTime) / 1000.0f; // en secondes
-    lastTime = currentTime;
 
-	dirLight->Rotation(deltaTime *30);
+
+	
 	//std::cout << dirLight->direction.x << " " << dirLight->direction.y << " " << dirLight->direction.z << std::endl;
 
 	//objects[2]->ChangeTransform(Translation(vec3(1.0 * deltaTime , 0.0 , 0.0)));
+    for (int i = 0; i < (int)pointLights.size(); ++i) {
+        if (pointLights[i]) pointLights[i]->updatePosition();
+    }
 
     
 
@@ -351,6 +378,8 @@ int Scene::render(){
     //m_camera.rotation(0,180); // Rotation
     //cout << "Position y camera apres calcul :" << m_camera.position().y  << endl;
     for(int i=0; i<objects.size(); i++){
+        //objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
+        //std::cout << pointLights.size() << std::endl;
         objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
     }
     if (key_state(SDLK_e)) { // Enregistrement de debug

@@ -129,9 +129,11 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     diffuse  *= attenuation;
     specular *= attenuation;
 
-    float shadow = ShadowCalculation(fragPosLightSpace);
+    //float shadow = ShadowCalculation(fragPosLightSpace);
+    //return (ambient + (1.0 - shadow) * (diffuse + specular));
 
-    return (ambient + (1.0 - shadow) * (diffuse + specular));
+    return (ambient + diffuse + specular) ;
+
 }
 
 //  TESTS DE DEPTH TEST
@@ -149,10 +151,15 @@ float LinearizeDepth(float depth)
 
 void main()
 {
+
     /*
     float depth = LinearizeDepth(gl_FragCoord.z) / far;
     FragColor = vec4(vec3(depth), 1.0);
     */
+
+    vec4 tex = texture(material.diffuse, vertex_texcoord); // sample once (r,g,b,a)
+
+    float alpha = tex.a;
 
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
@@ -160,8 +167,8 @@ void main()
     vec3 result = CalcDirLight(dirLight, norm, viewDir);
     for(int i = 0; i < nbPointLights; i++)
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
-    
-    FragColor = vec4(result, 1.0);
+
+    FragColor = vec4(result, alpha);
 
 }
 

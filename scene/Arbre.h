@@ -16,6 +16,9 @@ class Arbre : public Object3D {
 
     private:
         std::vector<Color> m_colors;
+        GLuint texture2;
+		GLuint texture2_specular;
+		std::vector<TriangleGroup> m_groups;
 };
 
 #endif

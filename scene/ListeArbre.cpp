@@ -13,8 +13,8 @@ Arbres::Arbres(std::string strShader, std::string strTexture1, std::string strTe
     mesh = make_plane(10.0f, 100);
 }*/
 
-Arbres::Arbres(std::string strShader, vec3 c, Transform tr, Entity* p, Terrain* terrain){
-    arbres = make_trees(strShader, c, tr, p, 0.0f, 0.0f, 5.0f, 3, 0.2f, terrain);
+Arbres::Arbres(std::string strShader, vec3 c, Transform tr, Entity* p, Terrain* terrain, float px, float pz, float r, int nb_arbre, float ra){
+    arbres = make_trees(strShader, c, tr, p, px, pz, r, nb_arbre, ra, terrain);
 }
 
 vector<Object3D*> Arbres::make_trees(std::string strShader, vec3 c, Transform tr, Entity* p, float px, float pz, float r, int nb_arbre, float ra, Terrain * terrain)
@@ -29,7 +29,7 @@ vector<Object3D*> Arbres::make_trees(std::string strShader, vec3 c, Transform tr
     uniform_real_distribution<float> dist_radius(0, 1.0f);
 
 	int essais = 0;
-	int max_essais = 1000;
+	int max_essais = 10000;
 
     while (i < nb_arbre && essais<max_essais) {
 		float angle = dist_angle(generator);
@@ -44,7 +44,7 @@ vector<Object3D*> Arbres::make_trees(std::string strShader, vec3 c, Transform tr
         for (auto arbre : a) {
 			float dx = pxa - arbre->transform.column(3).x;
 			float dz = pza - arbre->transform.column(3).z;
-            if(sqrt(dx * dx + dz * dz) < ra) {
+            if(sqrt(dx * dx + dz * dz) < ra || py<0.5f || py>2.0f) {
                 hit = true;
                 break;
 			}

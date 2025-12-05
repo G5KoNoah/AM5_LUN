@@ -50,6 +50,14 @@ class Scene : public App{
         Transform mvpLight;
         Eau * eau; // Objet eau rendu en dernier
 
+		float scaleFactor = 1.0f;
+        float prevScale = 1.0f;
+		// pour appliquer des translations relatives (delta)
+		Vector prevTranslation = Vector(0.0f, 0.0f, 0.0f);
+		Vector currentTranslation = Vector(0.0f, 0.0f, 0.0f);
+
+		float speedSun = 10.0f;
+
     public:
 		Scene() : App(1024, 640) {} ///Constructeur
         int quit(); ///Destructeur
