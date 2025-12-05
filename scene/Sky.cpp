@@ -98,3 +98,30 @@ void Sky::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLig
 
 }
 
+void Sky::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointLights, float waterHeight, bool dir) {
+
+	//std::cout << "Drawing Sky" << std::endl;
+	Transform mvp = Perspective(45.0f, float(1024) / 640, 0.1f, 1000.0f) * camera->view() * transform;
+	glUseProgram(shader);
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D, skyTextures[0]); // Texture diffuse
+
+
+    glDepthMask(GL_FALSE);
+
+    program_uniform(shader, "projection", Perspective(45.0f, float(1024) / 640, 0.1f, 1000.0f));
+    program_uniform(shader, "view", camera->view());
+    program_uniform(shader, "sun_dir", dirLight->direction);
+    float time = SDL_GetTicks() / 1000.0f;
+    program_uniform(shader, "time", time);
+
+    mesh.draw(shader, /* use position */ true, /* use texcoord */ (texture != 0), /* use normal */ (dirLight != nullptr || pointLights.size() > 0), /* use color */ false, /* use material index*/ true);
+
+    glDepthMask(GL_TRUE);
+
+
+
+	
+
+}
+

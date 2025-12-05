@@ -11,7 +11,7 @@ class Plane : public Object3D {
 		Plane(std::string strShader, std::string strTexture1, std::string strTexture2, Transform tr, Entity* p); ///Constructeur deux textures
 		Plane(std::string strShader, vec3 c, Transform tr, Entity* p); ///Constructeur couleur
 
-		Mesh makePlane(int width, int height); ///Génère un plan de taille width*height
+		Mesh makePlane(int width, int height); ///Gï¿½nï¿½re un plan de taille width*height
 };
 
 

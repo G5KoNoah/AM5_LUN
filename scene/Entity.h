@@ -20,11 +20,12 @@ class Entity{
         Entity(); ///Constructeur par defaut
         Entity(Transform t, Entity * p); ///Constructeur
         ~Entity(); ///Destructeur
+        void RotationGlobale(Transform t);
         void addChild(Entity* e); ///Ajoute un enfant a l'entite
         void ChangeTransform(Transform t); ///Change la transformation de l'entite et l'applique a ses enfants
 
     private:
-        // applique la transformation du parent aux enfants en la pré-multipliant
+        // applique la transformation du parent aux enfants en la prï¿½-multipliant
         void applyParentTransform(const Transform& t);
 };
 

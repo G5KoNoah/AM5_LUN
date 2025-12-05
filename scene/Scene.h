@@ -11,8 +11,9 @@
 #include "Terrain.h"
 #include "Plane.h"
 #include "Eau.h"
-#include "Arbres.h"
+#include "ListeArbre.h"
 #include "Sky.h"
+#include "Ocean.h"
 
 #include "mat.h"
 #include "mesh.h"
@@ -48,12 +49,13 @@ class Scene : public App{
         Orbiter m_camera;
         Uint32 lastTime = SDL_GetTicks();
         Transform mvpLight;
+        Eau * eau; // Objet eau rendu en dernier
 
-		float scaleFactor = 1.0f;
-        float prevScale = 1.0f;
-		// pour appliquer des translations relatives (delta)
-		Vector prevTranslation = Vector(0.0f, 0.0f, 0.0f);
-		Vector currentTranslation = Vector(0.0f, 0.0f, 0.0f);
+		//float scaleFactor = 1.0f;
+        //float prevScale = 1.0f;
+		//// pour appliquer des translations relatives (delta)
+		//Vector prevTranslation = Vector(0.0f, 0.0f, 0.0f);
+		//Vector currentTranslation = Vector(0.0f, 0.0f, 0.0f);
 
 		float speedSun = 10.0f;
 
@@ -65,14 +67,72 @@ class Scene : public App{
         Transform shadowMapPass();
         void lightingPass();
         void renderQuad();
-        void FBO_2_PPM_file();
+        void FBO_2_PPM_file(string st,int width, int height);
+
+        float scaleFactor = 1.0f;
+        float prevScale = 1.0f;
+		// pour appliquer des translations relatives (delta)
+		Vector prevTranslation = Vector(0.0f, 0.0f, 0.0f);
+		Vector currentTranslation = Vector(0.0f, 0.0f, 0.0f);
+
+        float waterHeight = -1.0; // Hauteur de l'eau
+
+        // Framebuffers d'eau
+        int createFrameBuffer();
+        int createTextureAttachment( int width, int height);
+        int createDepthTextureAttachment( int width, int height);
+        int createDepthBufferAttachment(int width, int height);
+
+        void initialiseReflectionFrameBuffer();
+        void initialiseRefractionFrameBuffer();
+
+        void bindFrameBuffer(int frameBuffer, int width, int height);
+        void showFramebufferError();
 
         GLuint m_fbo;
         GLuint m_shadowMap;
         GLuint depthMapShader; // Shader de la depthMap
 
+        GLuint waterShader; // Shader de l'eau
+
+        unsigned int reflectionFrameBuffer;
+	    unsigned int reflectionTexture;
+	    unsigned int reflectionDepthBuffer;
+
+        unsigned int refractionFrameBuffer;
+	    unsigned int refractionTexture;
+	    unsigned int refractionDepthTexture;
+
         const unsigned int SHADOW_WIDTH = 1024;
         const unsigned int SHADOW_HEIGHT = 720;
+
+        static const int REFLECTION_WIDTH = 720;
+        static const int REFLECTION_HEIGHT = 720;
+
+        static const int REFRACTION_WIDTH = 720;
+        static const int REFRACTION_HEIGHT = 720;
+
+        //Geters
+        GLuint getReflectionTexture();
+        GLuint getRefractionTexture();
+        GLuint getRefractionDepthTexture();
+        void getUniformLocations();
+
+        void connectTextureUnits();
+
+        //Bind
+        void bindReflectionFrameBuffer();
+        void bindRefractionFrameBuffer();
+
+        //Unbind
+        void unbindCurrentFrameBuffer();
+
+        //Nettoyage de l'eau
+        void waterCleanUp();
+
+        //Affichage dans texture
+        void renderWater();
+
         
 };
 

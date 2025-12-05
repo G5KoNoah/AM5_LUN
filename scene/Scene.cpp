@@ -6,6 +6,7 @@ int Scene::quit(){
 		delete objects[i];
 	}
 	objects.clear();
+    waterCleanUp();
     std::cout << "Destruction Scene" << std::endl;
     for(int i=0; i<pointLights.size(); i++){
 		delete pointLights[i];
@@ -43,16 +44,17 @@ int Scene::init(){
 	objects.push_back(new Arbre("../shader/multipleLights.glsl", Identity() * Translation(-3.0f, 0.3f, 2.0f) ,objects[1]));
     objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/banc_base.png", "../data/banc_normal", Identity() * Translation(-3.0f, 0.3f, 1.0f) * RotationY(180) * Scale(0.5), objects[1], "../data/banc.obj"));
     pointLights.push_back(new PointLight(vec3(0.05f, 0.04f, 0.02f), vec3(0.90f, 0.75f, 0.40f), vec3(1.0f, 0.9f, 0.6f), 1.0f, 0.09f, 0.032f, Identity() * Translation(3.0f, 1.4f, 1.0f), base));
+    eau = new Eau("../scene/shaders/water.glsl", vec3(0.0f, 0.0f, 1.0f), Identity()* Translation(vec3(-12.0,waterHeight,-12.0)) * Scale(0.15), base);
 
 	//Objets du terrain
     objects.push_back(new Terrain("../shader/terrain.glsl", "../data/grass.jpg", "../data/grass_spec.jpg", Identity() * Translation(125.0f,0.0f,2.0f)* Scale(3.0f), base));
-    Arbres* a = new Arbres("../shader/multipleLights.glsl", vec3(0.4, 0.25, 0.1), Identity() * Translation(125.0f, 0.0f, 2.0f) * Scale(3.0f), objects[objects.size()-1], (Terrain*)objects[objects.size() - 1], 0.0f, 0.0f, 8.f, 150, 0.1f);
+    Arbres* a = new Arbres("../shader/multipleLights.glsl", vec3(0.4, 0.25, 0.1), Identity() * Translation(125.0f, 0.0f, 2.0f) * Scale(3.0f), objects[objects.size()-1], (Terrain*)objects[objects.size() - 1], 0.0f, 0.0f, 8.f, 15, 0.1f);
     for (unsigned int i = 0; i < a->get_size(); i++) {
         objects.push_back(a->get_tree(i));
     }
     
    // Objets de l'océan
-    objects.push_back(new Eau("../tutos/eau.glsl",vec3(0.0f,0.0f,1.0f), Identity() * Translation(-100.0f,-1.0f, -100.0f) * Scale(10.0f,1.0f,10.0f), base));
+    objects.push_back(new Ocean("../tutos/eau.glsl",vec3(0.0f,0.0f,1.0f), Identity() * Translation(-100.0f,-1.0f, -100.0f) * Scale(10.0f,1.0f,10.0f), base));
     objects.push_back(new ObjectLoad("../shader/multipleLights.glsl", "../data/fish.jpg", Identity() * Translation(-2.0f, -5.0f, -2.0f) * Scale(0.005), base, "../data/fish.obj"));
 
 
@@ -67,10 +69,16 @@ int Scene::init(){
 
     depthMapShader = read_program("../scene/shaders/depthShader.glsl"); // Shader de la depthMap
 
+    waterShader = read_program("../scene/shaders/water.glsl"); // Shader de l'eau
+
     //GLuint texSampler = glGetUniformLocation(shaderLights, "shadowMap");
     //glUniform1i(texSampler, 0);
 
-     
+    // Initialisation des framebuffers d'eau
+    initialiseReflectionFrameBuffer();
+	initialiseRefractionFrameBuffer();
+
+    
     
     glGenFramebuffers(1, &m_fbo); // Creation du framebuffer
 
@@ -138,10 +146,7 @@ Transform Scene::shadowMapPass(){
 
     //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT); // Clear du buffer
 
-    int tps = SDL_GetTicks()/1000;
-    //cout << tps << endl;
-
-    
+    /*
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
 
@@ -175,11 +180,11 @@ Transform Scene::shadowMapPass(){
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-
+    */
 
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    //FBO_2_PPM_file();
+    //FBO_2_PPM_file("ShadowMap.ppm");
 
     return mvpLight;
 
@@ -189,22 +194,22 @@ void Scene::lightingPass(){
 
     //glBindFramebuffer(GL_FRAMEBUFFER, 0); // Utilisation du framebuffer
 
-    glViewport(0, 0, 1080, 720); // Dimensions de la fenetre
+    //glViewport(0, 0, 1080, 720); // Dimensions de la fenetre
 
-    for(int i=0; i<objects.size(); i++){
+    //for(int i=0; i<objects.size(); i++){
         //objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
-    }
+    //}
 
 
 }
 
-void Scene::FBO_2_PPM_file()
+void Scene::FBO_2_PPM_file(string st,int width, int height)
 {
     FILE    *output_image;
     int     output_width, output_height;
 
-    output_width = SHADOW_WIDTH;
-    output_height = SHADOW_HEIGHT;
+    output_width = width;
+    output_height = height;
 
     /// READ THE PIXELS VALUES from FBO AND SAVE TO A .PPM FILE
     int             i, j, k;
@@ -214,7 +219,7 @@ void Scene::FBO_2_PPM_file()
     glReadBuffer(GL_COLOR_ATTACHMENT0);
     glReadPixels(0, 0, output_width, output_height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 
-    output_image = fopen("C:\\Dataset\\output.ppm", "wt");
+    output_image = fopen(st.c_str(), "wt");
     fprintf(output_image,"P3\n");
     fprintf(output_image,"# Created by Ricao\n");
     fprintf(output_image,"%d %d\n",output_width,output_height);
@@ -352,16 +357,290 @@ int Scene::render(){
 
 	//objects[2]->ChangeTransform(Translation(vec3(1.0 * deltaTime , 0.0 , 0.0)));
     for (int i = 0; i < (int)pointLights.size(); ++i) {
-        if (pointLights[i]) pointLights[i]->updatePosition();
+        //if (pointLights[i]) pointLights[i]->updatePosition();
     }
+
+    
+
+    glEnable(GL_CLIP_DISTANCE0); // Activation de gl_clip_distance
+
+    bindReflectionFrameBuffer();
+    showFramebufferError();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //cout << "Position y camera :" << m_camera.position().y  << endl;
+    float distance = 2 * (m_camera.position().y - waterHeight); // Renverser la camera pour illusion de reflections dans l'eau
+    //cout << "Distance calculee avec eau : " << distance << endl;
+    //m_camera.translation(0,distance); // Translation
+    //base->ChangeTransform(Translation(vec3(0,-distance/500,0)));
+    //waterHeight -= distance;
+    //base->ChangeTransform(RotationY(180));
+    //base->RotationGlobale(RotationX(1));
+    //m_camera.rotation(0,180); // Rotation
+    //cout << "Position y camera apres calcul :" << m_camera.position().y  << endl;
     for(int i=0; i<objects.size(); i++){
         //objects[i]->Draw(&m_camera, dirLight, pointLights, mvpLight,m_shadowMap);
         //std::cout << pointLights.size() << std::endl;
-        objects[i]->Draw(&m_camera, dirLight, pointLights);
+        objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
     }
- 
-    glBindTexture(GL_TEXTURE_2D, m_shadowMap);
+    if (key_state(SDLK_e)) { // Enregistrement de debug
+        FBO_2_PPM_file("ReflectionFramebuffer.ppm",REFLECTION_WIDTH,REFLECTION_HEIGHT);
+    }
+    //m_camera.translation(0,-distance); // Translation inverse
+    //base->ChangeTransform(Translation(vec3(0,distance,0)));
+    //waterHeight += distance;
+    //m_camera.lookat
+    //m_camera.rotation(-180,-180); // Rotation
+    //base->ChangeTransform(RotationY(-180));
+    //m_camera.rotation(180,-180); // Rotiation inverse
+    unbindCurrentFrameBuffer();
+
+    bindRefractionFrameBuffer();
+    showFramebufferError();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    for(int i=0; i<objects.size(); i++){
+        objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,false);
+    }
+    if (key_state(SDLK_e)) { // Enregistrement de debug
+        FBO_2_PPM_file("RefractionFramebuffer.ppm",REFLECTION_WIDTH,REFLECTION_HEIGHT);
+    }
+    unbindCurrentFrameBuffer();
+
+    
+
+    // Test de texture de FBO sur objet arbitraire
+    //objects[3]->texture = getReflectionTexture();
+    //objects[3]->texture_specular = getRefractionTexture();
+
+    glDisable(GL_CLIP_DISTANCE0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    for(int i=0; i<objects.size(); i++){
+        objects[i]->Draw(&m_camera, dirLight, pointLights);
+        //objects[i]->Draw(&m_camera, dirLight, pointLights,waterHeight,true);
+    }
+
+    //Render de l'eau en dernier
+    //cout << "Avant connexion" << endl;
+    glUseProgram(waterShader);
+    //cout << "Apres connexion" << endl;
+    //connectTextureUnits();
+    //cout << "Apres lien" << endl;
+    //renderWater();
+    //cout << "Apres rendu eau" << endl;
+    //cout << waterShader << endl;
+    eau->reflection = getReflectionTexture();
+    eau->refraction = getRefractionTexture();
+    //program_uniform(waterShader, "reflection", getReflectionTexture());
+	//program_uniform(waterShader, "refraction", getRefractionTexture());
+    //cout << "Reflection eau " << eau->reflection << endl;
+    //cout << "Refraction eau " << eau->refraction << endl;
+    //cout << "Endroit reflection eau ? " << glGetUniformLocation(waterShader,"reflextionTexture") << endl;
+    //cout << "Endroit refraction eau ? " << glGetUniformLocation(waterShader,"refraxtionTexture") << endl;
+    eau->Draw(&m_camera, dirLight, pointLights,waterShader);
+    //cout << "Apres affichage eau" << endl;
+    //FBO_2_PPM_file("Frammebuffer",1024,640);
+
+    //glBindTexture(GL_TEXTURE_2D, m_shadowMap);
     //renderQuad();
 
 	return 1;
+}
+
+
+
+
+
+
+///
+/// WATER FBO
+///
+
+void Scene::initialiseReflectionFrameBuffer() {
+    cout << "Scene : Initialisation du FBO de reflection" << endl;
+	reflectionFrameBuffer = createFrameBuffer();
+	reflectionTexture = createTextureAttachment(REFLECTION_WIDTH,REFLECTION_HEIGHT);
+	reflectionDepthBuffer = createDepthBufferAttachment(REFLECTION_WIDTH,REFLECTION_HEIGHT);	
+    showFramebufferError();
+    unbindCurrentFrameBuffer();
+    cout << "Scene : FBO de reflection initialise" << endl;
+}   
+
+
+void Scene::initialiseRefractionFrameBuffer()
+{
+    cout << "Scene : Initialisation du FBO de refraction" << endl;
+    refractionFrameBuffer = createFrameBuffer();
+	refractionTexture = createTextureAttachment(REFRACTION_WIDTH,REFRACTION_HEIGHT);
+	refractionDepthTexture = createDepthTextureAttachment(REFRACTION_WIDTH,REFRACTION_HEIGHT);
+    showFramebufferError();
+	unbindCurrentFrameBuffer();
+    cout << "Scene : FBO de refraction initalise" << endl;
+}
+
+void Scene::bindReflectionFrameBuffer()
+{
+    bindFrameBuffer(reflectionFrameBuffer, REFLECTION_WIDTH, REFLECTION_HEIGHT);
+}
+
+void Scene::bindRefractionFrameBuffer()
+{
+    bindFrameBuffer(refractionFrameBuffer, REFRACTION_WIDTH, REFRACTION_HEIGHT);
+}
+
+void Scene::unbindCurrentFrameBuffer()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); //back to default frame buffer
+    showFramebufferError();
+	glViewport(0, 0, 1024, 640);
+    //cout << "Scene : FBO de base initalise" << endl;
+}
+
+void Scene::waterCleanUp()
+{
+    glDeleteFramebuffers(1, &reflectionFrameBuffer);
+    glDeleteTextures(1, &reflectionTexture);
+    glDeleteRenderbuffers(1, &reflectionDepthBuffer);
+    glDeleteFramebuffers(1, &refractionFrameBuffer);
+    glDeleteTextures(1, &refractionTexture);
+    glDeleteTextures(1, &refractionDepthTexture);
+}
+
+int Scene::createFrameBuffer()
+{
+    unsigned int fbo;
+    glGenFramebuffers(1, &fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo); 
+    glDrawBuffer(GL_COLOR_ATTACHMENT0);
+    showFramebufferError();
+    return fbo;
+}
+
+int Scene::createTextureAttachment(int width, int height)
+{
+	unsigned int texture;
+    glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture, 0);
+	return texture;
+}
+
+int Scene::createDepthTextureAttachment(int width, int height)
+{
+    unsigned int texture;
+    glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture, 0);
+    return texture;
+}
+
+int Scene::createDepthBufferAttachment(int width, int height)
+{
+    unsigned int depthBuffer;
+    glGenRenderbuffers(1, &depthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+	return depthBuffer;
+}
+
+void Scene::bindFrameBuffer(int frameBuffer, int width, int height){
+    //glBindTexture(GL_TEXTURE_2D, 0); //To make sure the texture isn't bound
+
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl; 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glViewport(0, 0, width, height);
+    //cout << "Scene : Changement de framebuffer : " << frameBuffer << endl;
+    showFramebufferError();
+}
+
+void Scene::renderWater(){
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, getReflectionTexture());
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, getRefractionTexture());
+}
+
+unsigned int Scene::getReflectionTexture() {
+    return reflectionTexture;
+}
+
+unsigned int Scene::getRefractionTexture() {
+    return refractionTexture;
+}
+
+unsigned int Scene::getRefractionDepthTexture() {
+    return refractionDepthTexture;
+}
+
+void Scene::getUniformLocations(){
+    
+    reflectionTexture = glGetUniformLocation(waterShader,"reflextionTexture");
+    refractionTexture = glGetUniformLocation(waterShader,"refraxtionTexture");
+
+}
+
+void Scene::connectTextureUnits(){
+    
+    program_uniform(waterShader,"reflextionTexture",reflectionTexture);
+    program_uniform(waterShader,"refraxtionTexture",refractionTexture);
+
+}
+
+void Scene::showFramebufferError(){
+
+GLuint status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+switch(status) {
+    case GL_FRAMEBUFFER_COMPLETE:
+    //cout << "FRAMEBUFFER : Pas de probleme ?" << endl;
+        return;
+        break;
+
+case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+    cout << "FRAMEBUFFER : An attachment could not be bound to frame buffer object!" << endl;
+    break;
+
+case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+    cout << "FRAMEBUFFER : Attachments are missing! At least one image (texture) must be bound to the frame buffer object!" << endl;
+    break;
+
+case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
+    cout << "FRAMEBUFFER : The dimensions of the buffers attached to the currently used frame buffer object do not match!" << endl;
+    break;
+
+case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
+    cout << "FRAMEBUFFER : The formats of the currently used frame buffer object are not supported or do not fit together!" << endl;
+    break;
+
+case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+    cout << "FRAMEBUFFER : A Draw buffer is incomplete or undefinied. All draw buffers must specify attachment points that have images attached." << endl;
+    break;
+
+case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+    cout << "FRAMEBUFFER : A Read buffer is incomplete or undefinied. All read buffers must specify attachment points that have images attached." << endl;
+    break;
+
+case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+    cout << "FRAMEBUFFER : All images must have the same number of multisample samples." << endl;
+    break;
+
+case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS :
+    cout << "FRAMEBUFFER : If a layered image is attached to one attachment, then all attachments must be layered attachments. The attached layers do not have to have the same number of layers, nor do the layers have to come from the same kind of texture." << endl;
+    break;
+
+case GL_FRAMEBUFFER_UNSUPPORTED:
+    cout << "FRAMEBUFFER : Attempt to use an unsupported format combinaton!" << endl;
+    break;
+
+default:
+    cout << "FRAMEBUFFER : Unknown error while attempting to create frame buffer object!" << endl;
+    break;
+}
+
 }
