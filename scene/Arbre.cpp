@@ -101,11 +101,7 @@ void Arbre::Draw(Orbiter* camera, Dirlight* dirLight, vector<PointLight*> pointL
 		}
 
 
-        // go !
-        // indiquer quels attributs de Sommets du mesh sont necessaires a l'execution du shader.
-        // tuto9_groups.glsl n'utilise que position et normale. les autres de servent a rien.
 
-        // 1 draw par groupe de triangles...
         mesh.draw(m_groups[i].first, m_groups[i].n, shader, /* use position */ true, /* use texcoord */ true, /* use normal */ true, /* use color */ false, /* use material index*/ false);
     }
     

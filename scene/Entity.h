@@ -21,6 +21,8 @@ class Entity{
         Entity(Transform t, Entity * p); ///Constructeur
         ~Entity(); ///Destructeur
         void RotationGlobale(Transform t);
+        void Rotate(Transform t);
+        void applyParentRotate(const Transform& t);
         void addChild(Entity* e); ///Ajoute un enfant a l'entite
         void ChangeTransform(Transform t); ///Change la transformation de l'entite et l'applique a ses enfants
 

@@ -22,9 +22,7 @@ void Entity::addChild(Entity* e){
 
 // Applique la transformation t a l'entite et a tous ses enfants
 void Entity::ChangeTransform(Transform t){
-	// on applique t à cette entité (application "locale" : ancienne * t)
 	transform = transform * t;
-	// mais pour les enfants, la transformation parentale doit être pré-multipliée
 	for(auto it = child.begin(); it != child.end(); ++it){
 		(*it)->applyParentTransform(t);
 	}
@@ -32,7 +30,6 @@ void Entity::ChangeTransform(Transform t){
 
 // applique la transformation du parent aux descendants (pré-multiplication)
 void Entity::applyParentTransform(const Transform& t){
-	// pré-multiplier : la transformation parentale doit s'appliquer avant la transform locale
 	transform = t * transform;
 	for(auto it = child.begin(); it != child.end(); ++it){
 		(*it)->applyParentTransform(t);
@@ -50,4 +47,18 @@ void Entity::RotationGlobale(Transform t){
 		(*it)->ChangeTransform(Translation(-transform.column(0).x,-transform.column(1).y,-transform.column(2).z));
 	}
 	transform = transform * t;
+}
+void Entity::Rotate(Transform t) {
+	transform = transform * t;
+	for (auto it = child.begin(); it != child.end(); ++it) {
+		(*it)->applyParentTransform(t);
+	}
+}
+
+void Entity::applyParentRotate(const Transform& t) {
+	transform =  transform * t;
+	for (auto it = child.begin(); it != child.end(); ++it) {
+		(*it)->applyParentRotate(t);
+
+	}
 }
