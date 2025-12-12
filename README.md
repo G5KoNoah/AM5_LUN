@@ -63,12 +63,12 @@ cd bin
 
 ## 🧱 Architecture
 
-> 📂 **src/** — Code source principal  
-> &emsp;• **Scene/** — Création de la fenêtre et affichage des objets  
-> &emsp;• **objets/** — Classes permettant d'afficher les objets avec leur shader  
-> &emsp;• **Lights/** — Gestion des différentes lumières  
+> 📂 **scene/** — Code source principal de la scène complète  
+> &emsp;• **water/** — Classes permettant de gerer les framebuffers d'eau  
+> &emsp;• **lights/** — Gestion des différentes lumières  
+> &emsp;• **shaders/** — Shaders de debug, obsolètes  
 
-> 📂 **shaders/** — Fichiers GLSL utilisés dans le rendu  
+> 📂 **shaders/** — Fichiers GLSL vraiment utilisés dans le rendu  
 
 > 📂 **data/** — Fichiers chargés dans la scène  
 > &emsp;• Textures (.png, .jpg)  
